@@ -364,7 +364,7 @@
           "career_interest": 100,
           "project_similarity": 100,
           "eligibility": 100,
-          "freshness": 68
+          "freshness": 63
         },
         "weights": {
           "required_skills": 0.3,
@@ -489,7 +489,7 @@
           "career_interest": 80,
           "project_similarity": 100,
           "eligibility": 100,
-          "freshness": 82
+          "freshness": 77
         },
         "weights": {
           "required_skills": 0.3,
@@ -714,130 +714,6 @@
       }
     },
     {
-      "job_id": "job-008",
-      "job": {
-        "job_id": "job-008",
-        "title": "AI Product Engineering Intern",
-        "company": "Northstar Health",
-        "location": "Remote Australia",
-        "employment_type": "Full-time",
-        "description": "Internship converting AI prototypes into web workflows. Required: Python, TypeScript. Preferred: FastAPI, Next.js, Machine Learning.",
-        "source": "sample-internship-feed",
-        "application_url": "https://example.com/jobs/ai-product-engineering-intern",
-        "date_found": "2026-08-01",
-        "date_posted": "2026-07-07",
-        "required_skills": [
-          "Python",
-          "TypeScript"
-        ],
-        "preferred_skills": [
-          "FastAPI",
-          "Next.js",
-          "Machine Learning"
-        ],
-        "experience_required": "Internship",
-        "eligibility_requirements": [],
-        "status": "validated",
-        "rejection_reasons": []
-      },
-      "relevance_score": 95,
-      "score_breakdown": {
-        "overall_score": 95,
-        "components": {
-          "required_skills": 100,
-          "preferred_skills": 100,
-          "experience_level": 100,
-          "career_interest": 80,
-          "project_similarity": 96,
-          "eligibility": 100,
-          "freshness": 63
-        },
-        "weights": {
-          "required_skills": 0.3,
-          "preferred_skills": 0.15,
-          "experience_level": 0.15,
-          "career_interest": 0.15,
-          "project_similarity": 0.1,
-          "eligibility": 0.1,
-          "freshness": 0.05
-        }
-      },
-      "recommendation": "strongly_apply",
-      "job_summary": "AI Product Engineering Intern at Northstar Health in Remote Australia. The role emphasizes Python, TypeScript.",
-      "matching_evidence": [
-        {
-          "requirement": "Python",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
-          "evidence_ids": [
-            "cv-004",
-            "cv-005",
-            "cv-008"
-          ]
-        },
-        {
-          "requirement": "TypeScript",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
-          "evidence_ids": [
-            "cv-004"
-          ]
-        },
-        {
-          "requirement": "FastAPI",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
-          "evidence_ids": [
-            "cv-004",
-            "cv-007"
-          ]
-        },
-        {
-          "requirement": "Next.js",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
-          "evidence_ids": [
-            "cv-004",
-            "cv-007"
-          ]
-        },
-        {
-          "requirement": "Machine Learning",
-          "candidate_evidence": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
-          "evidence_ids": [
-            "cv-003",
-            "cv-006"
-          ]
-        }
-      ],
-      "skill_gaps": [],
-      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting AI Product Engineering Intern roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
-      "tailored_statements": [
-        {
-          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
-          "evidence_ids": [
-            "cv-004"
-          ]
-        },
-        {
-          "tailored_bullet": "Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
-          "evidence_ids": [
-            "cv-003"
-          ]
-        }
-      ],
-      "cover_letter": "Dear Northstar Health hiring team,\n\nI am applying for the AI Product Engineering Intern role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows TypeScript through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.. My CV shows FastAPI through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL..\n\nI would welcome the chance to contribute careful engineering work to Northstar Health while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
-      "interview_preparation_topics": [
-        "Refresh Python",
-        "Refresh TypeScript"
-      ],
-      "generation_source": "deterministic",
-      "quality_checks": {
-        "unsupported_claims": 0,
-        "company_name_correct": true,
-        "evidence_grounded": true,
-        "job_eligible": true,
-        "score_explained": true,
-        "issues": []
-      }
-    },
-    {
       "job_id": "job-001",
       "job": {
         "job_id": "job-001",
@@ -956,6 +832,130 @@
         "Refresh Machine Learning",
         "Refresh SQL",
         "Prepare honest gap explanation for Docker"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    },
+    {
+      "job_id": "job-008",
+      "job": {
+        "job_id": "job-008",
+        "title": "AI Product Engineering Intern",
+        "company": "Northstar Health",
+        "location": "Remote Australia",
+        "employment_type": "Full-time",
+        "description": "Internship converting AI prototypes into web workflows. Required: Python, TypeScript. Preferred: FastAPI, Next.js, Machine Learning.",
+        "source": "sample-internship-feed",
+        "application_url": "https://example.com/jobs/ai-product-engineering-intern",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-07",
+        "required_skills": [
+          "Python",
+          "TypeScript"
+        ],
+        "preferred_skills": [
+          "FastAPI",
+          "Next.js",
+          "Machine Learning"
+        ],
+        "experience_required": "Internship",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 94,
+      "score_breakdown": {
+        "overall_score": 94,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 100,
+          "experience_level": 100,
+          "career_interest": 80,
+          "project_similarity": 96,
+          "eligibility": 100,
+          "freshness": 58
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "AI Product Engineering Intern at Northstar Health in Remote Australia. The role emphasizes Python, TypeScript.",
+      "matching_evidence": [
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "TypeScript",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "requirement": "FastAPI",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-007"
+          ]
+        },
+        {
+          "requirement": "Next.js",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-007"
+          ]
+        },
+        {
+          "requirement": "Machine Learning",
+          "candidate_evidence": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-003",
+            "cv-006"
+          ]
+        }
+      ],
+      "skill_gaps": [],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting AI Product Engineering Intern roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
+          "evidence_ids": [
+            "cv-003"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Northstar Health hiring team,\n\nI am applying for the AI Product Engineering Intern role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows TypeScript through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.. My CV shows FastAPI through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL..\n\nI would welcome the chance to contribute careful engineering work to Northstar Health while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh Python",
+        "Refresh TypeScript"
       ],
       "generation_source": "deterministic",
       "quality_checks": {

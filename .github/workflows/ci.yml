@@ -7,6 +7,10 @@ on:
 jobs:
   test-and-smoke:
     runs-on: ubuntu-latest
+    env:
+      JOBFORGE_USE_OPENAI: "false"
+      OPENAI_MODEL: "gpt-5-mini"
+      JOBFORGE_DEMO_DATE: "2026-08-01"
 
     steps:
       - uses: actions/checkout@v4
@@ -16,10 +20,10 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: python -m pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt pytest
 
       - name: Run tests
-        run: pytest
+        run: python -m pytest
 
       - name: Generate and validate sample payload
         run: |
@@ -29,7 +33,6 @@ jobs:
 
       - name: Streamlit health smoke test
         run: |
-          PORT=8508 python -m streamlit run dashboard/streamlit_app.py --server.address 0.0.0.0 --server.port 8508 --server.headless true &
+          PORT=8508 sh -c 'python -m streamlit run dashboard/streamlit_app.py --server.address 0.0.0.0 --server.port ${PORT:-8501} --server.headless true' &
           sleep 8
           curl -f http://127.0.0.1:8508/_stcore/health
-
