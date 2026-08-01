@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from typing import Any, Callable, Iterable
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlparse
 from urllib.request import Request, urlopen
 
 from app.schemas.candidate import CandidatePreferences, CandidateProfile
@@ -102,7 +102,10 @@ class LiveJobSearch:
         if self.config.enable_remotive:
             operations.append(("remotive", lambda: self._search_remotive(preferences, queries)))
         if self.config.serpapi_api_key:
-            operations.append(("serpapi-google-jobs", lambda: self._search_serpapi(preferences, queries)))
+            if self.config.serpapi_country == "au":
+                operations.append(("serpapi-seek", lambda: self._search_serpapi_seek(preferences, queries)))
+            else:
+                operations.append(("serpapi-google-jobs", lambda: self._search_serpapi_jobs(preferences, queries)))
         return self._run_sources(operations)
 
     def targeted_search(self, profile: CandidateProfile) -> SearchOutcome:
@@ -169,7 +172,49 @@ class LiveJobSearch:
                     jobs.append(job)
         return jobs
 
-    def _search_serpapi(
+    def _search_serpapi_seek(
+        self,
+        preferences: CandidatePreferences,
+        queries: list[str],
+    ) -> list[JobResult]:
+        """Discover public SEEK job pages through Google's Australian index.
+
+        SEEK does not expose an unrestricted candidate-search API and prohibits
+        automated extraction from its site without approval. SerpApi's regular
+        Google engine gives us an indirect discovery layer without fetching or
+        parsing SEEK pages in JobForge's backend.
+        """
+        jobs: list[JobResult] = []
+        location = (preferences.locations or ["Australia"])[0]
+        for query in queries[: self.config.max_search_queries]:
+            search_query = " ".join(
+                value for value in ["site:seek.com.au/job/", query, location] if value
+            )
+            params = {
+                "engine": "google",
+                "q": search_query,
+                "location": location,
+                "google_domain": "google.com.au",
+                "gl": "au",
+                "hl": self.config.serpapi_language,
+                "num": min(self.config.results_per_source, 100),
+                "api_key": self.config.serpapi_api_key,
+            }
+            payload = self.fetch_json(
+                f"https://serpapi.com/search.json?{urlencode(params)}",
+                self.config.request_timeout,
+            )
+            if not isinstance(payload, dict):
+                raise LiveSearchError("unexpected response shape")
+            if payload.get("error"):
+                raise LiveSearchError(_clean(payload["error"]))
+            for item in payload.get("organic_results", []):
+                job = _serpapi_seek_job(item, fallback_location=location)
+                if job and _is_relevant_to_preferences(job, preferences):
+                    jobs.append(job)
+        return jobs[: self.config.results_per_source]
+
+    def _search_serpapi_jobs(
         self,
         preferences: CandidatePreferences,
         queries: list[str],
@@ -306,6 +351,29 @@ def _serpapi_job(item: Any) -> JobResult | None:
         source=f"serpapi:{_source_slug(publisher)}",
         application_url=application_url,
         date_posted=_relative_date(detected.get("posted_at")),
+    )
+
+
+def _serpapi_seek_job(item: Any, fallback_location: str) -> JobResult | None:
+    if not isinstance(item, dict):
+        return None
+    application_url = _clean(item.get("link"))
+    seek_id = _seek_job_id(application_url)
+    if not seek_id:
+        return None
+    title, company = _seek_title_and_company(item.get("title"))
+    description = item.get("snippet") or item.get("title")
+    relative_date = item.get("date") or _nested_text(item, "rich_snippet", "date")
+    return _build_job(
+        job_id=f"seek-{seek_id}",
+        title=title,
+        company=item.get("company_name") or company or "SEEK advertiser",
+        location=item.get("location") or fallback_location or "Australia",
+        employment_type=_employment_type(description),
+        description=description,
+        source="seek",
+        application_url=application_url,
+        date_posted=_relative_date(relative_date),
     )
 
 
@@ -501,6 +569,26 @@ def _serpapi_application_url(item: dict[str, Any], publisher: str) -> str:
         if valid:
             return _clean(valid[0].get("link"))
     return _clean(item.get("share_link"))
+
+
+def _seek_job_id(value: Any) -> str:
+    url = _clean(value)
+    if not _is_http_url(url):
+        return ""
+    parsed = urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if not (host == "seek.com.au" or host.endswith(".seek.com.au") or host == "au.seek.com"):
+        return ""
+    match = re.search(r"/job/(\d+)(?:/|$)", parsed.path)
+    return match.group(1) if match else ""
+
+
+def _seek_title_and_company(value: Any) -> tuple[str, str]:
+    title = re.sub(r"\s*(?:[-|]\s*)?SEEK\s*$", "", _clean(value), flags=re.IGNORECASE)
+    role, separator, company = title.partition(" at ")
+    if separator and role.strip() and company.strip():
+        return role.strip(), company.strip()
+    return title, ""
 
 
 def _is_http_url(value: Any) -> bool:

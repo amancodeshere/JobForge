@@ -60,7 +60,7 @@ def test_serpapi_google_jobs_preserves_original_board_and_apply_link():
         }
 
     search = LiveJobSearch(
-        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        LiveSearchConfig(serpapi_api_key="key", serpapi_country="us", max_search_queries=1),
         fetch_json=fetch_json,
     )
     result = search.broad_search(
@@ -77,7 +77,7 @@ def test_serpapi_google_jobs_preserves_original_board_and_apply_link():
 
 def test_serpapi_falls_back_to_first_valid_apply_option():
     search = LiveJobSearch(
-        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        LiveSearchConfig(serpapi_api_key="key", serpapi_country="us", max_search_queries=1),
         fetch_json=lambda *_args: {
             "jobs_results": [
                 {
@@ -100,6 +100,54 @@ def test_serpapi_falls_back_to_first_valid_apply_option():
 
     assert result.jobs[0].source == "serpapi:seek"
     assert result.jobs[0].application_url == "https://www.seek.com.au/job/123"
+
+
+def test_serpapi_australia_discovers_only_direct_seek_job_pages():
+    def fetch_json(url: str, _timeout: float):
+        assert "engine=google" in url
+        assert "google_domain=google.com.au" in url
+        assert "gl=au" in url
+        assert "location=Sydney" in url
+        assert "site%3Aseek.com.au%2Fjob%2F" in url
+        return {
+            "organic_results": [
+                {
+                    "title": "Graduate Software Engineer at Example Labs - SEEK",
+                    "link": "https://www.seek.com.au/job/93654273?type=standard",
+                    "snippet": "A full-time graduate role building Python services in Sydney.",
+                    "date": "2 days ago",
+                },
+                {
+                    "title": "Software Engineer - Other board",
+                    "link": "https://jobs.example/software-engineer",
+                    "snippet": "This must not be imported as a SEEK result.",
+                },
+                {
+                    "title": "Software Engineer Jobs in Sydney - SEEK",
+                    "link": "https://www.seek.com.au/software-engineer-jobs/in-Sydney-NSW",
+                    "snippet": "A search page is not a job listing.",
+                },
+            ]
+        }
+
+    search = LiveJobSearch(
+        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        fetch_json=fetch_json,
+    )
+    result = search.broad_search(
+        CandidatePreferences(target_roles=["software engineer"], locations=["Sydney"])
+    )
+
+    assert result.sources_attempted == ["serpapi-seek"]
+    assert result.source_counts == {"serpapi-seek": 1}
+    assert len(result.jobs) == 1
+    assert result.jobs[0].job_id == "seek-93654273"
+    assert result.jobs[0].title == "Graduate Software Engineer"
+    assert result.jobs[0].company == "Example Labs"
+    assert result.jobs[0].source == "seek"
+    assert result.jobs[0].location == "Sydney"
+    assert result.jobs[0].employment_type == "Full-time"
+    assert result.jobs[0].date_posted is not None
 
 
 def test_targeted_sources_filter_irrelevant_jobs_and_capture_failures():
