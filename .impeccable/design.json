@@ -1,0 +1,229 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-02T02:03:18+10:00",
+  "title": "Design System: JobForge",
+  "extensions": {
+    "colorMeta": {
+      "mineral-paper": {
+        "role": "neutral",
+        "displayName": "Mineral Paper",
+        "canonical": "#f5f6f3",
+        "tonalRamp": ["oklch(15% 0.004 121.6)", "oklch(25% 0.004 121.6)", "oklch(35% 0.004 121.6)", "oklch(45% 0.004 121.6)", "oklch(58% 0.004 121.6)", "oklch(70% 0.004 121.6)", "oklch(82% 0.004 121.6)", "oklch(95% 0.004 121.6)"]
+      },
+      "mineral-paper-deep": {
+        "role": "neutral",
+        "displayName": "Pressed Mineral Paper",
+        "canonical": "#e9ece8",
+        "tonalRamp": ["oklch(15% 0.006 137.8)", "oklch(25% 0.006 137.8)", "oklch(35% 0.006 137.8)", "oklch(45% 0.006 137.8)", "oklch(58% 0.006 137.8)", "oklch(70% 0.006 137.8)", "oklch(82% 0.006 137.8)", "oklch(95% 0.006 137.8)"]
+      },
+      "mineral-white": {
+        "role": "neutral",
+        "displayName": "Mineral White",
+        "canonical": "#fcfdfb",
+        "tonalRamp": ["oklch(15% 0.003 128.5)", "oklch(25% 0.003 128.5)", "oklch(35% 0.003 128.5)", "oklch(45% 0.003 128.5)", "oklch(58% 0.003 128.5)", "oklch(70% 0.003 128.5)", "oklch(82% 0.003 128.5)", "oklch(95% 0.003 128.5)"]
+      },
+      "carbon": {
+        "role": "neutral",
+        "displayName": "Carbon",
+        "canonical": "#101418",
+        "tonalRamp": ["oklch(15% 0.010 248.4)", "oklch(25% 0.010 248.4)", "oklch(35% 0.010 248.4)", "oklch(45% 0.010 248.4)", "oklch(58% 0.010 248.4)", "oklch(70% 0.010 248.4)", "oklch(82% 0.010 248.4)", "oklch(95% 0.010 248.4)"]
+      },
+      "slate": {
+        "role": "neutral",
+        "displayName": "Slate",
+        "canonical": "#263b48",
+        "tonalRamp": ["oklch(15% 0.035 236.4)", "oklch(25% 0.035 236.4)", "oklch(35% 0.035 236.4)", "oklch(45% 0.035 236.4)", "oklch(58% 0.035 236.4)", "oklch(70% 0.035 236.4)", "oklch(82% 0.035 236.4)", "oklch(95% 0.035 236.4)"]
+      },
+      "deep-slate-dossier": {
+        "role": "neutral",
+        "displayName": "Deep Slate Dossier",
+        "canonical": "#142936",
+        "tonalRamp": ["oklch(15% 0.036 237.4)", "oklch(25% 0.036 237.4)", "oklch(35% 0.036 237.4)", "oklch(45% 0.036 237.4)", "oklch(58% 0.036 237.4)", "oklch(70% 0.036 237.4)", "oklch(82% 0.036 237.4)", "oklch(95% 0.036 237.4)"]
+      },
+      "slate-soft": {
+        "role": "neutral",
+        "displayName": "Soft Slate",
+        "canonical": "#38505e",
+        "tonalRamp": ["oklch(15% 0.038 234.5)", "oklch(25% 0.038 234.5)", "oklch(35% 0.038 234.5)", "oklch(45% 0.038 234.5)", "oklch(58% 0.038 234.5)", "oklch(70% 0.038 234.5)", "oklch(82% 0.038 234.5)", "oklch(95% 0.038 234.5)"]
+      },
+      "steel": {
+        "role": "neutral",
+        "displayName": "Steel",
+        "canonical": "#7f8e94",
+        "tonalRamp": ["oklch(15% 0.020 223.8)", "oklch(25% 0.020 223.8)", "oklch(35% 0.020 223.8)", "oklch(45% 0.020 223.8)", "oklch(58% 0.020 223.8)", "oklch(70% 0.020 223.8)", "oklch(82% 0.020 223.8)", "oklch(95% 0.020 223.8)"]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Mineral Rule",
+        "canonical": "#c9cfcc",
+        "tonalRamp": ["oklch(15% 0.008 164.9)", "oklch(25% 0.008 164.9)", "oklch(35% 0.008 164.9)", "oklch(45% 0.008 164.9)", "oklch(58% 0.008 164.9)", "oklch(70% 0.008 164.9)", "oklch(82% 0.008 164.9)", "oklch(95% 0.008 164.9)"]
+      },
+      "rule-dark": {
+        "role": "neutral",
+        "displayName": "Dossier Rule",
+        "canonical": "#71868f",
+        "tonalRamp": ["oklch(15% 0.028 225.6)", "oklch(25% 0.028 225.6)", "oklch(35% 0.028 225.6)", "oklch(45% 0.028 225.6)", "oklch(58% 0.028 225.6)", "oklch(70% 0.028 225.6)", "oklch(82% 0.028 225.6)", "oklch(95% 0.028 225.6)"]
+      },
+      "eucalyptus": {
+        "role": "primary",
+        "displayName": "Controlled Eucalyptus",
+        "canonical": "#2b6e66",
+        "tonalRamp": ["oklch(15% 0.069 184.5)", "oklch(25% 0.069 184.5)", "oklch(35% 0.069 184.5)", "oklch(45% 0.069 184.5)", "oklch(58% 0.069 184.5)", "oklch(70% 0.069 184.5)", "oklch(82% 0.069 184.5)", "oklch(95% 0.069 184.5)"]
+      },
+      "eucalyptus-deep": {
+        "role": "primary",
+        "displayName": "Deep Eucalyptus",
+        "canonical": "#20584f",
+        "tonalRamp": ["oklch(15% 0.060 180.9)", "oklch(25% 0.060 180.9)", "oklch(35% 0.060 180.9)", "oklch(45% 0.060 180.9)", "oklch(58% 0.060 180.9)", "oklch(70% 0.060 180.9)", "oklch(82% 0.060 180.9)", "oklch(95% 0.060 180.9)"]
+      },
+      "eucalyptus-soft": {
+        "role": "primary",
+        "displayName": "Soft Eucalyptus Wash",
+        "canonical": "#dcebe6",
+        "tonalRamp": ["oklch(15% 0.017 174.0)", "oklch(25% 0.017 174.0)", "oklch(35% 0.017 174.0)", "oklch(45% 0.017 174.0)", "oklch(58% 0.017 174.0)", "oklch(70% 0.017 174.0)", "oklch(82% 0.017 174.0)", "oklch(95% 0.017 174.0)"]
+      },
+      "warning": {
+        "role": "functional",
+        "displayName": "Case Note Ochre",
+        "canonical": "#76501e",
+        "tonalRamp": ["oklch(15% 0.083 70.3)", "oklch(25% 0.083 70.3)", "oklch(35% 0.083 70.3)", "oklch(45% 0.083 70.3)", "oklch(58% 0.083 70.3)", "oklch(70% 0.083 70.3)", "oklch(82% 0.083 70.3)", "oklch(95% 0.083 70.3)"]
+      },
+      "focus-light": {
+        "role": "functional",
+        "displayName": "Light-Surface Focus Ochre",
+        "canonical": "#76501e",
+        "tonalRamp": ["oklch(15% 0.083 70.3)", "oklch(25% 0.083 70.3)", "oklch(35% 0.083 70.3)", "oklch(45% 0.083 70.3)", "oklch(58% 0.083 70.3)", "oklch(70% 0.083 70.3)", "oklch(82% 0.083 70.3)", "oklch(95% 0.083 70.3)"]
+      },
+      "focus-dark": {
+        "role": "functional",
+        "displayName": "Dark-Surface Focus Mint",
+        "canonical": "#8fd4c8",
+        "tonalRamp": ["oklch(15% 0.072 182.4)", "oklch(25% 0.072 182.4)", "oklch(35% 0.072 182.4)", "oklch(45% 0.072 182.4)", "oklch(58% 0.072 182.4)", "oklch(70% 0.072 182.4)", "oklch(82% 0.072 182.4)", "oklch(95% 0.072 182.4)"]
+      },
+      "danger": {
+        "role": "functional",
+        "displayName": "Evidence Exception Red",
+        "canonical": "#9b3b3b",
+        "tonalRamp": ["oklch(15% 0.120 23.2)", "oklch(25% 0.120 23.2)", "oklch(35% 0.120 23.2)", "oklch(45% 0.120 23.2)", "oklch(58% 0.120 23.2)", "oklch(70% 0.120 23.2)", "oklch(82% 0.120 23.2)", "oklch(95% 0.120 23.2)"]
+      }
+    },
+    "typographyMeta": {
+      "display": {"displayName": "Monumental Display", "purpose": "Hero role language only; self-hosted Barlow Condensed SemiBold."},
+      "headline": {"displayName": "Condensed Section Front", "purpose": "Rule-aligned section headings and major states."},
+      "title": {"displayName": "Ledger Title", "purpose": "Opportunity titles and high-confidence row labels."},
+      "body": {"displayName": "Evidence Body", "purpose": "Readable explanations, evidence and guidance."},
+      "label": {"displayName": "Register Label", "purpose": "Compact provenance, recommendation and status labels."}
+    },
+    "shadows": [
+      {"name": "ledger-hover", "value": "0 14px 28px rgba(26, 39, 43, 0.07)", "purpose": "Low ambient lift under an opportunity row on hover only."},
+      {"name": "search-commitment", "value": "0 12px 30px rgba(4, 18, 25, 0.24)", "purpose": "Marks the dossier's primary search action."},
+      {"name": "fixed-tray-separation", "value": "0 -14px 30px rgba(4, 18, 25, 0.22)", "purpose": "Separates the fixed action tray from scrolling rail content."}
+    ],
+    "motion": [
+      {"name": "state-fast", "value": "150ms ease-out", "purpose": "Button background, border, colour and 1px lift transitions."},
+      {"name": "language-settle", "value": "560ms cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Single role-language entrance sequence with 70ms line staggering; omitted under reduced motion."}
+    ],
+    "breakpoints": [
+      {"name": "compact", "value": "640px"},
+      {"name": "drawer", "value": "980px"}
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Search Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The decisive full-width search action, used in the dossier's fixed tray.",
+      "html": "<button class=\"ds-btn-primary\">RUN LIVE OPPORTUNITY SEARCH</button>",
+      "css": ".ds-btn-primary { width: 100%; min-height: 46px; padding: .55rem .8rem; border: 1px solid #65a99e; border-radius: 3px; background: var(--jf-signal, #2b6e66); color: #fff; font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; font-weight: 750; box-shadow: 0 12px 30px rgba(4,18,25,.24); transition: background 150ms ease-out, border-color 150ms ease-out; } .ds-btn-primary:hover { background: var(--jf-signal-deep, #20584f); border-color: var(--jf-signal-deep, #20584f); } .ds-btn-primary:focus-visible { outline: 3px solid var(--jf-focus-dark, #8fd4c8); outline-offset: 3px; } .ds-btn-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Original Listing Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined verification action that keeps the source listing one step away.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">OPEN ORIGINAL LISTING</a>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .55rem .8rem; border: 1px solid var(--jf-slate, #263b48); border-radius: 3px; background: transparent; color: var(--jf-slate, #263b48); font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; font-size: .78rem; font-weight: 800; text-decoration: none; transition: background 150ms ease-out, color 150ms ease-out, transform 150ms ease-out; } .ds-btn-secondary:hover { background: var(--jf-slate, #263b48); color: #fff; transform: translateY(-1px); } .ds-btn-secondary:focus-visible { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; } .ds-btn-secondary:active { transform: translateY(0); }"
+    },
+    {
+      "name": "Dossier Input",
+      "kind": "input",
+      "refersTo": "input-dossier",
+      "description": "High-contrast field for role, location and eligibility criteria inside the search dossier.",
+      "html": "<label class=\"ds-field-label\">ROLE FOCUS<input class=\"ds-input-dossier\" value=\"Machine learning engineer\"></label>",
+      "css": ".ds-field-label { display: grid; gap: .35rem; color: #f4f7f5; font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; font-size: .78rem; font-weight: 700; } .ds-input-dossier { min-height: 46px; padding: 0 .75rem; border: 1px solid #7f969e; border-radius: 3px; background: #1c3442; color: #f8faf9; font: inherit; font-size: .9rem; } .ds-input-dossier:hover { border-color: #aebbbd; } .ds-input-dossier:focus-visible { border-color: #75b6aa; outline: 0; box-shadow: 0 0 0 3px rgba(117,182,170,.24); }"
+    },
+    {
+      "name": "Provenance Register",
+      "kind": "nav",
+      "description": "Compact search-mode and source ribbon adjacent to the result summary.",
+      "html": "<div class=\"ds-provenance\"><strong>LIVE SEARCH</strong><span>SOURCES</span><span class=\"ds-source\">SERPAPI</span><span class=\"ds-source\">ADZUNA</span></div>",
+      "css": ".ds-provenance { display: flex; flex-wrap: wrap; align-items: center; min-height: 48px; border-top: 1px solid var(--jf-line, #c9cfcc); border-bottom: 1px solid var(--jf-line, #c9cfcc); color: var(--jf-carbon, #101418); font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; font-size: .79rem; } .ds-provenance > * { margin-right: .75rem; } .ds-source { padding: .15rem 0 .15rem .75rem; border-left: 1px solid var(--jf-line, #c9cfcc); color: var(--jf-signal-deep, #20584f); font-weight: 760; } .ds-provenance:hover { border-color: var(--jf-carbon, #101418); } .ds-provenance:focus-within { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; }"
+    },
+    {
+      "name": "Opportunity Ledger Row",
+      "kind": "card",
+      "refersTo": "opportunity-row",
+      "description": "The canonical ranked result: a full-width evidence row rather than a floating recruitment card.",
+      "html": "<article class=\"ds-opportunity\"><div><strong class=\"ds-role\">Graduate Robotics Software Engineer</strong><div class=\"ds-company\">Autonomy Works</div><div class=\"ds-meta\"><span>Sydney</span><span>Full-time</span><span>Graduate</span><span>Sample data</span></div></div><div class=\"ds-actions\"><span class=\"ds-score\">98<small>SCORE</small></span><b>STRONGLY APPLY</b><a href=\"#\">OPEN ORIGINAL LISTING</a></div></article>",
+      "css": ".ds-opportunity { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1.5rem; align-items: center; padding: 1rem 0; border-bottom: 1px solid var(--jf-line, #c9cfcc); background: transparent; color: var(--jf-carbon, #101418); font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; transition: background 150ms ease-out, box-shadow 150ms ease-out; } .ds-opportunity:hover { background: var(--jf-white, #fcfdfb); border-color: var(--jf-carbon, #101418); box-shadow: 0 14px 28px rgba(26,39,43,.07); } .ds-opportunity:focus-within { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; } .ds-role { display: block; font-size: 1.08rem; font-weight: 800; line-height: 1.25; } .ds-company { margin-top: .15rem; color: #536168; font-size: .88rem; } .ds-meta { display: flex; flex-wrap: wrap; margin-top: .7rem; color: #536168; font-size: .75rem; font-weight: 650; } .ds-meta span { padding: 0 .55rem; border-right: 1px solid var(--jf-line, #c9cfcc); } .ds-meta span:first-child { padding-left: 0; } .ds-actions { display: flex; align-items: center; gap: .8rem; color: var(--jf-signal-deep, #20584f); font-size: .76rem; } .ds-score { min-width: 3.8rem; padding: .65rem .35rem; border: 1px solid var(--jf-signal, #2b6e66); border-radius: 50%; text-align: center; font-family: var(--jf-display, \"Arial Narrow\", sans-serif); font-size: 1.2rem; } .ds-score small { display: block; color: #536168; font-family: \"Avenir Next\", sans-serif; font-size: .58rem; letter-spacing: .08em; } .ds-actions a { min-height: 44px; display: inline-flex; align-items: center; padding: 0 .8rem; border: 1px solid var(--jf-slate, #263b48); border-radius: 3px; color: var(--jf-slate, #263b48); text-decoration: none; font-weight: 800; } .ds-actions a:hover { background: var(--jf-slate, #263b48); color: #fff; } .ds-actions a:focus-visible { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; } @media (max-width: 680px) { .ds-opportunity { grid-template-columns: 1fr; } .ds-actions { align-items: stretch; flex-direction: column; } }"
+    },
+    {
+      "name": "Evidence Score",
+      "kind": "custom",
+      "refersTo": "evidence-score",
+      "description": "Circular verified-evidence marker embedded in ledger rows and score summaries.",
+      "html": "<div class=\"ds-evidence-score\">96<span>SCORE</span></div>",
+      "css": ".ds-evidence-score { width: 3.8rem; min-height: 3.8rem; display: grid; place-content: center; border: 1px solid var(--jf-signal, #2b6e66); border-radius: 50%; background: transparent; color: var(--jf-signal-deep, #20584f); text-align: center; font-family: var(--jf-display, \"Arial Narrow\", sans-serif); font-size: 1.2rem; } .ds-evidence-score span { display: block; color: #536168; font-family: \"Avenir Next\", Avenir, sans-serif; font-size: .58rem; font-weight: 800; letter-spacing: .08em; } .ds-evidence-score:hover { background: var(--jf-signal-soft, #dcebe6); } .ds-evidence-score:focus-visible { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; }"
+    },
+    {
+      "name": "Active Evidence Tab",
+      "kind": "nav",
+      "description": "Rule-aligned navigation for application drafts and evidence checks.",
+      "html": "<nav class=\"ds-tabs\"><button>TAILORED CV &amp; PDF</button><button class=\"ds-active\">EVIDENCE CHECKS</button></nav>",
+      "css": ".ds-tabs { display: flex; gap: 1.2rem; border-bottom: 1px solid var(--jf-line, #c9cfcc); } .ds-tabs button { padding: .75rem 0; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: transparent; color: #536168; font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; font-weight: 700; } .ds-tabs button:hover { color: var(--jf-carbon, #101418); } .ds-tabs button:focus-visible { outline: 3px solid var(--jf-focus-light, #76501e); outline-offset: 3px; } .ds-tabs .ds-active { border-bottom-color: var(--jf-signal, #2b6e66); color: var(--jf-carbon, #101418); }"
+    },
+    {
+      "name": "Fixed Search Action Tray",
+      "kind": "custom",
+      "description": "Persistent dossier footer that holds application count and the primary search commitment.",
+      "html": "<div class=\"ds-action-tray\"><label>APPLICATION PACKAGES<input type=\"number\" value=\"5\"></label><button>RUN LIVE OPPORTUNITY SEARCH</button></div>",
+      "css": ".ds-action-tray { width: min(31vw,455px); min-width: 370px; padding: .75rem 1.5rem 1rem; border-top: 1px solid var(--jf-line-dark, #71868f); background: var(--jf-slate-deep, #142936); color: #f4f7f5; box-shadow: 0 -14px 30px rgba(4,18,25,.22); font-family: \"Avenir Next\", Avenir, \"Segoe UI\", Helvetica, Arial, sans-serif; } .ds-action-tray label { display: grid; gap: .35rem; font-size: .78rem; font-weight: 700; } .ds-action-tray input { min-height: 42px; padding: 0 .75rem; border: 1px solid #7f969e; border-radius: 3px; background: #1c3442; color: #f8faf9; } .ds-action-tray input:focus-visible { border-color: #75b6aa; outline: 0; box-shadow: 0 0 0 3px rgba(117,182,170,.24); } .ds-action-tray button { width: 100%; min-height: 46px; margin-top: .55rem; border: 1px solid #65a99e; border-radius: 3px; background: var(--jf-signal, #2b6e66); color: #fff; font-weight: 750; box-shadow: 0 12px 30px rgba(4,18,25,.24); } .ds-action-tray button:hover { background: var(--jf-signal-deep, #20584f); } .ds-action-tray button:focus-visible { outline: 3px solid var(--jf-focus-dark, #8fd4c8); outline-offset: 3px; } @media (max-width: 980px) { .ds-action-tray { width: min(88vw,420px); min-width: 0; padding-left: 1rem; padding-right: 1rem; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Opportunity Front",
+    "overview": "JobForge is a formal editorial workspace where career language becomes evidence. A mineral-paper field and a deep-slate search dossier create a calm, composed front; monumental condensed role language establishes ambition, then strict horizontal rules resolve that ambition into ranked opportunities, provenance and application proof.\n\nThe system is sharp without becoming severe, dynamic without becoming restless, and inclusive from graduate to executive. Its restraint is functional: users should always understand what they asked for, where a recommendation came from, how it was scored and what evidence can support an honest application. Generic recruitment-card dashboards, gamified surfaces and decorative bento grids are explicit anti-references.",
+    "keyCharacteristics": [
+      "Mineral-white workspace anchored by a deep-slate search dossier.",
+      "Monumental condensed headlines paired with a sober workhorse UI sans.",
+      "Ledger rows, strict rules and evidence registers instead of floating cards.",
+      "Controlled eucalyptus signals reserved for verified state and primary action.",
+      "Flat surfaces with limited, state-driven ambient lift.",
+      "One reduced-motion-safe settling sequence for the role-language front."
+    ],
+    "rules": [
+      {"name": "The Evidence Signal Rule", "body": "Eucalyptus is controlled, not atmospheric. Use it for verified evidence, live state, selected tabs and the primary action; do not wash whole screens in it.", "section": "colors"},
+      {"name": "The Two Focus Worlds Rule", "body": "Light and dark surfaces use separate focus tokens. Never reuse the ochre light-surface ring inside the dossier or the mint dossier ring on mineral paper.", "section": "colors"},
+      {"name": "The Monument and Ledger Rule", "body": "Condensed type belongs to the language front, section headlines and large metrics. Evidence detail remains in the UI face so the interface never becomes a wall of display type.", "section": "typography"},
+      {"name": "The Rail-and-Front Rule", "body": "Preserve the 31% dossier anchor on desktop and the fixed action tray inside it; do not move the primary search action into a generic toolbar or content card.", "section": "layout"},
+      {"name": "The Ledger Rule", "body": "Repeated opportunities, provenance and checks align as rows divided by 1px rules. A masonry, bento or multi-card dashboard breaks the system.", "section": "layout"},
+      {"name": "The Flat-by-Default Rule", "body": "Surfaces remain flush at rest. Shadows appear only for hover response or to clarify a fixed layer.", "section": "elevation"},
+      {"name": "The Restrained Corner Rule", "body": "Use `rounded.restrained` only for controls, data frames and alerts. Content containers and opportunity rows use `rounded.square`; do not introduce medium or pill radii.", "section": "shapes"}
+    ],
+    "dos": [
+      "Do preserve the mineral-paper workspace, deep-slate dossier and controlled eucalyptus evidence signal.",
+      "Do use the self-hosted Barlow Condensed SemiBold asset for monumental role language and condensed section fronts.",
+      "Do keep source provenance, evidence scoring, validation state and original-listing access visible in the primary scan path.",
+      "Do preserve separate light- and dark-surface focus tokens, strong input boundaries and 44px minimum touch actions.",
+      "Do adapt at the established 980px and 640px breakpoints and respect reduced-motion preferences."
+    ],
+    "donts": [
+      "Don't turn the interface into a generic recruitment-card, bento or floating-widget dashboard.",
+      "Don't use persistent elevation, glossy gradients, pill-heavy controls or large-radius containers.",
+      "Don't use eucalyptus as decoration or as a broad background wash; it is an evidence and action signal.",
+      "Don't hide provenance, eligibility, score rationale or original-listing access behind secondary navigation.",
+      "Don't invent proof, provider coverage, candidate experience or celebratory gamification."
+    ]
+  }
+}

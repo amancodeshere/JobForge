@@ -12,3 +12,10 @@ __pycache__/
 sample_data/expected_outputs/*.tmp
 output/pdf/
 tmp/pdfs/
+.impeccable/questions/
+.impeccable/review/
+.impeccable/sketches/
+.impeccable/direction-options.json
+.impeccable/composition-options.json
+.impeccable/mocks/opportunity-front-b.*
+.impeccable/mocks/opportunity-front-c.*
