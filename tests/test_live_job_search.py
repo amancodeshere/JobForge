@@ -170,3 +170,25 @@ def test_role_matching_requires_a_relevant_job_title():
     result = search.broad_search(CandidatePreferences(target_roles=["software engineer"]))
 
     assert [job.title for job in result.jobs] == ["Software Developer"]
+
+
+def test_duplicate_provider_results_are_collapsed():
+    payload = {
+        "jobs": [
+            {
+                "id": 2,
+                "title": "Software Developer",
+                "company_name": "Tech Co",
+                "description": "Build customer applications.",
+                "url": "https://jobs.example/developer",
+                "publication_date": "2026-08-01",
+            }
+        ]
+    }
+    search = LiveJobSearch(LiveSearchConfig(enable_remotive=True), fetch_json=lambda *_args: payload)
+
+    result = search.broad_search(
+        CandidatePreferences(target_roles=["software engineer", "software developer"])
+    )
+
+    assert len(result.jobs) == 1

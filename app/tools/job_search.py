@@ -17,6 +17,9 @@ SKILL_TERMS = [
     "C++",
     "SQL",
     "Java",
+    "Go",
+    "Golang",
+    "Rust",
     "TypeScript",
     "PyTorch",
     "TensorFlow",
@@ -29,6 +32,7 @@ SKILL_TERMS = [
     "PostgreSQL",
     "AWS",
     "Docker",
+    "Linux",
     "Kubernetes",
     "Spark",
     "Machine Learning",
@@ -99,11 +103,18 @@ def enrich_job_skills(job: JobResult) -> JobResult:
         job.required_skills = found[:4]
     if not job.preferred_skills:
         job.preferred_skills = [skill for skill in found[4:8] if skill not in job.required_skills]
+    if not job.eligibility_requirements:
+        lowered = text.lower()
+        if re.search(r"\b(?:australian citizenship|australian citizen)\b", lowered):
+            job.eligibility_requirements.append("Australian citizenship required")
+        elif re.search(r"\b(?:permanent resident|permanent residency)\b", lowered):
+            job.eligibility_requirements.append("Australian permanent residency or citizenship required")
     return job
 
 
 def validate_job(job: JobResult, preferences: CandidatePreferences, today: date | None = None) -> JobResult:
     today = today or date.today()
+    job = enrich_job_skills(job)
     reasons: list[str] = []
     text = f"{job.title} {job.description} {job.experience_required}".lower()
     level_text = f"{job.title} {job.experience_required}".lower()
@@ -145,7 +156,7 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     else:
         job.status = JobStatus.VALIDATED
         job.rejection_reasons = []
-    return enrich_job_skills(job)
+    return job
 
 
 def _parse_date(value: str | None) -> date | None:

@@ -79,3 +79,22 @@ def test_job_validation_enforces_location_and_safe_application_url():
 
     assert "Location does not match preferences." in location_result.rejection_reasons
     assert "Application URL is not a valid HTTP(S) link." in url_result.rejection_reasons
+
+
+def test_live_description_citizenship_requirement_is_enforced():
+    preferences = CandidatePreferences(
+        experience_levels=["graduate"],
+        locations=["Sydney"],
+        work_rights="Australian unrestricted work rights",
+    )
+    job = load_jobs_from_json("sample_data/jobs/jobs.json")[0].model_copy(
+        update={
+            "eligibility_requirements": [],
+            "description": "Graduate engineering role. Applicants must be an Australian citizen.",
+        }
+    )
+
+    checked = validate_job(job, preferences, today=__import__("datetime").date(2026, 8, 1))
+
+    assert checked.status == "rejected"
+    assert "Requires Australian citizenship." in checked.rejection_reasons

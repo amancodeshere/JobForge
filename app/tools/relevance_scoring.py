@@ -20,6 +20,41 @@ WEIGHTS = {
     "freshness": 0.05,
 }
 
+DOMAIN_TERMS = {
+    "ai",
+    "api",
+    "backend",
+    "cloud",
+    "computer",
+    "containers",
+    "data",
+    "database",
+    "embedded",
+    "frontend",
+    "graphics",
+    "java",
+    "javascript",
+    "linux",
+    "learning",
+    "machine",
+    "model",
+    "opencv",
+    "postgresql",
+    "python",
+    "robotics",
+    "ros2",
+    "rust",
+    "sql",
+    "typescript",
+    "vision",
+    "web",
+    "yolo",
+    "go",
+    "golang",
+    "pytorch",
+    "fastapi",
+}
+
 
 def calculate_relevance_score(
     profile: CandidateProfile,
@@ -95,8 +130,13 @@ def _project_similarity(job: JobResult, profile: CandidateProfile) -> int:
         return 45
     job_text = f"{job.title} {job.description}".lower()
     project_text = " ".join([project.name + " " + project.description + " " + " ".join(project.technologies) for project in profile.projects]).lower()
-    terms = set(job_text.split()) & set(project_text.split())
-    return min(100, 40 + len(terms) * 8)
+    job_terms = _domain_tokens(job_text)
+    project_terms = _domain_tokens(project_text)
+    if not job_terms:
+        return 45
+    overlap = job_terms & project_terms
+    coverage = len(overlap) / len(job_terms)
+    return round(20 + coverage * 80)
 
 
 def _eligibility_score(job: JobResult, preferences: CandidatePreferences) -> int:
@@ -134,3 +174,13 @@ def _parse_date(value: str | None) -> date | None:
 
 def _similar(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
+
+
+def _domain_tokens(value: str) -> set[str]:
+    import re
+
+    return {
+        token
+        for token in re.findall(r"[a-z0-9+#.]{2,}", value.lower())
+        if token in DOMAIN_TERMS
+    }

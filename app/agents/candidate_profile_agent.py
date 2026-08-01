@@ -15,9 +15,9 @@ from app.tools.document_parser import extract_text
 
 
 SKILL_CATALOG = {
-    "languages": ["Python", "C++", "SQL", "Java", "TypeScript", "JavaScript"],
+    "languages": ["Python", "C++", "SQL", "Java", "Go", "Golang", "Rust", "TypeScript", "JavaScript"],
     "machine_learning": ["PyTorch", "TensorFlow", "Transformers", "YOLO", "Machine Learning"],
-    "software": ["Next.js", "FastAPI", "PostgreSQL", "React", "Docker", "AWS"],
+    "software": ["Next.js", "FastAPI", "PostgreSQL", "React", "Docker", "Linux", "AWS"],
     "robotics": ["ROS2", "OpenCV", "Computer Vision"],
     "data": ["Pandas", "NumPy", "T-SQL", "Power BI"],
 }

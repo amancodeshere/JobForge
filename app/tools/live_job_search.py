@@ -28,6 +28,9 @@ class CompanyBoard:
     token: str
 
 
+DEFAULT_GREENHOUSE_BOARDS = (CompanyBoard("Canonical", "canonical"),)
+
+
 @dataclass(frozen=True)
 class LiveSearchConfig:
     adzuna_app_id: str = ""
@@ -46,7 +49,11 @@ class LiveSearchConfig:
             adzuna_app_key=os.getenv("ADZUNA_APP_KEY", "").strip(),
             adzuna_country=os.getenv("ADZUNA_COUNTRY", "au").strip().lower() or "au",
             enable_remotive=_env_flag("JOBFORGE_ENABLE_REMOTIVE", True),
-            greenhouse_boards=tuple(_parse_company_boards(os.getenv("JOBFORGE_GREENHOUSE_BOARDS", ""))),
+            greenhouse_boards=tuple(
+                _parse_company_boards(os.environ["JOBFORGE_GREENHOUSE_BOARDS"])
+                if "JOBFORGE_GREENHOUSE_BOARDS" in os.environ
+                else DEFAULT_GREENHOUSE_BOARDS
+            ),
             lever_sites=tuple(_parse_company_boards(os.getenv("JOBFORGE_LEVER_SITES", ""))),
             request_timeout=_env_float("JOBFORGE_SEARCH_TIMEOUT", 12.0, minimum=1.0, maximum=30.0),
             results_per_source=_env_int("JOBFORGE_RESULTS_PER_SOURCE", 50, minimum=1, maximum=100),
@@ -83,6 +90,7 @@ class LiveJobSearch:
         if self.config.enable_remotive:
             outcome.sources_attempted.append("remotive")
             self._capture(outcome, "remotive", lambda: self._search_remotive(preferences, queries))
+        outcome.jobs = _unique_jobs(outcome.jobs)
         return outcome
 
     def targeted_search(self, profile: CandidateProfile) -> SearchOutcome:
@@ -95,6 +103,7 @@ class LiveJobSearch:
             source = f"lever:{board.token}"
             outcome.sources_attempted.append(source)
             self._capture(outcome, source, lambda board=board: self._search_lever(board, profile))
+        outcome.jobs = _unique_jobs(outcome.jobs)
         return outcome
 
     def _capture(self, outcome: SearchOutcome, source: str, operation: Callable[[], list[JobResult]]) -> None:
@@ -153,7 +162,7 @@ class LiveJobSearch:
         if not isinstance(payload, dict):
             raise LiveSearchError("unexpected response shape")
         jobs = [_greenhouse_job(item, board) for item in payload.get("jobs", [])]
-        return [job for job in jobs if job and _is_relevant_to_profile(job, profile)]
+        return [job for job in jobs if job and _is_relevant_to_profile(job, profile)][: self.config.results_per_source]
 
     def _search_lever(self, board: CompanyBoard, profile: CandidateProfile) -> list[JobResult]:
         url = f"https://api.lever.co/v0/postings/{board.token}?mode=json&limit={self.config.results_per_source}"
@@ -161,7 +170,7 @@ class LiveJobSearch:
         if not isinstance(payload, list):
             raise LiveSearchError("unexpected response shape")
         jobs = [_lever_job(item, board) for item in payload]
-        return [job for job in jobs if job and _is_relevant_to_profile(job, profile)]
+        return [job for job in jobs if job and _is_relevant_to_profile(job, profile)][: self.config.results_per_source]
 
 
 def _request_json(url: str, timeout: float) -> Any:
@@ -224,7 +233,7 @@ def _greenhouse_job(item: Any, board: CompanyBoard) -> JobResult | None:
         title=item.get("title"),
         company=board.company,
         location=_nested_text(item, "location", "name") or "Unspecified",
-        employment_type=_employment_type(_plain_text(item.get("content"))),
+        employment_type="Full-time",
         description=_plain_text(item.get("content")),
         source=f"greenhouse:{board.token}",
         application_url=item.get("absolute_url"),
@@ -389,6 +398,17 @@ def _unique_text(values: Iterable[str]) -> list[str]:
         if cleaned and key not in seen:
             seen.add(key)
             unique.append(cleaned)
+    return unique
+
+
+def _unique_jobs(jobs: Iterable[JobResult]) -> list[JobResult]:
+    unique: list[JobResult] = []
+    seen: set[str] = set()
+    for job in jobs:
+        key = f"{job.source}:{job.job_id}"
+        if key not in seen:
+            seen.add(key)
+            unique.append(job)
     return unique
 
 
