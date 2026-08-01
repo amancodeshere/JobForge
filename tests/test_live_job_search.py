@@ -102,13 +102,21 @@ def test_serpapi_falls_back_to_first_valid_apply_option():
     assert result.jobs[0].application_url == "https://www.seek.com.au/job/123"
 
 
-def test_serpapi_australia_discovers_only_direct_seek_job_pages():
+def test_serpapi_australia_uses_one_search_for_credible_job_boards():
+    requested_urls = []
+
     def fetch_json(url: str, _timeout: float):
+        requested_urls.append(url)
         assert "engine=google" in url
         assert "google_domain=google.com.au" in url
         assert "gl=au" in url
         assert "location=Sydney" in url
         assert "site%3Aseek.com.au%2Fjob%2F" in url
+        assert "site%3Aau.indeed.com%2Fviewjob" in url
+        assert "site%3Alinkedin.com%2Fjobs%2Fview" in url
+        assert "site%3Aglassdoor.com.au%2Fjob-listing%2F" in url
+        assert "site%3Aworkforceaustralia.gov.au%2Findividuals%2Fjobs%2Fdetails%2F" in url
+        assert "tbs=qdr%3Am" in url
         return {
             "organic_results": [
                 {
@@ -116,6 +124,26 @@ def test_serpapi_australia_discovers_only_direct_seek_job_pages():
                     "link": "https://www.seek.com.au/job/93654273?type=standard",
                     "snippet": "A full-time graduate role building Python services in Sydney.",
                     "date": "2 days ago",
+                },
+                {
+                    "title": "Software Engineer - Sydney NSW - Indeed.com",
+                    "link": "https://au.indeed.com/viewjob?jk=a33d9cc3955df141",
+                    "snippet": "Full-time software engineering role in Sydney.",
+                },
+                {
+                    "title": "Telstra hiring Software Engineer in Sydney, New South Wales | LinkedIn",
+                    "link": "https://au.linkedin.com/jobs/view/software-engineer-at-telstra-4356047473",
+                    "snippet": "Telstra is hiring a software engineer in Sydney.",
+                },
+                {
+                    "title": "FinXL hiring Full-Stack Software Engineer Job in Sydney | Glassdoor",
+                    "link": "https://www.glassdoor.com.au/job-listing/full-stack-software-engineer-finxl-JV.htm?jl=1010189872693",
+                    "snippet": "Full-stack software engineering role in Sydney.",
+                },
+                {
+                    "title": "Software Engineer | Workforce Australia",
+                    "link": "https://www.workforceaustralia.gov.au/individuals/jobs/details/2350909696",
+                    "snippet": "Australian Government job listing for a software engineer.",
                 },
                 {
                     "title": "Software Engineer - Other board",
@@ -131,16 +159,20 @@ def test_serpapi_australia_discovers_only_direct_seek_job_pages():
         }
 
     search = LiveJobSearch(
-        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        LiveSearchConfig(serpapi_api_key="key", max_search_queries=2),
         fetch_json=fetch_json,
     )
     result = search.broad_search(
-        CandidatePreferences(target_roles=["software engineer"], locations=["Sydney"])
+        CandidatePreferences(
+            target_roles=["software engineer", "full stack engineer"],
+            locations=["Sydney"],
+        )
     )
 
-    assert result.sources_attempted == ["serpapi-seek"]
-    assert result.source_counts == {"serpapi-seek": 1}
-    assert len(result.jobs) == 1
+    assert len(requested_urls) == 1
+    assert result.sources_attempted == ["serpapi-multiboard"]
+    assert result.source_counts == {"serpapi-multiboard": 5}
+    assert len(result.jobs) == 5
     assert result.jobs[0].job_id == "seek-93654273"
     assert result.jobs[0].title == "Graduate Software Engineer"
     assert result.jobs[0].company == "Example Labs"
@@ -148,6 +180,13 @@ def test_serpapi_australia_discovers_only_direct_seek_job_pages():
     assert result.jobs[0].location == "Sydney"
     assert result.jobs[0].employment_type == "Full-time"
     assert result.jobs[0].date_posted is not None
+    assert {job.source for job in result.jobs} == {
+        "seek",
+        "indeed",
+        "linkedin",
+        "glassdoor",
+        "workforce-australia",
+    }
 
 
 def test_targeted_sources_filter_irrelevant_jobs_and_capture_failures():
