@@ -7,7 +7,7 @@ JobForge uses structured, documented job endpoints instead of general-purpose br
 | Capability | Provider | Authentication | Role |
 | --- | --- | --- | --- |
 | Broad Australian search | Adzuna | App ID and key | Searches roles and locations supplied by the candidate |
-| Primary Australian board | SerpApi Google Search + SEEK index | API key | Discovers direct public SEEK job URLs through Google's Australian index |
+| Australian multi-board discovery | SerpApi Google Search | API key | Uses one request to discover direct listings across credible Australian boards and ATS sites |
 | Cross-board discovery outside Australia | SerpApi Google Jobs | API key | Returns structured results where the Google Jobs country is supported |
 | Targeted company search | Greenhouse Job Board API | None for public GETs | Reads configured company career boards |
 | Targeted company search | Lever Postings API | None for public postings | Reads configured company career sites |
@@ -23,9 +23,13 @@ Agent Reach is installed for interactive research across web pages, LinkedIn, Gi
 
 JobForge therefore gives its deployed search agents narrow native tools with typed outputs. Agent Reach can be used outside the deployed request path to discover new company-board tokens and research sources, but application-ready records still require normalization and validation.
 
-For `SERPAPI_COUNTRY=au`, JobForge uses SerpApi's regular Google Search engine with `google.com.au`, an Australian location, and a `site:seek.com.au/job/` query. It accepts only direct numeric SEEK job paths and never requests the listing page from JobForge's backend. This is an indexed-discovery workaround: it gives SEEK priority and direct application links, but freshness and recall remain limited by Google's index.
+For `SERPAPI_COUNTRY=au`, JobForge uses SerpApi's regular Google Search engine with `google.com.au`. All selected role phrases, candidate locations, and supported site scopes are combined into one query, limited to results indexed during the last month. One live workflow therefore spends at most one SerpApi search even when several roles and sites are involved.
 
-JobForge deliberately does not scrape SEEK. SEEK's published terms prohibit data mining, robots, and screen scraping without prior written approval, while its approved developer API is designed around recruitment-software job posting and application workflows rather than unrestricted candidate job search. An academic use case does not remove those restrictions. The long-term first-party route is to request written approval or an appropriate SEEK partnership; the indexed provider keeps the current deployment functional without an anti-bot bypass.
+The allowlist covers SEEK, Indeed, LinkedIn, Glassdoor, Workforce Australia, APS Jobs, I Work for NSW, Careers Victoria, Queensland Smart Jobs, EthicalJobs, Jora, and direct listings hosted by Greenhouse, Lever, Workday, Ashby, SmartRecruiters, and Workable. Results must match a source-specific direct-listing path. Search pages, unknown hosts, host-suffix spoofing, and malformed URLs are discarded before job validation and ranking.
+
+The adapter uses only the title, snippet, date, and link returned by SerpApi. It never requests the matched board page from JobForge's backend. This is indexed discovery rather than first-party coverage: source freshness, distribution, and recall remain dependent on Google's index and ranking.
+
+JobForge deliberately does not scrape job boards. SEEK's published terms prohibit data mining, robots, and screen scraping without prior written approval, while its approved developer API is designed around recruitment-software job posting and application workflows rather than unrestricted candidate job search. An academic use case does not remove those restrictions. The long-term first-party route is to request written approval or appropriate partnerships; the indexed provider keeps the current deployment functional without an anti-bot bypass.
 
 For non-Australian countries, the existing SerpApi Google Jobs adapter remains available and preserves the observed publisher and application link. The configured country must appear in SerpApi's current Google Jobs country list.
 
@@ -48,6 +52,8 @@ JOBFORGE_SEARCH_WORKERS=6
 ```
 
 Company boards use comma-separated `Company name=token` entries. Setting a board variable to an empty value disables that provider. If `JOBFORGE_GREENHOUSE_BOARDS` is absent, JobForge uses Canonical's public board as a zero-key live source.
+
+For Australian SerpApi searches, `JOBFORGE_MAX_SEARCH_QUERIES` is the maximum number of role phrases placed in the single multi-board query. Increasing it does not increase the number of SerpApi requests per workflow. SerpApi caching remains enabled; its documentation states that identical cached searches within one hour are free and do not count toward the monthly allowance.
 
 Remotive is disabled by default. Its public API requires attribution and advises no more than four requests per day, which is unsuitable for an uncached multi-user deployment. If it is enabled for a low-volume instance, JobForge preserves the Remotive listing URL and displays Remotive as the source.
 
