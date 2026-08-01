@@ -86,3 +86,87 @@ def test_malformed_live_records_are_skipped():
     result = search.broad_search(CandidatePreferences(target_roles=["engineer"]))
 
     assert result.jobs == []
+
+
+def test_broad_search_filters_provider_false_positives():
+    search = LiveJobSearch(
+        LiveSearchConfig(enable_remotive=True),
+        fetch_json=lambda *_args: {
+            "jobs": [
+                {
+                    "id": 1,
+                    "title": "Patient Care Specialist",
+                    "company_name": "Health Co",
+                    "description": "Coordinate clinical patient services.",
+                    "url": "https://jobs.example/health",
+                    "job_type": "full_time",
+                    "publication_date": "2026-08-01",
+                },
+                {
+                    "id": 2,
+                    "title": "Machine Learning Engineer",
+                    "company_name": "AI Co",
+                    "description": "Build Python model services.",
+                    "url": "https://jobs.example/ml",
+                    "job_type": "full_time",
+                    "publication_date": "2026-08-01",
+                },
+            ]
+        },
+    )
+
+    result = search.broad_search(CandidatePreferences(target_roles=["machine learning engineer"]))
+
+    assert [job.title for job in result.jobs] == ["Machine Learning Engineer"]
+
+
+def test_short_ai_token_does_not_match_inside_unrelated_words():
+    search = LiveJobSearch(
+        LiveSearchConfig(enable_remotive=True),
+        fetch_json=lambda *_args: {
+            "jobs": [
+                {
+                    "id": 1,
+                    "title": "Patient Care Specialist",
+                    "company_name": "Health Co",
+                    "description": "Maintain patient services.",
+                    "url": "https://jobs.example/health",
+                    "publication_date": "2026-08-01",
+                }
+            ]
+        },
+    )
+
+    result = search.broad_search(CandidatePreferences(target_roles=["AI engineer"]))
+
+    assert result.jobs == []
+
+
+def test_role_matching_requires_a_relevant_job_title():
+    search = LiveJobSearch(
+        LiveSearchConfig(enable_remotive=True),
+        fetch_json=lambda *_args: {
+            "jobs": [
+                {
+                    "id": 1,
+                    "title": "Remote Office Assistant",
+                    "company_name": "Office Co",
+                    "description": "Support a software engineering leadership team.",
+                    "url": "https://jobs.example/assistant",
+                    "publication_date": "2026-08-01",
+                },
+                {
+                    "id": 2,
+                    "title": "Software Developer",
+                    "company_name": "Tech Co",
+                    "description": "Build customer applications.",
+                    "url": "https://jobs.example/developer",
+                    "publication_date": "2026-08-01",
+                },
+            ]
+        },
+    )
+
+    result = search.broad_search(CandidatePreferences(target_roles=["software engineer"]))
+
+    assert [job.title for job in result.jobs] == ["Software Developer"]

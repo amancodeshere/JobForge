@@ -126,7 +126,7 @@ class LiveJobSearch:
                 raise LiveSearchError("unexpected response shape")
             for item in payload.get("results", []):
                 job = _adzuna_job(item)
-                if job:
+                if job and _is_relevant_to_preferences(job, preferences):
                     jobs.append(job)
         return jobs
 
@@ -143,7 +143,7 @@ class LiveJobSearch:
                 raise LiveSearchError("unexpected response shape")
             for item in payload.get("jobs", []):
                 job = _remotive_job(item)
-                if job:
+                if job and _is_relevant_to_preferences(job, preferences):
                     jobs.append(job)
         return jobs
 
@@ -289,10 +289,40 @@ def _build_job(
 
 
 def _is_relevant_to_profile(job: JobResult, profile: CandidateProfile) -> bool:
-    terms = [*profile.target_roles, *profile.career_themes, *list(profile.supported_skill_names())]
-    tokens = {token for value in terms for token in re.findall(r"[a-z0-9+#.]{2,}", value.lower())}
-    haystack = f"{job.title} {job.description}".lower()
-    return not tokens or any(token in haystack for token in tokens)
+    roles = [*profile.target_roles, *profile.career_themes]
+    if roles:
+        return any(_role_matches_title(role, job.title) for role in roles)
+    skills = profile.supported_skill_names()
+    title_tokens = set(re.findall(r"[a-z0-9+#.]{2,}", job.title.lower()))
+    return not skills or bool(skills & title_tokens)
+
+
+def _is_relevant_to_preferences(job: JobResult, preferences: CandidatePreferences) -> bool:
+    values = preferences.target_roles or preferences.career_interests
+    return not values or any(_role_matches_title(value, job.title) for value in values)
+
+
+def _role_matches_title(role: str, title: str) -> bool:
+    role_tokens = {_normalize_role_token(token) for token in re.findall(r"[a-z0-9+#.]{2,}", role.lower())}
+    title_tokens = {_normalize_role_token(token) for token in re.findall(r"[a-z0-9+#.]{2,}", title.lower())}
+    levels = {"graduate", "junior", "entry", "level", "intern", "internship", "associate", "senior"}
+    occupations = {"engineer", "science", "analyst"}
+    distinctive = role_tokens - levels - occupations
+    if not distinctive or not distinctive.issubset(title_tokens):
+        return False
+    requested_occupation = bool(role_tokens & occupations)
+    return not requested_occupation or bool(title_tokens & occupations)
+
+
+def _normalize_role_token(token: str) -> str:
+    aliases = {
+        "engineering": "engineer",
+        "developer": "engineer",
+        "development": "engineer",
+        "scientist": "science",
+        "analytics": "analyst",
+    }
+    return aliases.get(token, token)
 
 
 def _parse_company_boards(value: str) -> list[CompanyBoard]:

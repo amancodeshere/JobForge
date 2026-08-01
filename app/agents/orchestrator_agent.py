@@ -21,17 +21,23 @@ from app.schemas.candidate import CandidatePreferences
 from app.schemas.job import JobResult, JobStatus
 from app.tools.duplicate_detection import deduplicate_jobs
 from app.tools.job_search import validate_job
+from app.tools.live_job_search import LiveJobSearch
 from app.tools.relevance_scoring import calculate_relevance_score
 
 
 class OrchestratorAgent:
     name = "orchestrator_quality_controller"
 
-    def __init__(self, sample_jobs_path: str = "sample_data/jobs/jobs.json") -> None:
+    def __init__(
+        self,
+        sample_jobs_path: str = "sample_data/jobs/jobs.json",
+        live_search: LiveJobSearch | None = None,
+    ) -> None:
         self.sample_jobs_path = sample_jobs_path
+        self.live_search = live_search or LiveJobSearch()
         self.profile_agent = CandidateProfileAgent()
-        self.broad_agent = BroadSearchAgent(sample_jobs_path)
-        self.targeted_agent = TargetedSearchAgent(sample_jobs_path)
+        self.broad_agent = BroadSearchAgent(sample_jobs_path, self.live_search)
+        self.targeted_agent = TargetedSearchAgent(sample_jobs_path, self.live_search)
         self.tailor_agent = ApplicationTailorAgent()
         self.dashboard_agent = DashboardAgent()
 
@@ -41,6 +47,8 @@ class OrchestratorAgent:
         preferences: CandidatePreferences,
         output_path: str,
         top_n: int = 5,
+        use_live_search: bool = False,
+        sample_fallback: bool = True,
     ) -> WorkflowResult:
         health: List[AgentHealth] = []
         checks = []
@@ -57,28 +65,47 @@ class OrchestratorAgent:
             )
         )
 
-        broad_jobs = self.broad_agent.run(preferences)
+        broad_jobs = self.broad_agent.run(preferences, use_live=use_live_search)
         health.append(
             AgentHealth(
                 agent=self.broad_agent.name,
                 status="completed",
                 tool_calls=self.broad_agent.tool_calls,
                 valid_results=len(broad_jobs),
+                execution_errors=len(self.broad_agent.last_outcome.source_errors),
+                notes=self.broad_agent.last_outcome.source_errors[:8],
             )
         )
 
-        targeted_jobs = self.targeted_agent.run(profile)
+        targeted_jobs = self.targeted_agent.run(profile, use_live=use_live_search)
         health.append(
             AgentHealth(
                 agent=self.targeted_agent.name,
                 status="completed",
                 tool_calls=self.targeted_agent.tool_calls,
                 valid_results=len(targeted_jobs),
+                execution_errors=len(self.targeted_agent.last_outcome.source_errors),
+                notes=self.targeted_agent.last_outcome.source_errors[:8],
             )
         )
 
         discovered = deduplicate_jobs([*broad_jobs, *targeted_jobs])
-        validation_date = _validation_date(discovered, self.sample_jobs_path)
+        search_mode = "live" if use_live_search else "sample"
+        search_sources = _unique_strings(
+            [*self.broad_agent.last_outcome.sources_attempted, *self.targeted_agent.last_outcome.sources_attempted]
+        )
+        search_warnings = [
+            *self.broad_agent.last_outcome.source_errors,
+            *self.targeted_agent.last_outcome.source_errors,
+        ]
+        if use_live_search and not discovered and sample_fallback:
+            search_warnings.append("No live jobs were returned; using the bundled sample dataset.")
+            broad_jobs = self.broad_agent.run(preferences, use_live=False)
+            targeted_jobs = self.targeted_agent.run(profile, use_live=False)
+            discovered = deduplicate_jobs([*broad_jobs, *targeted_jobs])
+            search_mode = "sample_fallback"
+            search_sources.append("sample")
+        validation_date = date.today() if search_mode == "live" else _validation_date(discovered, self.sample_jobs_path)
         validated_jobs, rejected_jobs = _validate_jobs(discovered, preferences, validation_date)
         job_pool_check = validate_job_pool([*validated_jobs, *rejected_jobs])
         checks.append(job_pool_check)
@@ -120,6 +147,9 @@ class OrchestratorAgent:
 
         result = WorkflowResult(
             candidate_profile=profile,
+            search_mode=search_mode,
+            search_sources=search_sources,
+            search_warnings=search_warnings,
             discovered_count=len(discovered),
             validated_count=len(validated_jobs),
             recommended_count=len(applications),
@@ -190,3 +220,7 @@ def _rejection_notes(jobs: list[JobResult]) -> list[str]:
         f"{job.job_id}: {', '.join(job.rejection_reasons)}"
         for job in jobs[:8]
     ]
+
+
+def _unique_strings(values: list[str]) -> list[str]:
+    return list(dict.fromkeys(value for value in values if value))

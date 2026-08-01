@@ -25,6 +25,8 @@ def run(
     jobs: str = typer.Option("sample_data/jobs/jobs.json", "--jobs", help="Path to sample/fallback jobs JSON."),
     output: str = typer.Option("sample_data/expected_outputs/latest_run.json", "--output", help="Where to write dashboard payload JSON."),
     top_n: int = typer.Option(5, "--top-n", help="Number of application packages to produce."),
+    live: bool = typer.Option(False, "--live/--sample", help="Search live providers instead of only the sample dataset."),
+    sample_fallback: bool = typer.Option(True, "--sample-fallback/--no-sample-fallback", help="Use sample jobs if every live source returns no jobs."),
 ) -> None:
     prefs = CandidatePreferences.model_validate(json.loads(Path(preferences).read_text(encoding="utf-8")))
     result = OrchestratorAgent(sample_jobs_path=jobs).run(
@@ -32,6 +34,8 @@ def run(
         preferences=prefs,
         output_path=output,
         top_n=top_n,
+        use_live_search=live,
+        sample_fallback=sample_fallback,
     )
     _print_result(result, output)
 
@@ -70,10 +74,13 @@ def doctor(
 
 def _print_result(result: WorkflowResult, output: str) -> None:
     console.print(
-        f"\n[bold]{result.discovered_count}[/bold] roles discovered | "
+        f"\nSearch: [bold]{result.search_mode}[/bold] ({', '.join(result.search_sources) or 'none'}) | "
+        f"[bold]{result.discovered_count}[/bold] roles discovered | "
         f"[bold]{result.validated_count}[/bold] roles passed validation | "
         f"[bold]{result.recommended_count}[/bold] recommended applications\n"
     )
+    for warning in result.search_warnings:
+        console.print(f"[yellow]Search warning:[/yellow] {warning}")
     table = Table(title="Recommended Jobs")
     table.add_column("Job")
     table.add_column("Company")

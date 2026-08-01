@@ -85,6 +85,9 @@ class ValidationCheck(BaseModel):
 
 class WorkflowResult(BaseModel):
     candidate_profile: CandidateProfile
+    search_mode: str = "sample"
+    search_sources: List[str] = Field(default_factory=list)
+    search_warnings: List[str] = Field(default_factory=list)
     discovered_count: int
     validated_count: int
     recommended_count: int

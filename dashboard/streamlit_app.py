@@ -390,6 +390,8 @@ with st.sidebar:
     uploaded_cv = st.file_uploader("CV", type=["pdf", "docx", "txt", "md"])
     uploaded_jobs = st.file_uploader("Jobs JSON", type=["json"])
     use_sample_cv = st.checkbox("Use sample CV", value=True)
+    use_live_search = st.checkbox("Search live jobs", value=True)
+    sample_fallback = st.checkbox("Use sample jobs if live search is unavailable", value=True)
     interests = st.text_area(
         "Career interests",
         "machine learning engineering\ndata science\nAI engineering\nsoftware engineering",
@@ -479,6 +481,8 @@ if run_clicked:
                     preferences=_preferences_from_form(),
                     output_path=str(temp_dir / "latest_run.json"),
                     top_n=int(top_n),
+                    use_live_search=use_live_search,
+                    sample_fallback=sample_fallback,
                 )
             st.session_state["workflow_result"] = result
         except Exception as exc:
@@ -511,6 +515,10 @@ metrics = st.columns(3)
 metrics[0].metric("Roles discovered", result.discovered_count)
 metrics[1].metric("Validated", result.validated_count)
 metrics[2].metric("Recommended", result.recommended_count)
+
+st.caption(f"Search mode: {result.search_mode} · Sources: {', '.join(result.search_sources) or 'none'}")
+for warning in result.search_warnings:
+    st.warning(warning)
 
 st.markdown(
     """
