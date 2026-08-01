@@ -32,18 +32,25 @@ def _inject_theme() -> None:
         """
         <style>
         :root {
-            --jf-ink: #18212f;
-            --jf-muted: #5d6878;
-            --jf-teal: #0f9f8f;
-            --jf-coral: #f05f57;
-            --jf-amber: #f2a93b;
-            --jf-blue: #4b6fff;
-            --jf-surface: #ffffff;
-            --jf-line: #dfe7ef;
+            --jf-bg: #0b1020;
+            --jf-bg-soft: #111827;
+            --jf-sidebar: #07111f;
+            --jf-surface: #141c2f;
+            --jf-surface-2: #19243a;
+            --jf-line: #2b3a55;
+            --jf-ink: #f6f8ff;
+            --jf-muted: #aebbd2;
+            --jf-teal: #2dd4bf;
+            --jf-blue: #60a5fa;
+            --jf-violet: #a78bfa;
+            --jf-amber: #fbbf24;
+            --jf-danger: #fb7185;
         }
         .stApp {
             background:
-                linear-gradient(180deg, #f7fbff 0%, #fbfcf7 42%, #fff8f5 100%);
+                radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 28rem),
+                radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 26rem),
+                linear-gradient(180deg, var(--jf-bg) 0%, #0f172a 52%, #121826 100%);
             color: var(--jf-ink);
         }
         .block-container {
@@ -51,20 +58,28 @@ def _inject_theme() -> None:
             max-width: 1180px;
         }
         [data-testid="stSidebar"] {
-            background: #142033;
+            background: linear-gradient(180deg, var(--jf-sidebar) 0%, #0d1b2f 100%);
+            border-right: 1px solid var(--jf-line);
         }
         [data-testid="stSidebar"] * {
-            color: #f6f8fb;
+            color: var(--jf-ink);
         }
         [data-testid="stSidebar"] input,
         [data-testid="stSidebar"] textarea,
         [data-testid="stSidebar"] [data-baseweb="select"] * {
+            color: #111827;
+        }
+        h1, h2, h3, h4, h5, h6, p, label, span, div {
             color: var(--jf-ink);
         }
         .jf-title {
-            border-left: 6px solid var(--jf-coral);
-            padding-left: 1rem;
-            margin-bottom: 1rem;
+            border: 1px solid var(--jf-line);
+            border-left: 6px solid var(--jf-teal);
+            background: linear-gradient(135deg, rgba(20, 28, 47, 0.96), rgba(25, 36, 58, 0.88));
+            border-radius: 8px;
+            padding: 1.1rem 1.25rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
         }
         .jf-title h1 {
             font-size: 2.6rem;
@@ -76,40 +91,66 @@ def _inject_theme() -> None:
             color: var(--jf-muted);
             margin: 0.2rem 0 0;
         }
+        .stAlert {
+            background: var(--jf-surface);
+            border: 1px solid var(--jf-line);
+            color: var(--jf-ink);
+        }
         div[data-testid="stMetric"] {
             background: var(--jf-surface);
             border: 1px solid var(--jf-line);
-            border-top: 4px solid var(--jf-teal);
+            border-top: 4px solid var(--jf-blue);
             border-radius: 8px;
             padding: 0.9rem;
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+        }
+        div[data-testid="stMetric"] label,
+        div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+            color: var(--jf-ink);
         }
         div.stButton > button,
         div.stDownloadButton > button,
         a[data-testid="stLinkButton"] {
             border-radius: 8px;
-            border: 1px solid #0f9f8f;
-            background: #0f9f8f;
-            color: white;
+            border: 1px solid var(--jf-teal);
+            background: linear-gradient(135deg, #0f766e, #2563eb);
+            color: #ffffff;
             font-weight: 650;
         }
         div.stButton > button:hover,
         div.stDownloadButton > button:hover,
         a[data-testid="stLinkButton"]:hover {
-            border-color: #f05f57;
-            background: #f05f57;
+            border-color: var(--jf-amber);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             color: white;
         }
         div[data-testid="stDataFrame"] {
             border: 1px solid var(--jf-line);
             border-radius: 8px;
             overflow: hidden;
+            background: var(--jf-surface);
+        }
+        [data-testid="stMarkdownContainer"] a {
+            color: var(--jf-teal);
         }
         .stTabs [data-baseweb="tab-list"] {
             gap: 0.4rem;
         }
         .stTabs [data-baseweb="tab"] {
             border-radius: 8px 8px 0 0;
-            background: #edf6f4;
+            background: var(--jf-surface-2);
+            color: var(--jf-ink);
+        }
+        .stTabs [aria-selected="true"] {
+            border-bottom: 3px solid var(--jf-teal);
+        }
+        .jf-link {
+            color: var(--jf-teal);
+            font-weight: 650;
+            text-decoration: none;
+        }
+        .jf-link:hover {
+            color: var(--jf-amber);
         }
         </style>
         """,
@@ -263,11 +304,18 @@ rows = [
         "Score": application.relevance_score,
         "Recommendation": application.recommendation.value.replace("_", " "),
         "Location": application.job.location,
-        "Generated by": application.generation_source,
+        "Verify": application.job.application_url,
     }
     for application in result.applications
 ]
-st.dataframe(rows, use_container_width=True, hide_index=True)
+st.dataframe(
+    rows,
+    use_container_width=True,
+    hide_index=True,
+    column_config={
+        "Verify": st.column_config.LinkColumn("Verify", display_text="Open"),
+    },
+)
 
 job_labels = [f"{app.job.title} - {app.job.company}" for app in result.applications]
 if job_labels:
