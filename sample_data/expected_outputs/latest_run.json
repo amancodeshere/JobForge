@@ -1,0 +1,1059 @@
+{
+  "candidate_profile": {
+    "candidate_id": "candidate-001",
+    "target_roles": [
+      "machine learning engineer",
+      "data scientist",
+      "AI engineer",
+      "software engineer"
+    ],
+    "locations": [
+      "Sydney",
+      "Remote Australia"
+    ],
+    "experience_level": "graduate",
+    "skills": [
+      {
+        "name": "C++",
+        "category": "languages",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-009"
+        ]
+      },
+      {
+        "name": "Java",
+        "category": "languages",
+        "evidence_type": "explicit",
+        "evidence_ids": [
+          "cv-004"
+        ]
+      },
+      {
+        "name": "Python",
+        "category": "languages",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-005",
+          "cv-008"
+        ]
+      },
+      {
+        "name": "SQL",
+        "category": "languages",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-008"
+        ]
+      },
+      {
+        "name": "TypeScript",
+        "category": "languages",
+        "evidence_type": "explicit",
+        "evidence_ids": [
+          "cv-004"
+        ]
+      },
+      {
+        "name": "Machine Learning",
+        "category": "machine_learning",
+        "evidence_type": "learning",
+        "evidence_ids": [
+          "cv-003",
+          "cv-006"
+        ]
+      },
+      {
+        "name": "PyTorch",
+        "category": "machine_learning",
+        "evidence_type": "learning",
+        "evidence_ids": [
+          "cv-004",
+          "cv-006"
+        ]
+      },
+      {
+        "name": "Transformers",
+        "category": "machine_learning",
+        "evidence_type": "learning",
+        "evidence_ids": [
+          "cv-004",
+          "cv-006"
+        ]
+      },
+      {
+        "name": "YOLO",
+        "category": "machine_learning",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-005"
+        ]
+      },
+      {
+        "name": "Computer Vision",
+        "category": "robotics",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-005"
+        ]
+      },
+      {
+        "name": "OpenCV",
+        "category": "robotics",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-005"
+        ]
+      },
+      {
+        "name": "ROS2",
+        "category": "robotics",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-009"
+        ]
+      },
+      {
+        "name": "FastAPI",
+        "category": "software",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-007"
+        ]
+      },
+      {
+        "name": "Next.js",
+        "category": "software",
+        "evidence_type": "inferred_from_project",
+        "evidence_ids": [
+          "cv-004",
+          "cv-007"
+        ]
+      },
+      {
+        "name": "PostgreSQL",
+        "category": "software",
+        "evidence_type": "explicit",
+        "evidence_ids": [
+          "cv-004"
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "name": "Bachelor of Engineering, Software Engineering, UNSW",
+        "description": "Bachelor of Engineering, Software Engineering, UNSW",
+        "technologies": [],
+        "evidence_ids": [
+          "cv-002"
+        ]
+      },
+      {
+        "name": "Graduate software engineer interested in machine learning, data",
+        "description": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
+        "technologies": [
+          "Machine Learning"
+        ],
+        "evidence_ids": [
+          "cv-003"
+        ]
+      },
+      {
+        "name": "Skills",
+        "description": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+        "technologies": [
+          "C++",
+          "FastAPI",
+          "Java",
+          "Next.js",
+          "PostgreSQL",
+          "PyTorch",
+          "Python",
+          "ROS2",
+          "SQL",
+          "Transformers",
+          "TypeScript",
+          "YOLO"
+        ],
+        "evidence_ids": [
+          "cv-004"
+        ]
+      },
+      {
+        "name": "sUNSWim Robotics project",
+        "description": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+        "technologies": [
+          "Computer Vision",
+          "OpenCV",
+          "Python",
+          "YOLO"
+        ],
+        "evidence_ids": [
+          "cv-005"
+        ]
+      },
+      {
+        "name": "Machine learning project",
+        "description": "Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+        "technologies": [
+          "Machine Learning",
+          "PyTorch",
+          "Transformers"
+        ],
+        "evidence_ids": [
+          "cv-006"
+        ]
+      },
+      {
+        "name": "Full-stack development project",
+        "description": "Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+        "technologies": [
+          "FastAPI",
+          "Next.js"
+        ],
+        "evidence_ids": [
+          "cv-007"
+        ]
+      },
+      {
+        "name": "Data analysis project",
+        "description": "Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+        "technologies": [
+          "Python",
+          "SQL"
+        ],
+        "evidence_ids": [
+          "cv-008"
+        ]
+      },
+      {
+        "name": "Robotics software project",
+        "description": "Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+        "technologies": [
+          "C++",
+          "ROS2"
+        ],
+        "evidence_ids": [
+          "cv-009"
+        ]
+      }
+    ],
+    "eligibility": {
+      "work_rights": "Australian unrestricted work rights"
+    },
+    "verified_evidence": [
+      {
+        "evidence_id": "cv-001",
+        "cv_section": "CV",
+        "original_text": "Aman Sharma",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-002",
+        "cv_section": "Education",
+        "original_text": "Bachelor of Engineering, Software Engineering, UNSW",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-003",
+        "cv_section": "Projects/Experience",
+        "original_text": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-004",
+        "cv_section": "Skills",
+        "original_text": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-005",
+        "cv_section": "Education",
+        "original_text": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-006",
+        "cv_section": "Projects/Experience",
+        "original_text": "Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-007",
+        "cv_section": "Projects/Experience",
+        "original_text": "Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-008",
+        "cv_section": "Projects/Experience",
+        "original_text": "Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+        "evidence_type": "explicit"
+      },
+      {
+        "evidence_id": "cv-009",
+        "cv_section": "Projects/Experience",
+        "original_text": "Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+        "evidence_type": "explicit"
+      }
+    ],
+    "career_themes": [
+      "ai engineer",
+      "ai engineering",
+      "computer vision",
+      "data science",
+      "data scientist",
+      "machine learning",
+      "machine learning engineer",
+      "machine learning engineering",
+      "software engineer",
+      "software engineering"
+    ],
+    "profile_gaps": [
+      "AWS",
+      "Kubernetes",
+      "Spark",
+      "Commercial ML experience"
+    ],
+    "source_cv": "sample_data/cvs/aman_sharma_cv.txt"
+  },
+  "discovered_count": 12,
+  "validated_count": 8,
+  "recommended_count": 5,
+  "applications": [
+    {
+      "job_id": "job-007",
+      "job": {
+        "job_id": "job-007",
+        "title": "Graduate Robotics Software Engineer",
+        "company": "Autonomy Works",
+        "location": "Sydney",
+        "employment_type": "Full-time",
+        "description": "Graduate robotics software role developing ROS2 and C++ modules with Python tooling. Preferred computer vision experience.",
+        "source": "sample-company-careers",
+        "application_url": "https://example.com/jobs/graduate-robotics-software",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-10",
+        "required_skills": [
+          "ROS2",
+          "C++",
+          "Python"
+        ],
+        "preferred_skills": [
+          "Computer Vision",
+          "OpenCV"
+        ],
+        "experience_required": "Graduate",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 98,
+      "score_breakdown": {
+        "overall_score": 98,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 100,
+          "experience_level": 100,
+          "career_interest": 100,
+          "project_similarity": 100,
+          "eligibility": 100,
+          "freshness": 68
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "Graduate Robotics Software Engineer at Autonomy Works in Sydney. The role emphasizes ROS2, C++, Python.",
+      "matching_evidence": [
+        {
+          "requirement": "ROS2",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-009"
+          ]
+        },
+        {
+          "requirement": "C++",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-009"
+          ]
+        },
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "Computer Vision",
+          "candidate_evidence": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        },
+        {
+          "requirement": "OpenCV",
+          "candidate_evidence": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        }
+      ],
+      "skill_gaps": [],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting Graduate Robotics Software Engineer roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied ROS2 in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Computer Vision in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied ROS2 in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied Computer Vision in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Autonomy Works hiring team,\n\nI am applying for the Graduate Robotics Software Engineer role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows ROS2 through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.. My CV shows C++ through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets..\n\nI would welcome the chance to contribute careful engineering work to Autonomy Works while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh ROS2",
+        "Refresh C++",
+        "Refresh Python"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    },
+    {
+      "job_id": "job-004",
+      "job": {
+        "job_id": "job-004",
+        "title": "Computer Vision Graduate Engineer",
+        "company": "Blue Reef Robotics",
+        "location": "Sydney",
+        "employment_type": "Full-time",
+        "description": "Graduate computer vision engineer supporting robotics perception pipelines. Required: Python, C++, OpenCV. Preferred: ROS2, YOLO, PyTorch.",
+        "source": "sample-company-careers",
+        "application_url": "https://example.com/jobs/cv-graduate-engineer",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-18",
+        "required_skills": [
+          "Python",
+          "C++",
+          "OpenCV"
+        ],
+        "preferred_skills": [
+          "ROS2",
+          "YOLO",
+          "PyTorch"
+        ],
+        "experience_required": "Graduate",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 96,
+      "score_breakdown": {
+        "overall_score": 96,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 100,
+          "experience_level": 100,
+          "career_interest": 80,
+          "project_similarity": 100,
+          "eligibility": 100,
+          "freshness": 82
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "Computer Vision Graduate Engineer at Blue Reef Robotics in Sydney. The role emphasizes Python, C++, OpenCV.",
+      "matching_evidence": [
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "C++",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-009"
+          ]
+        },
+        {
+          "requirement": "OpenCV",
+          "candidate_evidence": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        },
+        {
+          "requirement": "ROS2",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-009"
+          ]
+        },
+        {
+          "requirement": "YOLO",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005"
+          ]
+        },
+        {
+          "requirement": "PyTorch",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-006"
+          ]
+        }
+      ],
+      "skill_gaps": [],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting Computer Vision Graduate Engineer roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied OpenCV in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied OpenCV in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Blue Reef Robotics hiring team,\n\nI am applying for the Computer Vision Graduate Engineer role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows C++ through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.. My CV shows OpenCV through sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle..\n\nI would welcome the chance to contribute careful engineering work to Blue Reef Robotics while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh Python",
+        "Refresh C++",
+        "Refresh OpenCV"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    },
+    {
+      "job_id": "job-002",
+      "job": {
+        "job_id": "job-002",
+        "title": "Junior Machine Learning Engineer",
+        "company": "Koala Vision",
+        "location": "Remote Australia",
+        "employment_type": "Full-time",
+        "description": "Junior machine learning engineer working on computer vision models. Required: Python, PyTorch, Computer Vision. Preferred: YOLO, OpenCV, AWS. Graduate applicants welcome.",
+        "source": "sample-startup-board",
+        "application_url": "https://example.com/jobs/junior-ml-engineer",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-25",
+        "required_skills": [
+          "Python",
+          "PyTorch",
+          "Computer Vision"
+        ],
+        "preferred_skills": [
+          "YOLO",
+          "OpenCV",
+          "AWS"
+        ],
+        "experience_required": "0-2 years",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 95,
+      "score_breakdown": {
+        "overall_score": 95,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 67,
+          "experience_level": 100,
+          "career_interest": 100,
+          "project_similarity": 100,
+          "eligibility": 100,
+          "freshness": 100
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "Junior Machine Learning Engineer at Koala Vision in Remote Australia. The role emphasizes Python, PyTorch, Computer Vision.",
+      "matching_evidence": [
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "PyTorch",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-006"
+          ]
+        },
+        {
+          "requirement": "Computer Vision",
+          "candidate_evidence": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        },
+        {
+          "requirement": "YOLO",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005"
+          ]
+        },
+        {
+          "requirement": "OpenCV",
+          "candidate_evidence": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        }
+      ],
+      "skill_gaps": [
+        "AWS"
+      ],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting Junior Machine Learning Engineer roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Computer Vision in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.\n\n## Gaps To Avoid Overclaiming\nAWS",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied Computer Vision in work evidenced by: sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
+          "evidence_ids": [
+            "cv-005"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Koala Vision hiring team,\n\nI am applying for the Junior Machine Learning Engineer role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows PyTorch through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.. My CV shows Computer Vision through sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.. I would treat AWS as early ramp-up areas rather than overstate them.\n\nI would welcome the chance to contribute careful engineering work to Koala Vision while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh Python",
+        "Refresh PyTorch",
+        "Refresh Computer Vision",
+        "Prepare honest gap explanation for AWS"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    },
+    {
+      "job_id": "job-008",
+      "job": {
+        "job_id": "job-008",
+        "title": "AI Product Engineering Intern",
+        "company": "Northstar Health",
+        "location": "Remote Australia",
+        "employment_type": "Full-time",
+        "description": "Internship converting AI prototypes into web workflows. Required: Python, TypeScript. Preferred: FastAPI, Next.js, Machine Learning.",
+        "source": "sample-internship-feed",
+        "application_url": "https://example.com/jobs/ai-product-engineering-intern",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-07",
+        "required_skills": [
+          "Python",
+          "TypeScript"
+        ],
+        "preferred_skills": [
+          "FastAPI",
+          "Next.js",
+          "Machine Learning"
+        ],
+        "experience_required": "Internship",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 95,
+      "score_breakdown": {
+        "overall_score": 95,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 100,
+          "experience_level": 100,
+          "career_interest": 80,
+          "project_similarity": 96,
+          "eligibility": 100,
+          "freshness": 63
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "AI Product Engineering Intern at Northstar Health in Remote Australia. The role emphasizes Python, TypeScript.",
+      "matching_evidence": [
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "TypeScript",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "requirement": "FastAPI",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-007"
+          ]
+        },
+        {
+          "requirement": "Next.js",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-007"
+          ]
+        },
+        {
+          "requirement": "Machine Learning",
+          "candidate_evidence": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-003",
+            "cv-006"
+          ]
+        }
+      ],
+      "skill_gaps": [],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting AI Product Engineering Intern roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
+          "evidence_ids": [
+            "cv-003"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Northstar Health hiring team,\n\nI am applying for the AI Product Engineering Intern role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows TypeScript through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.. My CV shows FastAPI through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL..\n\nI would welcome the chance to contribute careful engineering work to Northstar Health while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh Python",
+        "Refresh TypeScript"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    },
+    {
+      "job_id": "job-001",
+      "job": {
+        "job_id": "job-001",
+        "title": "Graduate AI Engineer",
+        "company": "Harbour AI Labs",
+        "location": "Sydney",
+        "employment_type": "Full-time",
+        "description": "Graduate AI engineering role building Python services and machine learning prototypes. Required: Python, Machine Learning, SQL. Preferred: PyTorch, FastAPI, Docker. Accepts graduate candidates with project experience.",
+        "source": "sample-company-careers",
+        "application_url": "https://example.com/jobs/graduate-ai-engineer",
+        "date_found": "2026-08-01",
+        "date_posted": "2026-07-29",
+        "required_skills": [
+          "Python",
+          "Machine Learning",
+          "SQL"
+        ],
+        "preferred_skills": [
+          "PyTorch",
+          "FastAPI",
+          "Docker"
+        ],
+        "experience_required": "0-2 years",
+        "eligibility_requirements": [],
+        "status": "validated",
+        "rejection_reasons": []
+      },
+      "relevance_score": 95,
+      "score_breakdown": {
+        "overall_score": 95,
+        "components": {
+          "required_skills": 100,
+          "preferred_skills": 67,
+          "experience_level": 100,
+          "career_interest": 100,
+          "project_similarity": 100,
+          "eligibility": 100,
+          "freshness": 100
+        },
+        "weights": {
+          "required_skills": 0.3,
+          "preferred_skills": 0.15,
+          "experience_level": 0.15,
+          "career_interest": 0.15,
+          "project_similarity": 0.1,
+          "eligibility": 0.1,
+          "freshness": 0.05
+        }
+      },
+      "recommendation": "strongly_apply",
+      "job_summary": "Graduate AI Engineer at Harbour AI Labs in Sydney. The role emphasizes Python, Machine Learning, SQL.",
+      "matching_evidence": [
+        {
+          "requirement": "Python",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-005",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "Machine Learning",
+          "candidate_evidence": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-003",
+            "cv-006"
+          ]
+        },
+        {
+          "requirement": "SQL",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-008"
+          ]
+        },
+        {
+          "requirement": "PyTorch",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-006"
+          ]
+        },
+        {
+          "requirement": "FastAPI",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "evidence_ids": [
+            "cv-004",
+            "cv-007"
+          ]
+        }
+      ],
+      "skill_gaps": [
+        "Docker"
+      ],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting Graduate AI Engineer roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nDocker",
+      "tailored_statements": [
+        {
+          "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
+        },
+        {
+          "tailored_bullet": "Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
+          "evidence_ids": [
+            "cv-003"
+          ]
+        }
+      ],
+      "cover_letter": "Dear Harbour AI Labs hiring team,\n\nI am applying for the Graduate AI Engineer role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows Machine Learning through Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.. My CV shows SQL through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. I would treat Docker as early ramp-up areas rather than overstate them.\n\nI would welcome the chance to contribute careful engineering work to Harbour AI Labs while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "interview_preparation_topics": [
+        "Refresh Python",
+        "Refresh Machine Learning",
+        "Refresh SQL",
+        "Prepare honest gap explanation for Docker"
+      ],
+      "generation_source": "deterministic",
+      "quality_checks": {
+        "unsupported_claims": 0,
+        "company_name_correct": true,
+        "evidence_grounded": true,
+        "job_eligible": true,
+        "score_explained": true,
+        "issues": []
+      }
+    }
+  ],
+  "agent_health": [
+    {
+      "agent": "candidate_profile_agent",
+      "status": "completed",
+      "tool_calls": 0,
+      "valid_results": 15,
+      "invalid_results": 0,
+      "execution_errors": 0,
+      "notes": []
+    },
+    {
+      "agent": "broad_opportunity_scout",
+      "status": "completed",
+      "tool_calls": 1,
+      "valid_results": 12,
+      "invalid_results": 0,
+      "execution_errors": 0,
+      "notes": []
+    },
+    {
+      "agent": "targeted_job_researcher",
+      "status": "completed",
+      "tool_calls": 1,
+      "valid_results": 12,
+      "invalid_results": 0,
+      "execution_errors": 0,
+      "notes": []
+    },
+    {
+      "agent": "job_validation",
+      "status": "completed",
+      "tool_calls": 0,
+      "valid_results": 8,
+      "invalid_results": 4,
+      "execution_errors": 0,
+      "notes": [
+        "job-012: Posted more than 30 days ago.",
+        "job-009: Role appears senior., Requires more than 2 years of experience.",
+        "job-011: Requires Australian citizenship.",
+        "job-010: Employment type does not match preferences."
+      ]
+    },
+    {
+      "agent": "application_tailor",
+      "status": "completed",
+      "tool_calls": 0,
+      "valid_results": 5,
+      "invalid_results": 0,
+      "execution_errors": 0,
+      "notes": []
+    },
+    {
+      "agent": "dashboard_generator",
+      "status": "completed",
+      "tool_calls": 0,
+      "valid_results": 1,
+      "invalid_results": 0,
+      "execution_errors": 0,
+      "notes": []
+    }
+  ],
+  "validation_checks": [
+    {
+      "part": "candidate_profile",
+      "passed": true,
+      "issues": []
+    },
+    {
+      "part": "job_pool",
+      "passed": true,
+      "issues": []
+    },
+    {
+      "part": "ranking",
+      "passed": true,
+      "issues": []
+    },
+    {
+      "part": "applications",
+      "passed": true,
+      "issues": []
+    },
+    {
+      "part": "dashboard_payload",
+      "passed": true,
+      "issues": []
+    }
+  ]
+}
