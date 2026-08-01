@@ -1,0 +1,143 @@
+from __future__ import annotations
+
+import json
+import re
+from datetime import date, datetime
+from pathlib import Path
+from typing import Iterable, List
+
+from app.schemas.candidate import CandidatePreferences, CandidateProfile
+from app.schemas.job import JobResult, JobStatus
+
+
+SKILL_TERMS = [
+    "Python",
+    "C++",
+    "SQL",
+    "Java",
+    "TypeScript",
+    "PyTorch",
+    "TensorFlow",
+    "Transformers",
+    "YOLO",
+    "OpenCV",
+    "ROS2",
+    "FastAPI",
+    "Next.js",
+    "PostgreSQL",
+    "AWS",
+    "Docker",
+    "Kubernetes",
+    "Spark",
+    "Machine Learning",
+    "Computer Vision",
+]
+
+
+def load_jobs_from_json(path: str) -> List[JobResult]:
+    payload = json.loads(Path(path).read_text(encoding="utf-8"))
+    return [JobResult.model_validate(item) for item in payload]
+
+
+def search_sample_jobs(path: str, queries: Iterable[str]) -> List[JobResult]:
+    jobs = load_jobs_from_json(path)
+    query_terms = {term.lower() for query in queries for term in re.findall(r"[A-Za-z0-9+#.]+", query)}
+    scored: list[tuple[int, JobResult]] = []
+    for job in jobs:
+        haystack = " ".join([job.title, job.company, job.location, job.description]).lower()
+        score = sum(1 for term in query_terms if term in haystack)
+        if score:
+            scored.append((score, job))
+    return [job for _, job in sorted(scored, key=lambda pair: pair[0], reverse=True)]
+
+
+def broad_queries(preferences: CandidatePreferences) -> List[str]:
+    locations = preferences.locations or ["Australia"]
+    roles = preferences.target_roles or preferences.career_interests or ["graduate software engineer"]
+    queries = []
+    for role in roles[:5]:
+        for location in locations[:2]:
+            queries.append(f"{preferences.experience_level} {role} {location}")
+    queries.extend(
+        [
+            "entry-level data scientist Australia",
+            "AI engineering internship remote Australia",
+            "software engineer computer vision graduate",
+        ]
+    )
+    return queries
+
+
+def targeted_queries(profile: CandidateProfile) -> List[str]:
+    skills = [skill.name for skill in profile.skills[:8]]
+    locations = profile.locations or ["Australia"]
+    themes = profile.career_themes or profile.target_roles or ["software engineer"]
+    queries = []
+    for theme in themes[:4]:
+        selected = " ".join(skills[:4])
+        queries.append(f"junior {theme} {selected} {locations[0]}")
+    if {"python", "c++", "opencv"} & profile.supported_skill_names():
+        queries.append("graduate computer vision engineer Python C++ Sydney")
+    if "ros2" in profile.supported_skill_names():
+        queries.append("graduate robotics software engineer ROS2 C++ Australia")
+    return queries
+
+
+def enrich_job_skills(job: JobResult) -> JobResult:
+    text = f"{job.title}\n{job.description}"
+    found = []
+    for skill in SKILL_TERMS:
+        if re.search(rf"(?<![A-Za-z0-9+#.]){re.escape(skill)}(?![A-Za-z0-9+#.])", text, re.IGNORECASE):
+            found.append(skill)
+    if not job.required_skills:
+        job.required_skills = found[:4]
+    if not job.preferred_skills:
+        job.preferred_skills = [skill for skill in found[4:8] if skill not in job.required_skills]
+    return job
+
+
+def validate_job(job: JobResult, preferences: CandidatePreferences, today: date | None = None) -> JobResult:
+    today = today or date.today()
+    reasons: list[str] = []
+    text = f"{job.title} {job.description} {job.experience_required}".lower()
+
+    if any(term in text for term in ["senior", "staff engineer", "lead engineer", "principal"]):
+        reasons.append("Role appears senior.")
+
+    years = [int(value) for value in re.findall(r"(\d+)\+?\s*(?:years|yrs)", text)]
+    if years and min(years) > preferences.max_years_experience:
+        reasons.append(f"Requires more than {preferences.max_years_experience} years of experience.")
+
+    if preferences.employment_types and job.employment_type.lower() not in {item.lower() for item in preferences.employment_types}:
+        reasons.append("Employment type does not match preferences.")
+
+    posted = _parse_date(job.date_posted or job.date_found)
+    if posted and (today - posted).days > preferences.posted_within_days:
+        reasons.append(f"Posted more than {preferences.posted_within_days} days ago.")
+
+    if not job.description.strip():
+        reasons.append("Missing job description.")
+
+    eligibility_text = " ".join(job.eligibility_requirements).lower()
+    work_rights = (preferences.work_rights or "").lower()
+    if "citizen" in eligibility_text and "citizen" not in work_rights:
+        reasons.append("Requires Australian citizenship.")
+    elif "permanent resident" in eligibility_text and not any(term in work_rights for term in ["permanent resident", "citizen"]):
+        reasons.append("Requires Australian permanent residency or citizenship.")
+
+    if reasons:
+        job.status = JobStatus.REJECTED
+        job.rejection_reasons = reasons
+    else:
+        job.status = JobStatus.VALIDATED
+        job.rejection_reasons = []
+    return enrich_job_skills(job)
+
+
+def _parse_date(value: str | None) -> date | None:
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None

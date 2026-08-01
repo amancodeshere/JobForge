@@ -1,0 +1,2 @@
+"""JobForge application package."""
+

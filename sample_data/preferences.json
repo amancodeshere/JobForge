@@ -1,0 +1,30 @@
+{
+  "target_roles": [
+    "machine learning engineer",
+    "data scientist",
+    "AI engineer",
+    "software engineer"
+  ],
+  "career_interests": [
+    "machine learning engineering",
+    "data science",
+    "AI engineering",
+    "software engineering"
+  ],
+  "locations": [
+    "Sydney",
+    "Remote Australia"
+  ],
+  "experience_level": "graduate",
+  "employment_types": [
+    "Full-time"
+  ],
+  "max_years_experience": 2,
+  "posted_within_days": 30,
+  "work_rights": "Australian unrestricted work rights",
+  "constraints": [
+    "Posted within the last 30 days",
+    "No roles requiring more than two years of experience"
+  ]
+}
+

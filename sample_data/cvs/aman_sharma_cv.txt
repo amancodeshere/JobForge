@@ -1,0 +1,10 @@
+Aman Sharma
+Bachelor of Engineering, Software Engineering, UNSW
+Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.
+Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.
+sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.
+Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.
+Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.
+Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.
+Robotics software project: Integrated ROS2 and C++ modules for sensor-processing workflows.
+
