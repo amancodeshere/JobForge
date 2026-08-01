@@ -36,7 +36,7 @@ class LiveSearchConfig:
     adzuna_app_id: str = ""
     adzuna_app_key: str = ""
     adzuna_country: str = "au"
-    enable_remotive: bool = True
+    enable_remotive: bool = False
     greenhouse_boards: tuple[CompanyBoard, ...] = ()
     lever_sites: tuple[CompanyBoard, ...] = ()
     request_timeout: float = 12.0
@@ -48,7 +48,7 @@ class LiveSearchConfig:
             adzuna_app_id=os.getenv("ADZUNA_APP_ID", "").strip(),
             adzuna_app_key=os.getenv("ADZUNA_APP_KEY", "").strip(),
             adzuna_country=os.getenv("ADZUNA_COUNTRY", "au").strip().lower() or "au",
-            enable_remotive=_env_flag("JOBFORGE_ENABLE_REMOTIVE", True),
+            enable_remotive=_env_flag("JOBFORGE_ENABLE_REMOTIVE", False),
             greenhouse_boards=tuple(
                 _parse_company_boards(os.environ["JOBFORGE_GREENHOUSE_BOARDS"])
                 if "JOBFORGE_GREENHOUSE_BOARDS" in os.environ
@@ -237,7 +237,7 @@ def _greenhouse_job(item: Any, board: CompanyBoard) -> JobResult | None:
         description=_plain_text(item.get("content")),
         source=f"greenhouse:{board.token}",
         application_url=item.get("absolute_url"),
-        date_posted=_date_only(item.get("updated_at")),
+        date_posted=_date_only(item.get("first_published") or item.get("updated_at")),
     )
 
 

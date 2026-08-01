@@ -60,3 +60,16 @@ def test_unmatched_live_stack_does_not_receive_fixture_level_score():
     assert score.components["required_skills"] == 0
     assert score.components["project_similarity"] <= 40
     assert score.overall_score < 78
+
+
+def test_missing_provider_skill_metadata_is_neutral_not_positive():
+    preferences = CandidatePreferences(target_roles=["software engineer"])
+    profile = CandidateProfileAgent().run("sample_data/cvs/aman_sharma_cv.txt", preferences)
+    job = load_jobs_from_json("sample_data/jobs/jobs.json")[0].model_copy(
+        update={"required_skills": [], "preferred_skills": []}
+    )
+
+    score = calculate_relevance_score(profile, preferences, job)
+
+    assert score.components["required_skills"] == 50
+    assert score.components["preferred_skills"] == 50

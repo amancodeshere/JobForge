@@ -99,10 +99,12 @@ def enrich_job_skills(job: JobResult) -> JobResult:
     for skill in SKILL_TERMS:
         if re.search(rf"(?<![A-Za-z0-9+#.]){re.escape(skill)}(?![A-Za-z0-9+#.])", text, re.IGNORECASE):
             found.append(skill)
-    if not job.required_skills:
-        job.required_skills = found[:4]
-    if not job.preferred_skills:
-        job.preferred_skills = [skill for skill in found[4:8] if skill not in job.required_skills]
+    if not job.required_skills and not job.preferred_skills:
+        # A provider description rarely distinguishes required from preferred skills
+        # reliably. Treat inferred terms as preferred rather than inventing hard requirements.
+        job.preferred_skills = found[:8]
+    elif not job.preferred_skills:
+        job.preferred_skills = [skill for skill in found if skill not in job.required_skills][:8]
     if not job.eligibility_requirements:
         lowered = text.lower()
         if re.search(r"\b(?:australian citizenship|australian citizen)\b", lowered):

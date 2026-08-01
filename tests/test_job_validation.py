@@ -1,4 +1,5 @@
 from app.schemas.candidate import CandidatePreferences
+from app.schemas.job import JobResult
 from app.tools.job_search import broad_queries, load_jobs_from_json, validate_job
 
 
@@ -98,3 +99,22 @@ def test_live_description_citizenship_requirement_is_enforced():
 
     assert checked.status == "rejected"
     assert "Requires Australian citizenship." in checked.rejection_reasons
+
+
+def test_inferred_description_skills_are_not_invented_as_requirements():
+    job = JobResult(
+        job_id="live-1",
+        title="Software Engineer",
+        company="Example",
+        location="Remote",
+        employment_type="Full-time",
+        description="Build Go, Linux and Docker services.",
+        source="live",
+        application_url="https://jobs.example/1",
+        date_found="2026-08-01",
+    )
+
+    checked = validate_job(job, CandidatePreferences(), today=__import__("datetime").date(2026, 8, 1))
+
+    assert checked.required_skills == []
+    assert {"Go", "Linux", "Docker"}.issubset(set(checked.preferred_skills))

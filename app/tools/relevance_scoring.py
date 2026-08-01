@@ -92,7 +92,7 @@ def recommendation_for(score: int) -> Recommendation:
 def _skill_match(required: Iterable[str], supported: set[str]) -> int:
     skills = [skill.lower() for skill in required]
     if not skills:
-        return 70
+        return 50
     matches = sum(1 for skill in skills if skill in supported)
     partial = sum(1 for skill in skills if skill not in supported and any(_similar(skill, candidate) > 0.82 for candidate in supported))
     return min(100, round(((matches + partial * 0.5) / len(skills)) * 100))
