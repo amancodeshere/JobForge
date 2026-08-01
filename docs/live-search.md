@@ -7,7 +7,8 @@ JobForge uses structured, documented job endpoints instead of general-purpose br
 | Capability | Provider | Authentication | Role |
 | --- | --- | --- | --- |
 | Broad Australian search | Adzuna | App ID and key | Searches roles and locations supplied by the candidate |
-| Cross-board discovery | SerpApi Google Jobs | API key | Returns structured Google Jobs results with original publisher and apply links |
+| Primary Australian board | SerpApi Google Search + SEEK index | API key | Discovers direct public SEEK job URLs through Google's Australian index |
+| Cross-board discovery outside Australia | SerpApi Google Jobs | API key | Returns structured results where the Google Jobs country is supported |
 | Targeted company search | Greenhouse Job Board API | None for public GETs | Reads configured company career boards |
 | Targeted company search | Lever Postings API | None for public postings | Reads configured company career sites |
 | Optional remote search | Remotive public API | None | Adds attributed remote listings for low-volume deployments |
@@ -22,7 +23,11 @@ Agent Reach is installed for interactive research across web pages, LinkedIn, Gi
 
 JobForge therefore gives its deployed search agents narrow native tools with typed outputs. Agent Reach can be used outside the deployed request path to discover new company-board tokens and research sources, but application-ready records still require normalization and validation.
 
-SerpApi's Google Jobs adapter is the breadth layer. It can surface listings published through LinkedIn, Indeed, SEEK, Glassdoor, ZipRecruiter, Workday, direct employer sites, and many other sources indexed by Google Jobs. Coverage depends on what Google Jobs indexes for the query and location, so the UI reports observed publishers instead of claiming universal coverage.
+For `SERPAPI_COUNTRY=au`, JobForge uses SerpApi's regular Google Search engine with `google.com.au`, an Australian location, and a `site:seek.com.au/job/` query. It accepts only direct numeric SEEK job paths and never requests the listing page from JobForge's backend. This is an indexed-discovery workaround: it gives SEEK priority and direct application links, but freshness and recall remain limited by Google's index.
+
+JobForge deliberately does not scrape SEEK. SEEK's published terms prohibit data mining, robots, and screen scraping without prior written approval, while its approved developer API is designed around recruitment-software job posting and application workflows rather than unrestricted candidate job search. An academic use case does not remove those restrictions. The long-term first-party route is to request written approval or an appropriate SEEK partnership; the indexed provider keeps the current deployment functional without an anti-bot bypass.
+
+For non-Australian countries, the existing SerpApi Google Jobs adapter remains available and preserves the observed publisher and application link. The configured country must appear in SerpApi's current Google Jobs country list.
 
 ## Configuration
 
@@ -67,7 +72,11 @@ Remotive is disabled by default. Its public API requires attribution and advises
 Provider documentation:
 
 - [Adzuna API](https://developer.adzuna.com/)
+- [SerpApi Google Search API](https://serpapi.com/search-api)
 - [SerpApi Google Jobs API](https://serpapi.com/google-jobs-api)
+- [SerpApi Google Jobs countries](https://serpapi.com/google-jobs-countries)
+- [SEEK developer API](https://developer.seek.com/)
+- [SEEK advertising terms](https://www.seek.com.au/content/terms/new-advertising-terms-seek-au.pdf)
 - [Greenhouse Job Board API](https://developer.greenhouse.io/job-board.html)
 - [Lever Postings API](https://github.com/lever/postings-api)
 - [Remotive public API](https://github.com/remotive-io/remote-jobs-api)
