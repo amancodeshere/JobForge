@@ -75,12 +75,12 @@ def compile_resume_pdf(
     expected_name: str = "",
     timeout: float = 120.0,
 ) -> CompiledResume:
+    _validate_generated_source(latex_source)
     engine = _find_engine()
     if not engine:
         raise LatexCompileError(
             "No LaTeX engine is available. Install Tectonic or pdflatex, then try again."
         )
-    _validate_generated_source(latex_source)
     with TemporaryDirectory(prefix="jobforge-latex-") as temp:
         workdir = Path(temp)
         source_path = workdir / "resume.tex"
