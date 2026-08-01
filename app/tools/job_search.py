@@ -134,6 +134,15 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     if preferences.locations and not _location_matches(job.location, preferences.locations):
         reasons.append("Location does not match preferences.")
 
+    excluded_companies = {value.strip().lower() for value in preferences.excluded_companies if value.strip()}
+    if job.company.strip().lower() in excluded_companies:
+        reasons.append("Company is excluded by candidate preferences.")
+
+    excluded_keywords = {value.strip().lower() for value in preferences.excluded_keywords if value.strip()}
+    matched_keywords = sorted(keyword for keyword in excluded_keywords if keyword in text)
+    if matched_keywords:
+        reasons.append(f"Contains excluded keyword: {', '.join(matched_keywords)}.")
+
     posted = _parse_date(job.date_posted or job.date_found)
     if posted and (today - posted).days > preferences.posted_within_days:
         reasons.append(f"Posted more than {preferences.posted_within_days} days ago.")

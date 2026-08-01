@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
+import re
 from typing import List, Optional
 
 from pydantic import BaseModel, Field, model_validator
@@ -47,12 +48,20 @@ class CandidatePreferences(BaseModel):
     posted_within_days: int = 30
     work_rights: Optional[str] = None
     constraints: List[str] = Field(default_factory=list)
+    excluded_companies: List[str] = Field(default_factory=list)
+    excluded_keywords: List[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def normalize_levels(self) -> "CandidatePreferences":
         selected = self.experience_levels or [self.experience_level]
         self.experience_levels = normalize_experience_levels(selected)
         self.experience_level = self.experience_levels[0] if self.experience_levels else "graduate"
+        self.excluded_companies = _unique_values(
+            [*self.excluded_companies, *_constraint_values(self.constraints, "company")]
+        )
+        self.excluded_keywords = _unique_values(
+            [*self.excluded_keywords, *_constraint_values(self.constraints, "keyword")]
+        )
         return self
 
     def selected_experience_levels(self) -> List[str]:
@@ -89,3 +98,23 @@ class UserInput(BaseModel):
     cv_path: str
     preferences: CandidatePreferences
     output_path: str = "sample_data/expected_outputs/latest_run.json"
+
+
+def _constraint_values(constraints: List[str], kind: str) -> List[str]:
+    values = []
+    for constraint in constraints:
+        match = re.match(rf"\s*(?:exclude|avoid)\s+{kind}\s*:\s*(.+?)\s*$", constraint, re.IGNORECASE)
+        if match:
+            values.append(match.group(1))
+    return values
+
+
+def _unique_values(values: List[str]) -> List[str]:
+    unique: List[str] = []
+    seen: set[str] = set()
+    for value in values:
+        cleaned = value.strip()
+        if cleaned and cleaned.lower() not in seen:
+            seen.add(cleaned.lower())
+            unique.append(cleaned)
+    return unique

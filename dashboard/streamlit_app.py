@@ -378,7 +378,7 @@ st.markdown(
           <h1>JobForge</h1>
           <p>Grounded job discovery, ranking, and tailored applications.</p>
         </div>
-        <div class="jf-pill">Deployment ready</div>
+        <div class="jf-pill">Live-search capable</div>
       </div>
     </div>
     """,
@@ -406,6 +406,8 @@ with st.sidebar:
     max_years = st.number_input("Max years required", min_value=0, max_value=10, value=2)
     posted_within = st.number_input("Posted within days", min_value=1, max_value=365, value=30)
     work_rights = st.text_input("Work rights", "Australian unrestricted work rights")
+    excluded_companies = st.text_input("Excluded companies", "", help="Comma-separated exact company names")
+    excluded_keywords = st.text_input("Excluded keywords", "", help="Comma-separated terms to reject in titles or descriptions")
     top_n = st.number_input("Application packages", min_value=1, max_value=10, value=5)
     run_clicked = st.button("Run agents", type="primary")
 
@@ -459,6 +461,8 @@ def _preferences_from_form() -> CandidatePreferences:
         max_years_experience=int(max_years),
         posted_within_days=int(posted_within),
         work_rights=work_rights,
+        excluded_companies=_split_lines(excluded_companies),
+        excluded_keywords=_split_lines(excluded_keywords),
         constraints=[
             f"Posted within the last {int(posted_within)} days",
             f"No roles requiring more than {int(max_years)} years of experience",
@@ -551,6 +555,7 @@ def _job_card_html(application) -> str:
           <span class="jf-chip">{escape(job.location)}</span>
           <span class="jf-chip">{escape(job.employment_type)}</span>
           <span class="jf-chip">{escape(job.experience_required)}</span>
+          <span class="jf-chip">Source: {escape(job.source)}</span>
         </div>
       </div>
       <div class="jf-link-row">
@@ -589,7 +594,7 @@ if job_labels:
               <h3>{escape(application.job.title)}</h3>
               <p class="jf-muted">{escape(application.job.company)} · {escape(application.job.location)}</p>
               <p>{escape(application.job_summary)}</p>
-              <p class="jf-muted">Application copy: {escape(application.generation_source)}</p>
+              <p class="jf-muted">Job source: {escape(application.job.source)} · Application copy: {escape(application.generation_source)}</p>
               <a class="jf-verify" href="{escape(application.job.application_url)}" target="_blank" rel="noopener noreferrer">Verify listing</a>
             </div>
             """,

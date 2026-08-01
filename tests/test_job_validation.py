@@ -118,3 +118,20 @@ def test_inferred_description_skills_are_not_invented_as_requirements():
 
     assert checked.required_skills == []
     assert {"Go", "Linux", "Docker"}.issubset(set(checked.preferred_skills))
+
+
+def test_structured_exclusions_and_constraint_aliases_are_enforced():
+    preferences = CandidatePreferences(
+        excluded_companies=["Harbour AI Labs"],
+        constraints=["Exclude keyword: defence"],
+    )
+    company_job = load_jobs_from_json("sample_data/jobs/jobs.json")[0]
+    keyword_job = load_jobs_from_json("sample_data/jobs/jobs.json")[1].model_copy(
+        update={"description": "Build defence computer vision software."}
+    )
+
+    company_result = validate_job(company_job, preferences, today=__import__("datetime").date(2026, 8, 1))
+    keyword_result = validate_job(keyword_job, preferences, today=__import__("datetime").date(2026, 8, 1))
+
+    assert "Company is excluded by candidate preferences." in company_result.rejection_reasons
+    assert "Contains excluded keyword: defence." in keyword_result.rejection_reasons
