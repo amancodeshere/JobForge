@@ -18,7 +18,14 @@ from app.evaluation.validation import (
     validate_job_pool,
     validate_rankings,
 )
-from app.schemas.application import AgentHealth, ApplicationResult, ScoreBreakdown, WorkflowResult
+from app.schemas.application import (
+    AgentHealth,
+    ApplicationResult,
+    JobSearchResult,
+    RankedJob,
+    ScoreBreakdown,
+    WorkflowResult,
+)
 from app.schemas.candidate import CandidatePreferences
 from app.schemas.job import JobResult, JobStatus
 from app.tools.duplicate_detection import deduplicate_jobs
@@ -52,6 +59,81 @@ class OrchestratorAgent:
         use_live_search: bool = False,
         sample_fallback: bool = True,
     ) -> WorkflowResult:
+        search_result = self.search(
+            cv_path=cv_path,
+            preferences=preferences,
+            use_live_search=use_live_search,
+            sample_fallback=sample_fallback,
+        )
+        health = list(search_result.agent_health)
+        checks = list(search_result.validation_checks)
+        ranked_jobs = [
+            (ranked.job, ranked.score_breakdown)
+            for ranked in search_result.ranked_jobs[:top_n]
+        ]
+
+        tailoring_started = perf_counter()
+        applications = self._tailor_ranked_jobs(
+            search_result.candidate_profile,
+            preferences,
+            ranked_jobs,
+            search_result.validation_date,
+        )
+        tailoring_duration = _elapsed_ms(tailoring_started)
+        applications = sorted(applications, key=lambda item: item.relevance_score, reverse=True)
+        ranking_check = validate_rankings(applications)
+        application_check = validate_applications(applications)
+        checks.extend([ranking_check, application_check])
+        health.append(
+            AgentHealth(
+                agent=self.tailor_agent.name,
+                status="completed" if application_check.passed else "completed_with_issues",
+                valid_results=len(applications),
+                invalid_results=sum(1 for application in applications if application.quality_checks.unsupported_claims),
+                tool_calls=self.tailor_agent.llm_attempts,
+                execution_errors=self.tailor_agent.llm_errors,
+                duration_ms=tailoring_duration,
+                notes=self.tailor_agent.notes[:8],
+            )
+        )
+
+        result = WorkflowResult(
+            candidate_profile=search_result.candidate_profile,
+            search_mode=search_result.search_mode,
+            search_sources=search_result.search_sources,
+            search_warnings=search_result.search_warnings,
+            discovered_count=search_result.discovered_count,
+            validated_count=search_result.validated_count,
+            recommended_count=len(applications),
+            applications=applications,
+            agent_health=health,
+            validation_checks=checks,
+        )
+
+        dashboard_started = perf_counter()
+        dashboard_check = validate_dashboard_payload(result)
+        dashboard_duration = _elapsed_ms(dashboard_started)
+        result.validation_checks.append(dashboard_check)
+        result.agent_health.append(
+            AgentHealth(
+                agent=self.dashboard_agent.name,
+                status="completed" if dashboard_check.passed else "completed_with_issues",
+                valid_results=1 if dashboard_check.passed else 0,
+                invalid_results=len(dashboard_check.issues),
+                duration_ms=dashboard_duration,
+            )
+        )
+        self.dashboard_agent.write_payload(result, output_path)
+        return result
+
+    def search(
+        self,
+        cv_path: str,
+        preferences: CandidatePreferences,
+        use_live_search: bool = False,
+        sample_fallback: bool = True,
+        limit: int | None = None,
+    ) -> JobSearchResult:
         health: List[AgentHealth] = []
         checks = []
 
@@ -142,55 +224,21 @@ class OrchestratorAgent:
             (job, calculate_relevance_score(profile, preferences, job, today=validation_date))
             for job in validated_jobs
         ]
-        ranked_jobs = sorted(scored_jobs, key=lambda item: item[1].overall_score, reverse=True)[:top_n]
-        tailoring_started = perf_counter()
-        applications = self._tailor_ranked_jobs(profile, preferences, ranked_jobs, validation_date)
-        tailoring_duration = _elapsed_ms(tailoring_started)
-        applications = sorted(applications, key=lambda item: item.relevance_score, reverse=True)
-        ranking_check = validate_rankings(applications)
-        application_check = validate_applications(applications)
-        checks.extend([ranking_check, application_check])
-        health.append(
-            AgentHealth(
-                agent=self.tailor_agent.name,
-                status="completed" if application_check.passed else "completed_with_issues",
-                valid_results=len(applications),
-                invalid_results=sum(1 for application in applications if application.quality_checks.unsupported_claims),
-                tool_calls=self.tailor_agent.llm_attempts,
-                execution_errors=self.tailor_agent.llm_errors,
-                duration_ms=tailoring_duration,
-                notes=self.tailor_agent.notes[:8],
-            )
-        )
-
-        result = WorkflowResult(
+        ranked_jobs = sorted(scored_jobs, key=lambda item: item[1].overall_score, reverse=True)
+        if limit is not None:
+            ranked_jobs = ranked_jobs[: max(0, limit)]
+        return JobSearchResult(
             candidate_profile=profile,
             search_mode=search_mode,
             search_sources=search_sources,
             search_warnings=search_warnings,
             discovered_count=len(discovered),
             validated_count=len(validated_jobs),
-            recommended_count=len(applications),
-            applications=applications,
+            validation_date=validation_date,
+            ranked_jobs=[RankedJob(job=job, score_breakdown=score) for job, score in ranked_jobs],
             agent_health=health,
             validation_checks=checks,
         )
-
-        dashboard_started = perf_counter()
-        dashboard_check = validate_dashboard_payload(result)
-        dashboard_duration = _elapsed_ms(dashboard_started)
-        result.validation_checks.append(dashboard_check)
-        result.agent_health.append(
-            AgentHealth(
-                agent=self.dashboard_agent.name,
-                status="completed" if dashboard_check.passed else "completed_with_issues",
-                valid_results=1 if dashboard_check.passed else 0,
-                invalid_results=len(dashboard_check.issues),
-                duration_ms=dashboard_duration,
-            )
-        )
-        self.dashboard_agent.write_payload(result, output_path)
-        return result
 
     def _tailor_ranked_jobs(
         self,

@@ -54,6 +54,27 @@ def test_orchestrator_tailors_only_top_n_jobs(tmp_path, monkeypatch):
     assert tailoring_health.tool_calls == 2
 
 
+def test_search_returns_ranked_jobs_without_tailoring(monkeypatch):
+    orchestrator = OrchestratorAgent()
+    monkeypatch.setattr(
+        orchestrator,
+        "_tailor_ranked_jobs",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("search triggered tailoring")),
+    )
+
+    result = orchestrator.search(
+        cv_path="sample_data/cvs/aman_sharma_cv.txt",
+        preferences=CandidatePreferences(),
+        limit=3,
+    )
+
+    assert len(result.ranked_jobs) == 3
+    assert [item.score_breakdown.overall_score for item in result.ranked_jobs] == sorted(
+        [item.score_breakdown.overall_score for item in result.ranked_jobs],
+        reverse=True,
+    )
+
+
 def test_orchestrator_uses_live_jobs_without_mixing_sample_data(tmp_path):
     class FakeLiveSearch:
         def broad_search(self, _preferences):

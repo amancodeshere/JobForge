@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import date
 from enum import Enum
 from typing import List
 
@@ -83,6 +84,24 @@ class ValidationCheck(BaseModel):
     part: str
     passed: bool
     issues: List[str] = Field(default_factory=list)
+
+
+class RankedJob(BaseModel):
+    job: JobResult
+    score_breakdown: ScoreBreakdown
+
+
+class JobSearchResult(BaseModel):
+    candidate_profile: CandidateProfile
+    search_mode: str = "sample"
+    search_sources: List[str] = Field(default_factory=list)
+    search_warnings: List[str] = Field(default_factory=list)
+    discovered_count: int
+    validated_count: int
+    validation_date: date
+    ranked_jobs: List[RankedJob] = Field(default_factory=list)
+    agent_health: List[AgentHealth] = Field(default_factory=list)
+    validation_checks: List[ValidationCheck] = Field(default_factory=list)
 
 
 class WorkflowResult(BaseModel):
