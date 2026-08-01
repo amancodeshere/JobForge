@@ -60,6 +60,7 @@ class ApplicationResult(BaseModel):
     matching_evidence: List[MatchingEvidence] = Field(default_factory=list)
     skill_gaps: List[str] = Field(default_factory=list)
     tailored_cv: str
+    tailored_cv_latex: str = ""
     tailored_statements: List[TailoredStatement] = Field(default_factory=list)
     cover_letter: str
     interview_preparation_topics: List[str] = Field(default_factory=list)

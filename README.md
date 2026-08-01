@@ -10,6 +10,7 @@ uv run python main.py run
 uv run python main.py run --live
 uv run python main.py validate
 uv run python main.py doctor
+uv run python main.py export-cv --payload sample_data/expected_outputs/latest_run.json
 uv run pytest
 uv run streamlit run dashboard/streamlit_app.py
 ```
@@ -85,7 +86,7 @@ The repo also includes a GitHub Actions workflow that installs from `requirement
   - 10% project-domain similarity
   - 10% eligibility compatibility
   - 5% freshness
-- Application Tailor produces a tailored CV draft and cover letter using evidence mappings.
+- Application Tailor produces a tailored CV draft, trusted escaped LaTeX source, verified PDF, and cover letter using evidence mappings. PDF compilation uses Tectonic and is cached per selected application in the dashboard.
 - Quality checks reject unsupported claims, company-name mismatches, invalid rankings, malformed dashboard payloads, and unsafe LLM drafts.
 - Streamlit dashboard shows recommended roles, job details, score breakdowns, application packages, agent activity, and validation checkpoints.
 - Optional OpenAI drafting uses `OPENAI_MODEL`, defaulting to `gpt-5-mini`, while deterministic validation still checks the output. If OpenAI fails or returns unsafe copy, the app visibly falls back to deterministic generation.
@@ -124,6 +125,17 @@ No service can honestly guarantee every listing on every job site. JobForge repo
 See [docs/live-search.md](docs/live-search.md) for provider behavior, configuration, safety boundaries, and the Agent Reach evaluation.
 
 Use a real PDF or DOCX with `--cv path/to/cv.pdf`. PDF parsing uses `pypdf`; DOCX parsing uses `python-docx`.
+
+Export a compiled tailored CV from any fresh workflow payload:
+
+```bash
+uv run python main.py export-cv \
+  --payload sample_data/expected_outputs/latest_run.json \
+  --job-index 0 \
+  --output output/pdf/tailored_cv.pdf
+```
+
+The compiler accepts only JobForge's trusted template, escapes all CV and job values, disables shell escape when using `pdflatex`, and reopens every PDF to verify its page count, extractable text, and candidate name. Railway installs Tectonic through `nixpacks.toml`.
 
 Deployment readiness:
 

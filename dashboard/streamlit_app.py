@@ -15,6 +15,7 @@ if str(ROOT) not in sys.path:
 from app.agents.orchestrator_agent import OrchestratorAgent
 from app.schemas.application import WorkflowResult
 from app.schemas.candidate import CandidatePreferences
+from app.services.latex_resume import LatexCompileError, compile_resume_pdf
 from app.tools.experience_levels import EXPERIENCE_LEVELS
 from app.tools.llm_client import configured_model, openai_enabled
 
@@ -26,6 +27,12 @@ DEV_MODE = os.getenv("JOBFORGE_DEV_MODE", "false").lower() in {"1", "true", "yes
 
 
 st.set_page_config(page_title="JobForge", layout="wide")
+
+
+@st.cache_data(show_spinner=False, max_entries=20)
+def _compile_cv_pdf(latex_source: str, candidate_name: str) -> tuple[bytes, str, int]:
+    compiled = compile_resume_pdf(latex_source, expected_name=candidate_name)
+    return compiled.pdf_bytes, compiled.engine, compiled.page_count
 
 
 def _inject_theme() -> None:
@@ -833,8 +840,34 @@ if job_labels:
 
     cv_tab, letter_tab, checks_tab = st.tabs(["Tailored CV", "Cover letter", "Quality checks"])
     cv_tab.markdown(application.tailored_cv)
+    if application.tailored_cv_latex:
+        cv_tab.caption("Generated from validated CV evidence using JobForge's trusted LaTeX template.")
+        try:
+            with cv_tab.spinner("Compiling verified PDF"):
+                cv_pdf, cv_engine, cv_pages = _compile_cv_pdf(
+                    application.tailored_cv_latex,
+                    result.candidate_profile.candidate_name,
+                )
+            cv_tab.download_button(
+                "Download tailored CV PDF",
+                cv_pdf,
+                file_name=f"{application.job_id}_tailored_cv.pdf",
+                mime="application/pdf",
+                type="primary",
+            )
+            cv_tab.caption(f"Verified {cv_pages}-page PDF · compiled with {cv_engine}")
+        except LatexCompileError as exc:
+            cv_tab.warning(str(exc))
+        cv_tab.download_button(
+            "Download LaTeX source",
+            application.tailored_cv_latex,
+            file_name=f"{application.job_id}_tailored_cv.tex",
+            mime="application/x-tex",
+        )
+    else:
+        cv_tab.info("Run a fresh workflow to generate the LaTeX and PDF version of this CV.")
     cv_tab.download_button(
-        "Download CV draft",
+        "Download text draft",
         application.tailored_cv,
         file_name=f"{application.job_id}_tailored_cv.md",
         mime="text/markdown",

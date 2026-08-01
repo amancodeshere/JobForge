@@ -1,4 +1,4 @@
-from app.agents.candidate_profile_agent import CandidateProfileAgent
+from app.agents.candidate_profile_agent import CandidateProfileAgent, _guess_section
 from app.schemas.candidate import CandidatePreferences
 
 
@@ -34,3 +34,7 @@ def test_machine_learning_is_not_misclassified_as_learning():
     machine_learning = next(skill for skill in profile.skills if skill.name == "Machine Learning")
 
     assert machine_learning.evidence_type == "inferred_from_project"
+
+
+def test_project_names_containing_unsw_are_not_misclassified_as_education():
+    assert _guess_section("sUNSWim Robotics project: Built an underwater vehicle") == "Projects/Experience"

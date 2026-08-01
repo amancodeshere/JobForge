@@ -5,6 +5,7 @@ from datetime import date
 from app.schemas.application import ApplicationResult, MatchingEvidence, TailoredStatement
 from app.schemas.candidate import CandidateProfile, CandidatePreferences
 from app.schemas.job import JobResult
+from app.services.latex_resume import build_resume_latex
 from app.tools.evidence_validator import validate_application_grounding
 from app.tools.llm_client import generate_application_copy
 from app.tools.relevance_scoring import calculate_relevance_score, recommendation_for
@@ -30,7 +31,7 @@ class ApplicationTailorAgent:
         matching = _matching_evidence(profile, job)
         gaps = _skill_gaps(profile, job)
         statements = _tailored_statements(profile, matching)
-        tailored_cv = _tailored_cv(profile, job, statements, gaps)
+        tailored_cv = _tailored_cv(profile, job, statements)
         cover_letter = _cover_letter(profile, job, matching, gaps)
         generation_source = "deterministic"
         llm_result = generate_application_copy(profile, job, matching, gaps, statements)
@@ -73,6 +74,7 @@ class ApplicationTailorAgent:
             topics=topics,
             generation_source=generation_source,
         )
+        application.tailored_cv_latex = build_resume_latex(profile, job, statements)
         application.quality_checks = validate_application_grounding(application, profile)
         return application
 
@@ -130,12 +132,19 @@ def _matching_evidence(profile: CandidateProfile, job: JobResult) -> list[Matchi
         skill = skill_map.get(requirement.lower())
         if not skill:
             continue
-        evidence_text = "; ".join(evidence_by_id[eid].original_text for eid in skill.evidence_ids if eid in evidence_by_id)
+        evidence_ids = sorted(
+            (evidence_id for evidence_id in skill.evidence_ids if evidence_id in evidence_by_id),
+            key=lambda evidence_id: (
+                evidence_by_id[evidence_id].cv_section != "Projects/Experience",
+                -len(evidence_by_id[evidence_id].original_text),
+            ),
+        )
+        evidence_text = "; ".join(evidence_by_id[eid].original_text for eid in evidence_ids[:2])
         matches.append(
             MatchingEvidence(
                 requirement=requirement,
                 candidate_evidence=evidence_text,
-                evidence_ids=skill.evidence_ids,
+                evidence_ids=evidence_ids,
             )
         )
     return matches
@@ -162,7 +171,7 @@ def _tailored_statements(profile: CandidateProfile, matching: list[MatchingEvide
             continue
         statements.append(
             TailoredStatement(
-                tailored_bullet=f"Applied {match.requirement} in work evidenced by: {source.original_text}",
+                tailored_bullet=source.original_text,
                 evidence_ids=[primary_id],
             )
         )
@@ -173,7 +182,6 @@ def _tailored_cv(
     profile: CandidateProfile,
     job: JobResult,
     statements: list[TailoredStatement],
-    gaps: list[str],
 ) -> str:
     supported_skills = ", ".join(skill.name for skill in profile.skills[:14])
     target_summary = (
@@ -181,7 +189,6 @@ def _tailored_cv(
         f"{supported_skills or 'relevant technical projects'}."
     )
     bullet_text = "\n".join(f"- {statement.tailored_bullet}" for statement in statements) or "- Relevant CV evidence is limited; use original CV content."
-    gap_text = ", ".join(gaps) if gaps else "No major listed skill gaps identified from the job description."
     return "\n".join(
         [
             "# Tailored CV Draft",
@@ -194,9 +201,6 @@ def _tailored_cv(
             "",
             "## Selected Evidence-Based Highlights",
             bullet_text,
-            "",
-            "## Gaps To Avoid Overclaiming",
-            gap_text,
         ]
     )
 

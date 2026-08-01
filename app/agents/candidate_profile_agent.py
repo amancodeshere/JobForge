@@ -156,9 +156,9 @@ def _profile_gaps(skills: List[SkillEvidence]) -> List[str]:
 
 def _guess_section(line: str) -> str:
     lower = line.lower()
-    if any(term in lower for term in ["university", "bachelor", "master", "unsw"]):
+    if re.search(r"\b(?:university|bachelor|master|unsw)\b", lower):
         return "Education"
-    if any(term in lower for term in ["project", "robotics", "engineer", "developer"]):
+    if re.search(r"\b(?:project|projects|robotics|engineer|engineering|developer)\b", lower):
         return "Projects/Experience"
     if any(term in lower for term in ["python", "sql", "skills", "technologies"]):
         return "Skills"

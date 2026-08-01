@@ -9,6 +9,7 @@ from app.tools.live_job_search import LiveSearchConfig
 
 REQUIRED_FILES = [
     "railway.toml",
+    "nixpacks.toml",
     "requirements.txt",
     "runtime.txt",
     "dashboard/streamlit_app.py",
@@ -39,6 +40,7 @@ def deployment_readiness_checks(
         _check_requirements(base / "requirements.txt"),
         _check_runtime(base / "runtime.txt"),
         _check_railway_config(base / "railway.toml"),
+        _check_latex_build_config(base / "nixpacks.toml"),
         _check_saved_payload(base / output_path),
         _check_openai_env(require_openai),
         _check_live_search_config(),
@@ -89,6 +91,14 @@ def _check_railway_config(path: Path) -> ValidationCheck:
     if "/_stcore/health" not in text:
         issues.append("Railway health check is not configured for Streamlit.")
     return ValidationCheck(part="railway_config", passed=not issues, issues=issues)
+
+
+def _check_latex_build_config(path: Path) -> ValidationCheck:
+    if not path.exists():
+        return ValidationCheck(part="latex_build", passed=False, issues=["nixpacks.toml is missing."])
+    text = path.read_text(encoding="utf-8").lower()
+    issues = [] if "tectonic" in text else ["Tectonic is not configured in the deployment image."]
+    return ValidationCheck(part="latex_build", passed=not issues, issues=issues)
 
 
 def _check_saved_payload(path: Path) -> ValidationCheck:

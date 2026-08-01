@@ -12,6 +12,7 @@ from app.agents.orchestrator_agent import OrchestratorAgent
 from app.evaluation.deployment_readiness import deployment_readiness_checks
 from app.schemas.application import WorkflowResult
 from app.schemas.candidate import CandidatePreferences
+from app.services.latex_resume import LatexCompileError, compile_resume_pdf
 
 
 app = typer.Typer(help="JobForge: grounded multi-agent job application assistant.")
@@ -49,6 +50,37 @@ def validate(
     _print_checks(result)
     if failed:
         raise typer.Exit(code=1)
+
+
+@app.command("export-cv")
+def export_cv(
+    payload: str = typer.Option("sample_data/expected_outputs/latest_run.json", "--payload", help="Workflow JSON payload."),
+    job_index: int = typer.Option(0, "--job-index", min=0, help="Zero-based recommended job index."),
+    output: str = typer.Option("output/pdf/tailored_cv.pdf", "--output", help="Destination PDF path."),
+) -> None:
+    result = WorkflowResult.model_validate_json(Path(payload).read_text(encoding="utf-8"))
+    if job_index >= len(result.applications):
+        console.print(f"[red]Job index {job_index} is outside the {len(result.applications)} recommendations.[/red]")
+        raise typer.Exit(code=2)
+    application = result.applications[job_index]
+    if not application.tailored_cv_latex:
+        console.print("[red]This payload has no LaTeX CV. Run a fresh workflow first.[/red]")
+        raise typer.Exit(code=2)
+    try:
+        compiled = compile_resume_pdf(
+            application.tailored_cv_latex,
+            expected_name=result.candidate_profile.candidate_name,
+        )
+    except LatexCompileError as exc:
+        console.print(f"[red]{exc}[/red]")
+        raise typer.Exit(code=1) from exc
+    output_path = Path(output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_bytes(compiled.pdf_bytes)
+    console.print(
+        f"Tailored CV written to [bold]{output_path}[/bold] "
+        f"({compiled.page_count} page{'s' if compiled.page_count != 1 else ''}, {compiled.engine})"
+    )
 
 
 @app.command()
