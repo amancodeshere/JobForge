@@ -41,6 +41,7 @@ class CandidateProfileAgent:
             target_roles=preferences.target_roles,
             locations=preferences.locations,
             experience_level=preferences.experience_level,
+            experience_levels=preferences.selected_experience_levels(),
             skills=skills,
             projects=projects,
             eligibility={"work_rights": preferences.work_rights},
@@ -175,4 +176,3 @@ def _project_name(line: str) -> str:
         return cleaned.split(":", 1)[0][:80]
     words = cleaned.split()
     return " ".join(words[:8])
-

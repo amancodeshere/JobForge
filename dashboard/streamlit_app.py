@@ -14,6 +14,7 @@ if str(ROOT) not in sys.path:
 from app.agents.orchestrator_agent import OrchestratorAgent
 from app.schemas.application import WorkflowResult
 from app.schemas.candidate import CandidatePreferences
+from app.tools.experience_levels import EXPERIENCE_LEVELS
 from app.tools.llm_client import configured_model, openai_enabled
 
 
@@ -24,7 +25,108 @@ DEV_MODE = os.getenv("JOBFORGE_DEV_MODE", "false").lower() in {"1", "true", "yes
 
 
 st.set_page_config(page_title="JobForge", layout="wide")
-st.title("JobForge")
+
+
+def _inject_theme() -> None:
+    st.markdown(
+        """
+        <style>
+        :root {
+            --jf-ink: #18212f;
+            --jf-muted: #5d6878;
+            --jf-teal: #0f9f8f;
+            --jf-coral: #f05f57;
+            --jf-amber: #f2a93b;
+            --jf-blue: #4b6fff;
+            --jf-surface: #ffffff;
+            --jf-line: #dfe7ef;
+        }
+        .stApp {
+            background:
+                linear-gradient(180deg, #f7fbff 0%, #fbfcf7 42%, #fff8f5 100%);
+            color: var(--jf-ink);
+        }
+        .block-container {
+            padding-top: 2rem;
+            max-width: 1180px;
+        }
+        [data-testid="stSidebar"] {
+            background: #142033;
+        }
+        [data-testid="stSidebar"] * {
+            color: #f6f8fb;
+        }
+        [data-testid="stSidebar"] input,
+        [data-testid="stSidebar"] textarea,
+        [data-testid="stSidebar"] [data-baseweb="select"] * {
+            color: var(--jf-ink);
+        }
+        .jf-title {
+            border-left: 6px solid var(--jf-coral);
+            padding-left: 1rem;
+            margin-bottom: 1rem;
+        }
+        .jf-title h1 {
+            font-size: 2.6rem;
+            margin: 0;
+            letter-spacing: 0;
+            color: var(--jf-ink);
+        }
+        .jf-title p {
+            color: var(--jf-muted);
+            margin: 0.2rem 0 0;
+        }
+        div[data-testid="stMetric"] {
+            background: var(--jf-surface);
+            border: 1px solid var(--jf-line);
+            border-top: 4px solid var(--jf-teal);
+            border-radius: 8px;
+            padding: 0.9rem;
+        }
+        div.stButton > button,
+        div.stDownloadButton > button,
+        a[data-testid="stLinkButton"] {
+            border-radius: 8px;
+            border: 1px solid #0f9f8f;
+            background: #0f9f8f;
+            color: white;
+            font-weight: 650;
+        }
+        div.stButton > button:hover,
+        div.stDownloadButton > button:hover,
+        a[data-testid="stLinkButton"]:hover {
+            border-color: #f05f57;
+            background: #f05f57;
+            color: white;
+        }
+        div[data-testid="stDataFrame"] {
+            border: 1px solid var(--jf-line);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .stTabs [data-baseweb="tab-list"] {
+            gap: 0.4rem;
+        }
+        .stTabs [data-baseweb="tab"] {
+            border-radius: 8px 8px 0 0;
+            background: #edf6f4;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+_inject_theme()
+st.markdown(
+    """
+    <div class="jf-title">
+      <h1>JobForge</h1>
+      <p>Grounded job discovery, ranking, and tailored applications.</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 with st.sidebar:
     st.subheader("Run")
@@ -36,7 +138,11 @@ with st.sidebar:
         "machine learning engineering\ndata science\nAI engineering\nsoftware engineering",
     )
     locations = st.text_input("Locations", "Sydney, Remote Australia")
-    experience_level = st.selectbox("Experience level", ["graduate", "internship", "junior"], index=0)
+    experience_levels = st.multiselect(
+        "Experience levels",
+        EXPERIENCE_LEVELS,
+        default=["internship", "graduate", "entry-level", "junior", "associate"],
+    )
     employment_types = st.text_input("Employment types", "Full-time")
     max_years = st.number_input("Max years required", min_value=0, max_value=10, value=2)
     posted_within = st.number_input("Posted within days", min_value=1, max_value=365, value=30)
@@ -80,6 +186,7 @@ def _load_sample_payload() -> WorkflowResult | None:
 
 def _preferences_from_form() -> CandidatePreferences:
     career_interests = _split_lines(interests)
+    selected_levels = experience_levels or ["graduate"]
     return CandidatePreferences(
         target_roles=[
             interest.replace("engineering", "engineer")
@@ -87,7 +194,8 @@ def _preferences_from_form() -> CandidatePreferences:
         ],
         career_interests=career_interests,
         locations=_split_lines(locations),
-        experience_level=experience_level,
+        experience_level=selected_levels[0],
+        experience_levels=selected_levels,
         employment_types=_split_lines(employment_types),
         max_years_experience=int(max_years),
         posted_within_days=int(posted_within),

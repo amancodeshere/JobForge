@@ -8,6 +8,7 @@ from typing import Iterable, List
 
 from app.schemas.candidate import CandidatePreferences, CandidateProfile
 from app.schemas.job import JobResult, JobStatus
+from app.tools.experience_levels import has_experience_overlap
 
 
 SKILL_TERMS = [
@@ -54,10 +55,12 @@ def search_sample_jobs(path: str, queries: Iterable[str]) -> List[JobResult]:
 def broad_queries(preferences: CandidatePreferences) -> List[str]:
     locations = preferences.locations or ["Australia"]
     roles = preferences.target_roles or preferences.career_interests or ["graduate software engineer"]
+    levels = preferences.selected_experience_levels()
     queries = []
     for role in roles[:5]:
         for location in locations[:2]:
-            queries.append(f"{preferences.experience_level} {role} {location}")
+            for level in levels[:4]:
+                queries.append(f"{level} {role} {location}")
     queries.extend(
         [
             "entry-level data scientist Australia",
@@ -72,10 +75,12 @@ def targeted_queries(profile: CandidateProfile) -> List[str]:
     skills = [skill.name for skill in profile.skills[:8]]
     locations = profile.locations or ["Australia"]
     themes = profile.career_themes or profile.target_roles or ["software engineer"]
+    levels = profile.experience_levels or [profile.experience_level]
     queries = []
     for theme in themes[:4]:
         selected = " ".join(skills[:4])
-        queries.append(f"junior {theme} {selected} {locations[0]}")
+        for level in levels[:3]:
+            queries.append(f"{level} {theme} {selected} {locations[0]}")
     if {"python", "c++", "opencv"} & profile.supported_skill_names():
         queries.append("graduate computer vision engineer Python C++ Sydney")
     if "ros2" in profile.supported_skill_names():
@@ -101,8 +106,8 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     reasons: list[str] = []
     text = f"{job.title} {job.description} {job.experience_required}".lower()
 
-    if any(term in text for term in ["senior", "staff engineer", "lead engineer", "principal"]):
-        reasons.append("Role appears senior.")
+    if not has_experience_overlap(text, preferences.selected_experience_levels()):
+        reasons.append("Role experience level does not match preferences.")
 
     years = [int(value) for value in re.findall(r"(\d+)\+?\s*(?:years|yrs)", text)]
     if years and min(years) > preferences.max_years_experience:

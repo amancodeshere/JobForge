@@ -64,7 +64,8 @@ The repo also includes a GitHub Actions workflow that installs from `requirement
 
 - Candidate Profile Agent extracts CV-backed skills, projects, career themes, and evidence IDs.
 - Broad Opportunity Scout and Targeted Job Researcher search the sample/fallback jobs with different query strategies.
-- Job validation rejects senior, stale, wrong-employment-type, missing-description, and citizenship-gated roles.
+- Experience level is a multi-select, covering internship, graduate, entry-level, junior, associate, mid-level, senior, staff, principal, manager, and director searches.
+- Job validation rejects stale, wrong-employment-type, missing-description, citizenship-gated, and experience-level mismatched roles.
 - Relevance scoring is deterministic:
   - 30% required skill match
   - 15% preferred skill match

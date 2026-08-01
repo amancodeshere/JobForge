@@ -3,7 +3,9 @@ from __future__ import annotations
 from enum import Enum
 from typing import List, Optional
 
-from pydantic import BaseModel, Field, HttpUrl
+from pydantic import BaseModel, Field, model_validator
+
+from app.tools.experience_levels import normalize_experience_levels
 
 
 class EvidenceType(str, Enum):
@@ -39,11 +41,22 @@ class CandidatePreferences(BaseModel):
     career_interests: List[str] = Field(default_factory=list)
     locations: List[str] = Field(default_factory=list)
     experience_level: str = "graduate"
+    experience_levels: List[str] = Field(default_factory=list)
     employment_types: List[str] = Field(default_factory=lambda: ["Full-time"])
     max_years_experience: int = 2
     posted_within_days: int = 30
     work_rights: Optional[str] = None
     constraints: List[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def normalize_levels(self) -> "CandidatePreferences":
+        selected = self.experience_levels or [self.experience_level]
+        self.experience_levels = normalize_experience_levels(selected)
+        self.experience_level = self.experience_levels[0] if self.experience_levels else "graduate"
+        return self
+
+    def selected_experience_levels(self) -> List[str]:
+        return self.experience_levels or [self.experience_level]
 
 
 class CandidateProfile(BaseModel):
@@ -51,6 +64,7 @@ class CandidateProfile(BaseModel):
     target_roles: List[str] = Field(default_factory=list)
     locations: List[str] = Field(default_factory=list)
     experience_level: str = "graduate"
+    experience_levels: List[str] = Field(default_factory=lambda: ["graduate"])
     skills: List[SkillEvidence] = Field(default_factory=list)
     projects: List[Project] = Field(default_factory=list)
     eligibility: dict = Field(default_factory=dict)
@@ -74,4 +88,3 @@ class UserInput(BaseModel):
     cv_path: str
     preferences: CandidatePreferences
     output_path: str = "sample_data/expected_outputs/latest_run.json"
-

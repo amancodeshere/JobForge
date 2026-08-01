@@ -7,6 +7,7 @@ from typing import Iterable
 from app.schemas.application import Recommendation, ScoreBreakdown
 from app.schemas.candidate import CandidateProfile, CandidatePreferences
 from app.schemas.job import JobResult
+from app.tools.experience_levels import infer_job_experience_levels
 
 
 WEIGHTS = {
@@ -64,13 +65,18 @@ def _skill_match(required: Iterable[str], supported: set[str]) -> int:
 
 def _experience_score(job: JobResult, preferences: CandidatePreferences) -> int:
     text = f"{job.title} {job.description} {job.experience_required}".lower()
-    if any(term in text for term in ["graduate", "intern", "entry-level", "entry level", "junior"]):
+    selected = set(preferences.selected_experience_levels())
+    inferred = set(infer_job_experience_levels(text))
+    if inferred and inferred & selected:
         return 100
+    if inferred:
+        return 35
     if "0-2" in text or "0 to 2" in text or "0–2" in text:
-        return 95
+        early = {"internship", "graduate", "entry-level", "junior", "associate"}
+        return 95 if selected & early else 45
     if "3 years" in text or "3+ years" in text:
-        return 30
-    return 70 if preferences.experience_level.lower() in {"graduate", "internship"} else 80
+        return 75 if selected & {"associate", "mid-level", "senior"} else 30
+    return 70
 
 
 def _interest_score(job: JobResult, profile: CandidateProfile, preferences: CandidatePreferences) -> int:
@@ -128,4 +134,3 @@ def _parse_date(value: str | None) -> date | None:
 
 def _similar(a: str, b: str) -> float:
     return SequenceMatcher(None, a, b).ratio()
-

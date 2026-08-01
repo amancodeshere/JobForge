@@ -16,6 +16,13 @@
     "Remote Australia"
   ],
   "experience_level": "graduate",
+  "experience_levels": [
+    "graduate",
+    "internship",
+    "entry-level",
+    "junior",
+    "associate"
+  ],
   "employment_types": [
     "Full-time"
   ],
@@ -27,4 +34,3 @@
     "No roles requiring more than two years of experience"
   ]
 }
-

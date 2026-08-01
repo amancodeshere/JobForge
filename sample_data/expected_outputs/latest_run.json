@@ -12,6 +12,13 @@
       "Remote Australia"
     ],
     "experience_level": "graduate",
+    "experience_levels": [
+      "graduate",
+      "internship",
+      "entry-level",
+      "junior",
+      "associate"
+    ],
     "skills": [
       {
         "name": "C++",
@@ -1005,7 +1012,7 @@
       "execution_errors": 0,
       "notes": [
         "job-012: Posted more than 30 days ago.",
-        "job-009: Role appears senior., Requires more than 2 years of experience.",
+        "job-009: Role experience level does not match preferences., Requires more than 2 years of experience.",
         "job-011: Requires Australian citizenship.",
         "job-010: Employment type does not match preferences."
       ]
