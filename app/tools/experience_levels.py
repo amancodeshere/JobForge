@@ -16,6 +16,7 @@ EXPERIENCE_LEVELS = [
     "principal",
     "manager",
     "director",
+    "executive",
 ]
 
 LEVEL_ALIASES = {
@@ -36,6 +37,11 @@ LEVEL_ALIASES = {
     "principal": "principal",
     "manager": "manager",
     "director": "director",
+    "executive": "executive",
+    "vice president": "executive",
+    "vp": "executive",
+    "chief": "executive",
+    "c-suite": "executive",
 }
 
 
@@ -68,6 +74,7 @@ def infer_job_experience_levels(text: str) -> List[str]:
         ("principal", r"\bprincipal\b"),
         ("manager", r"\bmanager\b"),
         ("director", r"\bdirector\b"),
+        ("executive", r"\b(?:executive|vice president|vp|chief|c[-\s]?suite)\b"),
     ]
     for level, pattern in patterns:
         if re.search(pattern, lowered):
@@ -80,4 +87,3 @@ def has_experience_overlap(job_text: str, allowed_levels: Iterable[str]) -> bool
     if not inferred:
         return True
     return bool(inferred & set(normalize_experience_levels(allowed_levels)))
-

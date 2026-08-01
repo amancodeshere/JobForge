@@ -1,5 +1,6 @@
 from app.schemas.candidate import CandidatePreferences
 from app.schemas.job import JobResult
+from app.tools.experience_levels import infer_job_experience_levels
 from app.tools.job_search import broad_queries, load_jobs_from_json, validate_job
 
 
@@ -48,6 +49,12 @@ def test_broad_queries_use_multiple_experience_levels():
     assert "graduate machine learning engineer Sydney" in queries
     assert "internship machine learning engineer Sydney" in queries
     assert "associate machine learning engineer Sydney" in queries
+
+
+def test_executive_titles_are_supported():
+    levels = infer_job_experience_levels("Chief Operating Officer on the executive leadership team")
+
+    assert "executive" in levels
 
 
 def test_job_validation_ignores_senior_colleague_mentions():
