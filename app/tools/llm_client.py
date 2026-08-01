@@ -111,7 +111,10 @@ def _application_prompt(
             "skills": [skill.model_dump() for skill in profile.skills],
             "evidence": evidence,
         },
-        "job": job.model_dump(),
+        "job": {
+            **job.model_dump(exclude={"description"}),
+            "description": job.description[:12000],
+        },
         "matches": [match.model_dump() for match in matching],
         "skill_gaps": gaps,
         "required_evidence_statements": [statement.model_dump() for statement in statements],

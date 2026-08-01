@@ -1,12 +1,13 @@
 # JobForge
 
-JobForge is a hackathon-ready multi-agent employability assistant. It reads a candidate CV and preferences, discovers jobs from a controlled fallback dataset, validates eligibility, ranks matches with deterministic scoring, and generates grounded application packages.
+JobForge is a multi-agent employability assistant. It reads a candidate CV and preferences, discovers current jobs from live provider APIs and public company boards, validates eligibility, ranks matches with deterministic scoring, and generates grounded application packages. A controlled sample dataset remains available for offline demos and tests.
 
 ## Quick start
 
 ```bash
 uv sync --extra dev
 uv run python main.py run
+uv run python main.py run --live
 uv run python main.py validate
 uv run python main.py doctor
 uv run pytest
@@ -29,6 +30,11 @@ OPENAI_API_KEY=your_api_key
 OPENAI_MODEL=gpt-5-mini
 JOBFORGE_USE_OPENAI=true
 JOBFORGE_DEMO_DATE=2026-08-01
+ADZUNA_APP_ID=your_adzuna_app_id
+ADZUNA_APP_KEY=your_adzuna_app_key
+ADZUNA_COUNTRY=au
+JOBFORGE_GREENHOUSE_BOARDS=Canonical=canonical,Culture Amp=cultureamp
+JOBFORGE_LEVER_SITES=Deputy=deputy
 ```
 
 Optional cost-saving mode:
@@ -63,9 +69,11 @@ The repo also includes a GitHub Actions workflow that installs from `requirement
 ## What works
 
 - Candidate Profile Agent extracts CV-backed skills, projects, career themes, and evidence IDs.
-- Broad Opportunity Scout and Targeted Job Researcher search the sample/fallback jobs with different query strategies.
+- Broad Opportunity Scout searches Adzuna when credentials are configured and can optionally use Remotive.
+- Targeted Job Researcher reads current postings from configured Greenhouse and Lever company boards. Canonical's public Greenhouse board is enabled by default so live mode works without an API key.
 - Experience level is a multi-select, covering internship, graduate, entry-level, junior, associate, mid-level, senior, staff, principal, manager, and director searches.
 - Job validation rejects stale, wrong-employment-type, missing-description, citizenship-gated, and experience-level mismatched roles.
+- Candidate exclusions support exact company names and title/description keywords; JSON constraints can also use `Exclude company: ...` or `Exclude keyword: ...`.
 - Relevance scoring is deterministic:
   - 30% required skill match
   - 15% preferred skill match
@@ -89,6 +97,25 @@ uv run python main.py run \
   --output sample_data/expected_outputs/latest_run.json \
   --top-n 5
 ```
+
+Live search:
+
+```bash
+uv run python main.py run --live --no-sample-fallback
+```
+
+Live runs report their exact mode and sources. If all live sources fail or return no records, the default behavior is an explicitly labelled `sample_fallback`; use `--no-sample-fallback` when only current listings are acceptable.
+
+## Live job sources
+
+- **Adzuna** provides broad geographic and keyword search. Create credentials at the Adzuna developer portal and set `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.
+- **Greenhouse** public job-board GET endpoints require no key. Configure comma-separated `Company=board_token` entries in `JOBFORGE_GREENHOUSE_BOARDS`.
+- **Lever** public postings endpoints require no key. Configure comma-separated `Company=site_token` entries in `JOBFORGE_LEVER_SITES`.
+- **Remotive** is opt-in with `JOBFORGE_ENABLE_REMOTIVE=true`. Its public API requires source attribution and has strict rate guidance, so it is disabled by default for multi-user deployments.
+
+JobForge links candidates back to the provider's original listing and shows the source on every result. It does not scrape logged-in job boards or submit applications automatically.
+
+See [docs/live-search.md](docs/live-search.md) for provider behavior, configuration, safety boundaries, and the Agent Reach evaluation.
 
 Use a real PDF or DOCX with `--cv path/to/cv.pdf`. PDF parsing uses `pypdf`; DOCX parsing uses `python-docx`.
 
@@ -128,4 +155,4 @@ Each stage exchanges Pydantic JSON objects and emits a validation checkpoint.
 
 ## Extension points
 
-Replace `app/tools/job_search.py` with approved job-search APIs or company career feeds. Keep the output as `JobResult` objects so deduplication, validation, scoring, and dashboard rendering continue to work.
+Add providers behind `app/tools/live_job_search.py` and normalize their output to `JobResult` objects so deduplication, validation, scoring, and dashboard rendering continue to work.

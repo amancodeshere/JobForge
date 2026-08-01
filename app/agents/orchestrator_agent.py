@@ -69,7 +69,7 @@ class OrchestratorAgent:
         health.append(
             AgentHealth(
                 agent=self.broad_agent.name,
-                status="completed",
+                status="completed_with_issues" if self.broad_agent.last_outcome.source_errors else "completed",
                 tool_calls=self.broad_agent.tool_calls,
                 valid_results=len(broad_jobs),
                 execution_errors=len(self.broad_agent.last_outcome.source_errors),
@@ -81,7 +81,7 @@ class OrchestratorAgent:
         health.append(
             AgentHealth(
                 agent=self.targeted_agent.name,
-                status="completed",
+                status="completed_with_issues" if self.targeted_agent.last_outcome.source_errors else "completed",
                 tool_calls=self.targeted_agent.tool_calls,
                 valid_results=len(targeted_jobs),
                 execution_errors=len(self.targeted_agent.last_outcome.source_errors),

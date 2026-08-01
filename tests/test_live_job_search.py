@@ -192,3 +192,13 @@ def test_duplicate_provider_results_are_collapsed():
     )
 
     assert len(result.jobs) == 1
+
+
+def test_default_config_has_zero_key_live_source(monkeypatch):
+    monkeypatch.delenv("JOBFORGE_GREENHOUSE_BOARDS", raising=False)
+    monkeypatch.delenv("JOBFORGE_ENABLE_REMOTIVE", raising=False)
+
+    config = LiveSearchConfig.from_env()
+
+    assert config.greenhouse_boards == (CompanyBoard("Canonical", "canonical"),)
+    assert config.enable_remotive is False

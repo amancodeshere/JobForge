@@ -4,6 +4,7 @@ import os
 from pathlib import Path
 
 from app.schemas.application import ValidationCheck, WorkflowResult
+from app.tools.live_job_search import LiveSearchConfig
 
 
 REQUIRED_FILES = [
@@ -40,6 +41,7 @@ def deployment_readiness_checks(
         _check_railway_config(base / "railway.toml"),
         _check_saved_payload(base / output_path),
         _check_openai_env(require_openai),
+        _check_live_search_config(),
     ]
     return checks
 
@@ -113,6 +115,25 @@ def _check_openai_env(require_openai: bool) -> ValidationCheck:
         issues.append(f"OPENAI_MODEL is {model}; expected gpt-5-mini for the planned cheap deployment.")
     return ValidationCheck(
         part="openai_env",
+        passed=not issues,
+        issues=issues,
+    )
+
+
+def _check_live_search_config() -> ValidationCheck:
+    config = LiveSearchConfig.from_env()
+    sources = []
+    if config.adzuna_app_id and config.adzuna_app_key:
+        sources.append("Adzuna")
+    if config.greenhouse_boards:
+        sources.append("Greenhouse")
+    if config.lever_sites:
+        sources.append("Lever")
+    if config.enable_remotive:
+        sources.append("Remotive")
+    issues = [] if sources else ["No live job source is configured."]
+    return ValidationCheck(
+        part="live_search_config",
         passed=not issues,
         issues=issues,
     )

@@ -1,6 +1,7 @@
 {
   "candidate_profile": {
     "candidate_id": "candidate-001",
+    "candidate_name": "Aman Sharma",
     "target_roles": [
       "machine learning engineer",
       "data scientist",
@@ -67,7 +68,7 @@
       {
         "name": "Machine Learning",
         "category": "machine_learning",
-        "evidence_type": "learning",
+        "evidence_type": "inferred_from_project",
         "evidence_ids": [
           "cv-003",
           "cv-006"
@@ -76,7 +77,7 @@
       {
         "name": "PyTorch",
         "category": "machine_learning",
-        "evidence_type": "learning",
+        "evidence_type": "inferred_from_project",
         "evidence_ids": [
           "cv-004",
           "cv-006"
@@ -85,7 +86,7 @@
       {
         "name": "Transformers",
         "category": "machine_learning",
-        "evidence_type": "learning",
+        "evidence_type": "inferred_from_project",
         "evidence_ids": [
           "cv-004",
           "cv-006"
@@ -153,45 +154,6 @@
       }
     ],
     "projects": [
-      {
-        "name": "Bachelor of Engineering, Software Engineering, UNSW",
-        "description": "Bachelor of Engineering, Software Engineering, UNSW",
-        "technologies": [],
-        "evidence_ids": [
-          "cv-002"
-        ]
-      },
-      {
-        "name": "Graduate software engineer interested in machine learning, data",
-        "description": "Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.",
-        "technologies": [
-          "Machine Learning"
-        ],
-        "evidence_ids": [
-          "cv-003"
-        ]
-      },
-      {
-        "name": "Skills",
-        "description": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
-        "technologies": [
-          "C++",
-          "FastAPI",
-          "Java",
-          "Next.js",
-          "PostgreSQL",
-          "PyTorch",
-          "Python",
-          "ROS2",
-          "SQL",
-          "Transformers",
-          "TypeScript",
-          "YOLO"
-        ],
-        "evidence_ids": [
-          "cv-004"
-        ]
-      },
       {
         "name": "sUNSWim Robotics project",
         "description": "sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.",
@@ -330,6 +292,11 @@
     ],
     "source_cv": "sample_data/cvs/aman_sharma_cv.txt"
   },
+  "search_mode": "sample",
+  "search_sources": [
+    "sample"
+  ],
+  "search_warnings": [],
   "discovered_count": 12,
   "validated_count": 8,
   "recommended_count": 5,
@@ -748,15 +715,15 @@
         "status": "validated",
         "rejection_reasons": []
       },
-      "relevance_score": 95,
+      "relevance_score": 94,
       "score_breakdown": {
-        "overall_score": 95,
+        "overall_score": 94,
         "components": {
           "required_skills": 100,
           "preferred_skills": 67,
           "experience_level": 100,
           "career_interest": 100,
-          "project_similarity": 100,
+          "project_similarity": 87,
           "eligibility": 100,
           "freshness": 100
         },
@@ -851,43 +818,43 @@
       }
     },
     {
-      "job_id": "job-008",
+      "job_id": "job-003",
       "job": {
-        "job_id": "job-008",
-        "title": "AI Product Engineering Intern",
-        "company": "Northstar Health",
-        "location": "Remote Australia",
+        "job_id": "job-003",
+        "title": "Graduate Data Scientist",
+        "company": "Southern Analytics",
+        "location": "Sydney",
         "employment_type": "Full-time",
-        "description": "Internship converting AI prototypes into web workflows. Required: Python, TypeScript. Preferred: FastAPI, Next.js, Machine Learning.",
-        "source": "sample-internship-feed",
-        "application_url": "https://example.com/jobs/ai-product-engineering-intern",
+        "description": "Graduate data scientist role using Python and SQL for experimentation, dashboards and model evaluation. Required: Python, SQL. Preferred: Machine Learning, PostgreSQL, Power BI.",
+        "source": "sample-job-api",
+        "application_url": "https://example.com/jobs/graduate-data-scientist",
         "date_found": "2026-08-01",
-        "date_posted": "2026-07-07",
+        "date_posted": "2026-07-20",
         "required_skills": [
           "Python",
-          "TypeScript"
+          "SQL"
         ],
         "preferred_skills": [
-          "FastAPI",
-          "Next.js",
-          "Machine Learning"
+          "Machine Learning",
+          "PostgreSQL",
+          "Power BI"
         ],
-        "experience_required": "Internship",
+        "experience_required": "Graduate",
         "eligibility_requirements": [],
         "status": "validated",
         "rejection_reasons": []
       },
-      "relevance_score": 94,
+      "relevance_score": 93,
       "score_breakdown": {
-        "overall_score": 94,
+        "overall_score": 93,
         "components": {
           "required_skills": 100,
-          "preferred_skills": 100,
+          "preferred_skills": 67,
           "experience_level": 100,
-          "career_interest": 80,
-          "project_similarity": 96,
+          "career_interest": 100,
+          "project_similarity": 89,
           "eligibility": 100,
-          "freshness": 58
+          "freshness": 80
         },
         "weights": {
           "required_skills": 0.3,
@@ -900,7 +867,7 @@
         }
       },
       "recommendation": "strongly_apply",
-      "job_summary": "AI Product Engineering Intern at Northstar Health in Remote Australia. The role emphasizes Python, TypeScript.",
+      "job_summary": "Graduate Data Scientist at Southern Analytics in Sydney. The role emphasizes Python, SQL.",
       "matching_evidence": [
         {
           "requirement": "Python",
@@ -912,26 +879,11 @@
           ]
         },
         {
-          "requirement": "TypeScript",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
-          "evidence_ids": [
-            "cv-004"
-          ]
-        },
-        {
-          "requirement": "FastAPI",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
+          "requirement": "SQL",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.",
           "evidence_ids": [
             "cv-004",
-            "cv-007"
-          ]
-        },
-        {
-          "requirement": "Next.js",
-          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL.",
-          "evidence_ids": [
-            "cv-004",
-            "cv-007"
+            "cv-008"
           ]
         },
         {
@@ -941,10 +893,19 @@
             "cv-003",
             "cv-006"
           ]
+        },
+        {
+          "requirement": "PostgreSQL",
+          "candidate_evidence": "Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
+          "evidence_ids": [
+            "cv-004"
+          ]
         }
       ],
-      "skill_gaps": [],
-      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting AI Product Engineering Intern roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nNo major listed skill gaps identified from the job description.",
+      "skill_gaps": [
+        "Power BI"
+      ],
+      "tailored_cv": "# Tailored CV Draft\n\n## Targeted Profile\nGraduate software engineering candidate targeting Graduate Data Scientist roles, with CV-backed evidence in C++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js.\n\n## Relevant Skills\nC++, Java, Python, SQL, TypeScript, Machine Learning, PyTorch, Transformers, YOLO, Computer Vision, OpenCV, ROS2, FastAPI, Next.js\n\n## Selected Evidence-Based Highlights\n- Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.\n- Applied Machine Learning in work evidenced by: Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.\n\n## Gaps To Avoid Overclaiming\nPower BI",
       "tailored_statements": [
         {
           "tailored_bullet": "Applied Python in work evidenced by: Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.",
@@ -959,10 +920,11 @@
           ]
         }
       ],
-      "cover_letter": "Dear Northstar Health hiring team,\n\nI am applying for the AI Product Engineering Intern role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows TypeScript through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.. My CV shows FastAPI through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Full-stack development project: Built a Next.js and FastAPI application backed by PostgreSQL..\n\nI would welcome the chance to contribute careful engineering work to Northstar Health while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
+      "cover_letter": "Dear Southern Analytics hiring team,\n\nI am applying for the Graduate Data Scientist role because it aligns with my interest in ai engineer, ai engineering, computer vision and my graduate-level background. My CV shows Python through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; sUNSWim Robotics project: Developed computer vision components using Python, OpenCV and YOLO for an autonomous underwater vehicle.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows SQL through Skills: Python, C++, SQL, Java, TypeScript, PyTorch, Transformers, YOLO, Next.js, FastAPI, PostgreSQL, ROS2, OpenCV.; Data analysis project: Used SQL and Python to clean, query and analyse structured datasets.. My CV shows Machine Learning through Graduate software engineer interested in machine learning, data science, AI engineering and software engineering roles.; Machine learning project: Implemented PyTorch and Transformers experiments for text classification and model evaluation.. I would treat Power BI as early ramp-up areas rather than overstate them.\n\nI would welcome the chance to contribute careful engineering work to Southern Analytics while continuing to build depth in the technologies used by the team.\n\nKind regards,\nAman Sharma",
       "interview_preparation_topics": [
         "Refresh Python",
-        "Refresh TypeScript"
+        "Refresh SQL",
+        "Prepare honest gap explanation for Power BI"
       ],
       "generation_source": "deterministic",
       "quality_checks": {
@@ -1013,7 +975,7 @@
       "notes": [
         "job-012: Posted more than 30 days ago.",
         "job-009: Role experience level does not match preferences., Requires more than 2 years of experience.",
-        "job-011: Requires Australian citizenship.",
+        "job-011: Location does not match preferences., Requires Australian citizenship.",
         "job-010: Employment type does not match preferences."
       ]
     },
