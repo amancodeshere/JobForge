@@ -843,11 +843,12 @@ if job_labels:
     if application.tailored_cv_latex:
         cv_tab.caption("Generated from validated CV evidence using JobForge's trusted LaTeX template.")
         try:
-            with cv_tab.spinner("Compiling verified PDF"):
-                cv_pdf, cv_engine, cv_pages = _compile_cv_pdf(
-                    application.tailored_cv_latex,
-                    result.candidate_profile.candidate_name,
-                )
+            with cv_tab:
+                with st.spinner("Compiling verified PDF"):
+                    cv_pdf, cv_engine, cv_pages = _compile_cv_pdf(
+                        application.tailored_cv_latex,
+                        result.candidate_profile.candidate_name,
+                    )
             cv_tab.download_button(
                 "Download tailored CV PDF",
                 cv_pdf,
