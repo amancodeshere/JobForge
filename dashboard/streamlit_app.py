@@ -64,13 +64,71 @@ def _inject_theme() -> None:
         [data-testid="stSidebar"] * {
             color: var(--jf-ink);
         }
-        [data-testid="stSidebar"] input,
-        [data-testid="stSidebar"] textarea,
-        [data-testid="stSidebar"] [data-baseweb="select"] * {
-            color: #111827;
-        }
         h1, h2, h3, h4, h5, h6, p, label, span, div {
             color: var(--jf-ink);
+        }
+        .stTextInput input,
+        .stNumberInput input,
+        .stTextArea textarea,
+        [data-testid="stSidebar"] .stTextInput input,
+        [data-testid="stSidebar"] .stNumberInput input,
+        [data-testid="stSidebar"] .stTextArea textarea {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: #f8fafc;
+            caret-color: var(--jf-teal);
+            border-radius: 8px;
+        }
+        .stTextInput input::placeholder,
+        .stNumberInput input::placeholder,
+        .stTextArea textarea::placeholder {
+            color: #94a3b8;
+            opacity: 1;
+        }
+        .stTextInput input:focus,
+        .stNumberInput input:focus,
+        .stTextArea textarea:focus {
+            border-color: var(--jf-teal);
+            box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.45);
+        }
+        div[data-baseweb="select"] > div,
+        [data-testid="stSidebar"] div[data-baseweb="select"] > div {
+            background-color: #0f172a;
+            border-color: #334155;
+            border-radius: 8px;
+        }
+        div[data-baseweb="select"] input,
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] svg,
+        [data-testid="stSidebar"] div[data-baseweb="select"] input,
+        [data-testid="stSidebar"] div[data-baseweb="select"] span,
+        [data-testid="stSidebar"] div[data-baseweb="select"] svg {
+            color: #f8fafc;
+            fill: #f8fafc;
+        }
+        div[data-baseweb="tag"] {
+            background-color: rgba(45, 212, 191, 0.16);
+            border: 1px solid rgba(45, 212, 191, 0.36);
+        }
+        div[data-baseweb="popover"],
+        ul[role="listbox"] {
+            background-color: #111827;
+            border: 1px solid #334155;
+        }
+        li[role="option"],
+        li[role="option"] span {
+            color: #f8fafc;
+        }
+        li[role="option"]:hover {
+            background-color: #1e293b;
+        }
+        [data-testid="stFileUploader"] section {
+            background-color: rgba(15, 23, 42, 0.72);
+            border-color: #334155;
+            border-radius: 8px;
+        }
+        [data-testid="stFileUploader"] section * {
+            color: #f8fafc;
         }
         .jf-title {
             border: 1px solid var(--jf-line);
