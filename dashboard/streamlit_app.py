@@ -33,34 +33,39 @@ def _inject_theme() -> None:
         """
         <style>
         :root {
-            --jf-bg: #0b1020;
-            --jf-bg-soft: #111827;
-            --jf-sidebar: #07111f;
-            --jf-surface: #141c2f;
-            --jf-surface-2: #19243a;
-            --jf-line: #2b3a55;
+            --jf-bg: #090e18;
+            --jf-bg-soft: #0f1726;
+            --jf-sidebar: #07101c;
+            --jf-surface: #131d30;
+            --jf-surface-2: #18243a;
+            --jf-line: #2a3a54;
             --jf-ink: #f6f8ff;
-            --jf-muted: #aebbd2;
+            --jf-muted: #b8c4d8;
             --jf-teal: #2dd4bf;
-            --jf-blue: #60a5fa;
-            --jf-violet: #a78bfa;
+            --jf-teal-soft: #99f6e4;
+            --jf-blue: #77a9ff;
             --jf-amber: #fbbf24;
             --jf-danger: #fb7185;
+            --jf-radius: 10px;
         }
         .stApp {
-            background:
-                radial-gradient(circle at top left, rgba(45, 212, 191, 0.16), transparent 28rem),
-                radial-gradient(circle at top right, rgba(96, 165, 250, 0.14), transparent 26rem),
-                linear-gradient(180deg, var(--jf-bg) 0%, #0f172a 52%, #121826 100%);
+            background-color: var(--jf-bg);
             color: var(--jf-ink);
         }
         .block-container {
-            padding-top: 1.5rem;
-            max-width: 1180px;
+            padding-top: 1.75rem;
+            padding-bottom: 4rem;
+            max-width: 1240px;
         }
         [data-testid="stSidebar"] {
-            background: linear-gradient(180deg, var(--jf-sidebar) 0%, #0d1b2f 100%);
+            background: var(--jf-sidebar);
             border-right: 1px solid var(--jf-line);
+            min-width: 320px;
+            max-width: 320px;
+        }
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            min-width: 256px;
+            max-width: 256px;
         }
         [data-testid="stSidebar"] * {
             color: var(--jf-ink);
@@ -69,7 +74,14 @@ def _inject_theme() -> None:
             color: var(--jf-ink);
         }
         h2, h3 {
-            letter-spacing: 0;
+            letter-spacing: -0.02em;
+        }
+        [data-testid="stBaseButton-header"] {
+            display: none;
+        }
+        header[data-testid="stHeader"] {
+            background: rgba(9, 14, 24, 0.94);
+            border-bottom: 1px solid rgba(42, 58, 84, 0.5);
         }
         .stTextInput input,
         .stNumberInput input,
@@ -81,7 +93,7 @@ def _inject_theme() -> None:
             border: 1px solid #334155;
             color: #f8fafc;
             caret-color: var(--jf-teal);
-            border-radius: 8px;
+            border-radius: var(--jf-radius);
         }
         .stTextInput input::placeholder,
         .stNumberInput input::placeholder,
@@ -93,13 +105,13 @@ def _inject_theme() -> None:
         .stNumberInput input:focus,
         .stTextArea textarea:focus {
             border-color: var(--jf-teal);
-            box-shadow: 0 0 0 1px rgba(45, 212, 191, 0.45);
+            box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.18);
         }
         div[data-baseweb="select"] > div,
         [data-testid="stSidebar"] div[data-baseweb="select"] > div {
             background-color: #0f172a;
             border-color: #334155;
-            border-radius: 8px;
+            border-radius: var(--jf-radius);
         }
         div[data-baseweb="select"] input,
         div[data-baseweb="select"] span,
@@ -129,29 +141,32 @@ def _inject_theme() -> None:
         [data-testid="stFileUploader"] section {
             background-color: rgba(15, 23, 42, 0.72);
             border-color: #334155;
-            border-radius: 8px;
+            border-radius: var(--jf-radius);
         }
         [data-testid="stFileUploader"] section * {
             color: #f8fafc;
         }
         .jf-title {
             border: 1px solid var(--jf-line);
-            border-left: 6px solid var(--jf-teal);
-            background: linear-gradient(135deg, rgba(20, 28, 47, 0.96), rgba(25, 36, 58, 0.88));
-            border-radius: 8px;
-            padding: 1.15rem 1.25rem;
-            margin-bottom: 1.25rem;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+            background: var(--jf-surface);
+            border-radius: var(--jf-radius);
+            padding: 1.4rem 1.5rem;
+            margin-bottom: 1.1rem;
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
         }
         .jf-title h1 {
-            font-size: 2.6rem;
+            font-size: clamp(2.35rem, 5vw, 3.35rem);
             margin: 0;
-            letter-spacing: 0;
+            letter-spacing: -0.04em;
+            line-height: 0.95;
+            white-space: nowrap;
             color: var(--jf-ink);
         }
         .jf-title p {
             color: var(--jf-muted);
-            margin: 0.2rem 0 0;
+            margin: 0.55rem 0 0;
+            max-width: 58ch;
+            line-height: 1.5;
         }
         .jf-hero-row {
             display: flex;
@@ -164,7 +179,7 @@ def _inject_theme() -> None:
             background: rgba(45, 212, 191, 0.1);
             color: #cffff8;
             border-radius: 999px;
-            padding: 0.28rem 0.7rem;
+            padding: 0.35rem 0.75rem;
             font-size: 0.78rem;
             font-weight: 700;
             white-space: nowrap;
@@ -177,10 +192,9 @@ def _inject_theme() -> None:
         div[data-testid="stMetric"] {
             background: var(--jf-surface);
             border: 1px solid var(--jf-line);
-            border-top: 4px solid var(--jf-blue);
-            border-radius: 8px;
-            padding: 0.9rem;
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.18);
+            border-radius: var(--jf-radius);
+            padding: 1rem 1.05rem;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
         }
         div[data-testid="stMetric"] label,
         div[data-testid="stMetric"] [data-testid="stMetricValue"] {
@@ -189,22 +203,30 @@ def _inject_theme() -> None:
         div.stButton > button,
         div.stDownloadButton > button,
         a[data-testid="stLinkButton"] {
-            border-radius: 8px;
+            min-height: 44px;
+            border-radius: var(--jf-radius);
             border: 1px solid var(--jf-teal);
-            background: linear-gradient(135deg, #0f766e, #2563eb);
-            color: #ffffff;
-            font-weight: 650;
+            background: var(--jf-teal);
+            color: #06111f;
+            font-weight: 750;
         }
         div.stButton > button:hover,
         div.stDownloadButton > button:hover,
         a[data-testid="stLinkButton"]:hover {
-            border-color: var(--jf-amber);
-            background: linear-gradient(135deg, #2563eb, #7c3aed);
-            color: white;
+            border-color: var(--jf-teal-soft);
+            background: var(--jf-teal-soft);
+            color: #06111f;
+            transform: translateY(-1px);
+        }
+        div.stButton > button:focus-visible,
+        div.stDownloadButton > button:focus-visible,
+        .jf-verify:focus-visible {
+            outline: 3px solid rgba(251, 191, 36, 0.7);
+            outline-offset: 3px;
         }
         div[data-testid="stDataFrame"] {
             border: 1px solid var(--jf-line);
-            border-radius: 8px;
+            border-radius: var(--jf-radius);
             overflow: hidden;
             background: var(--jf-surface);
         }
@@ -218,7 +240,7 @@ def _inject_theme() -> None:
         }
         .jf-section-title h2 {
             margin: 0;
-            font-size: 1.25rem;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
         }
         .jf-grid {
             display: grid;
@@ -228,17 +250,19 @@ def _inject_theme() -> None:
         }
         .jf-card {
             min-height: 210px;
-            background: linear-gradient(180deg, rgba(25, 36, 58, 0.96), rgba(20, 28, 47, 0.96));
+            background: var(--jf-surface);
             border: 1px solid var(--jf-line);
-            border-radius: 8px;
-            padding: 1rem;
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+            border-radius: var(--jf-radius);
+            padding: 1.05rem;
+            box-shadow: 0 14px 34px rgba(0, 0, 0, 0.22);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
         .jf-card:hover {
             border-color: rgba(45, 212, 191, 0.7);
+            transform: translateY(-2px);
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.3);
         }
         .jf-card-top {
             display: flex;
@@ -261,8 +285,8 @@ def _inject_theme() -> None:
             min-width: 3.4rem;
             text-align: center;
             color: #06111f;
-            background: linear-gradient(135deg, var(--jf-teal), var(--jf-blue));
-            border-radius: 8px;
+            background: var(--jf-teal);
+            border-radius: var(--jf-radius);
             padding: 0.45rem 0.35rem;
             font-weight: 850;
         }
@@ -306,8 +330,8 @@ def _inject_theme() -> None:
             color: #06111f !important;
             background: var(--jf-teal);
             border: 1px solid var(--jf-teal);
-            border-radius: 8px;
-            padding: 0.42rem 0.72rem;
+            border-radius: var(--jf-radius);
+            padding: 0.55rem 0.78rem;
             text-decoration: none !important;
             font-weight: 800;
             white-space: nowrap;
@@ -318,9 +342,9 @@ def _inject_theme() -> None:
             color: #06111f !important;
         }
         .jf-panel {
-            background: rgba(20, 28, 47, 0.74);
+            background: var(--jf-surface);
             border: 1px solid var(--jf-line);
-            border-radius: 8px;
+            border-radius: var(--jf-radius);
             padding: 1rem;
             margin-bottom: 0.9rem;
         }
@@ -363,6 +387,136 @@ def _inject_theme() -> None:
         .jf-link:hover {
             color: var(--jf-amber);
         }
+        .jf-mode-strip {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 0.55rem;
+            color: var(--jf-muted);
+            font-size: 0.86rem;
+            margin: 0.9rem 0 1.35rem;
+        }
+        .jf-mode-strip strong {
+            color: var(--jf-ink);
+        }
+        .jf-source {
+            border: 1px solid rgba(45, 212, 191, 0.32);
+            background: rgba(45, 212, 191, 0.08);
+            color: var(--jf-teal-soft);
+            border-radius: 999px;
+            padding: 0.2rem 0.55rem;
+            font-weight: 700;
+        }
+        .jf-empty {
+            border: 1px solid var(--jf-line);
+            background: var(--jf-surface);
+            border-radius: var(--jf-radius);
+            padding: clamp(1.25rem, 4vw, 2.5rem);
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.24);
+        }
+        .jf-empty h2 {
+            margin: 0 0 0.55rem;
+            font-size: clamp(1.55rem, 4vw, 2.1rem);
+        }
+        .jf-empty p {
+            color: var(--jf-muted);
+            max-width: 65ch;
+            line-height: 1.55;
+        }
+        .jf-steps {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 1rem;
+            margin-top: 1.4rem;
+        }
+        .jf-step {
+            border-top: 1px solid var(--jf-line);
+            padding-top: 0.85rem;
+        }
+        .jf-step strong {
+            display: block;
+            color: var(--jf-ink);
+            margin-bottom: 0.25rem;
+        }
+        .jf-step span {
+            color: var(--jf-muted);
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        [data-testid="stExpander"] {
+            border-color: var(--jf-line);
+            border-radius: var(--jf-radius);
+            background: rgba(15, 23, 38, 0.48);
+        }
+        .jf-check-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.65rem;
+        }
+        .jf-check {
+            border: 1px solid var(--jf-line);
+            border-radius: var(--jf-radius);
+            padding: 0.75rem;
+            color: var(--jf-muted);
+        }
+        .jf-check strong {
+            color: var(--jf-teal-soft);
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+        @media (prefers-reduced-motion: no-preference) {
+            .jf-card,
+            div.stButton > button,
+            div.stDownloadButton > button {
+                transition: transform 160ms ease-out, border-color 160ms ease-out, box-shadow 160ms ease-out, background 160ms ease-out;
+            }
+        }
+        @media (max-width: 700px) {
+            .block-container {
+                padding: 1rem 1rem 3rem;
+            }
+            .jf-title {
+                padding: 1.1rem;
+            }
+            .jf-hero-row {
+                display: block;
+            }
+            .jf-title h1 {
+                font-size: 2.45rem;
+                white-space: normal;
+                overflow-wrap: normal;
+                word-break: keep-all;
+            }
+            .jf-pill {
+                display: inline-block;
+                margin-top: 1rem;
+            }
+            .jf-section-title {
+                display: block;
+            }
+            .jf-section-title .jf-muted {
+                display: block;
+                margin-top: 0.3rem;
+            }
+            .jf-grid,
+            .jf-steps {
+                grid-template-columns: 1fr;
+            }
+            .jf-card {
+                min-height: 0;
+            }
+            .jf-link-row {
+                align-items: stretch;
+                flex-direction: column;
+            }
+            .jf-verify {
+                text-align: center;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -378,7 +532,7 @@ st.markdown(
           <h1>JobForge</h1>
           <p>Grounded job discovery, ranking, and tailored applications.</p>
         </div>
-        <div class="jf-pill">Live-search capable</div>
+        <div class="jf-pill">Live search · evidence grounded</div>
       </div>
     </div>
     """,
@@ -386,35 +540,55 @@ st.markdown(
 )
 
 with st.sidebar:
-    st.subheader("Run")
-    uploaded_cv = st.file_uploader("CV", type=["pdf", "docx", "txt", "md"])
-    uploaded_jobs = st.file_uploader("Jobs JSON", type=["json"])
-    use_sample_cv = st.checkbox("Use sample CV", value=True)
-    use_live_search = st.checkbox("Search live jobs", value=True)
-    sample_fallback = st.checkbox("Use sample jobs if live search is unavailable", value=True)
-    interests = st.text_area(
-        "Career interests",
-        "machine learning engineering\ndata science\nAI engineering\nsoftware engineering",
-    )
-    locations = st.text_input("Locations", "Sydney, Remote Australia")
-    experience_levels = st.multiselect(
-        "Experience levels",
-        EXPERIENCE_LEVELS,
-        default=["internship", "graduate", "entry-level", "junior", "associate"],
-    )
-    employment_types = st.text_input("Employment types", "Full-time")
-    max_years = st.number_input("Max years required", min_value=0, max_value=10, value=2)
-    posted_within = st.number_input("Posted within days", min_value=1, max_value=365, value=30)
-    work_rights = st.text_input("Work rights", "Australian unrestricted work rights")
-    excluded_companies = st.text_input("Excluded companies", "", help="Comma-separated exact company names")
-    excluded_keywords = st.text_input("Excluded keywords", "", help="Comma-separated terms to reject in titles or descriptions")
-    top_n = st.number_input("Application packages", min_value=1, max_value=10, value=5)
-    run_clicked = st.button("Run agents", type="primary")
+    st.subheader("Search setup")
+    st.caption("Define the roles worth pursuing. JobForge verifies the evidence before it drafts.")
+
+    with st.expander("Candidate and sources", expanded=True):
+        uploaded_cv = st.file_uploader("CV", type=["pdf", "docx", "txt", "md"])
+        use_sample_cv = st.checkbox("Use the sample CV", value=True)
+        use_live_search = st.checkbox("Search current listings", value=True)
+        sample_fallback = st.checkbox("Fall back to sample jobs", value=True)
+        uploaded_jobs = st.file_uploader(
+            "Fallback jobs JSON",
+            type=["json"],
+            help="Optional controlled dataset used only in sample or fallback mode.",
+        )
+
+    with st.expander("Role preferences", expanded=True):
+        interests = st.text_area(
+            "Career interests",
+            "machine learning engineering\ndata science\nAI engineering\nsoftware engineering",
+            help="One role family or interest per line.",
+        )
+        locations = st.text_input("Locations", "Sydney, Remote Australia")
+        experience_levels = st.multiselect(
+            "Experience levels",
+            EXPERIENCE_LEVELS,
+            default=["internship", "graduate", "entry-level", "junior", "associate"],
+        )
+        employment_types = st.text_input("Employment types", "Full-time")
+
+    with st.expander("Eligibility and exclusions"):
+        max_years = st.number_input("Maximum experience required", min_value=0, max_value=10, value=2)
+        posted_within = st.number_input("Maximum listing age (days)", min_value=1, max_value=365, value=30)
+        work_rights = st.text_input("Work rights", "Australian unrestricted work rights")
+        excluded_companies = st.text_input(
+            "Excluded companies",
+            "",
+            help="Comma-separated exact company names.",
+        )
+        excluded_keywords = st.text_input(
+            "Excluded keywords",
+            "",
+            help="Reject listings containing any of these comma-separated terms.",
+        )
+
+    top_n = st.number_input("Application packages to prepare", min_value=1, max_value=10, value=5)
+    run_clicked = st.button("Find matching jobs", type="primary", width="stretch")
 
     st.divider()
-    st.caption(f"OpenAI: {'enabled' if openai_enabled() else 'disabled'}")
-    st.caption(f"Model: {configured_model()}")
-    load_sample = st.button("Load sample results")
+    st.caption(f"Drafting: {'OpenAI · ' + configured_model() if openai_enabled() else 'deterministic mode'}")
+    load_sample = st.button("Explore sample results", width="stretch")
     if DEV_MODE:
         payload_path = st.text_input("Load saved payload", str(DEFAULT_OUTPUT))
     else:
@@ -512,7 +686,34 @@ elif DEV_MODE and Path(payload_path).resolve() == DEFAULT_OUTPUT.resolve() and P
         st.error(f"Could not load payload: {exc}")
         st.stop()
 else:
-    st.info("Run the agents from the sidebar or load the sample results.")
+    st.html(
+        """
+        <section class="jf-empty">
+          <h2>Start with a focused search</h2>
+          <p>JobForge turns your CV and constraints into a ranked shortlist, then prepares application drafts backed by evidence from your experience.</p>
+          <div class="jf-steps">
+            <div class="jf-step"><strong>Set your target</strong><span>Choose role families, locations, and experience levels.</span></div>
+            <div class="jf-step"><strong>Validate the fit</strong><span>Reject stale, ineligible, or mismatched listings before ranking.</span></div>
+            <div class="jf-step"><strong>Prepare honestly</strong><span>Generate CV and letter drafts without inventing experience.</span></div>
+          </div>
+        </section>
+        """
+    )
+    action_col, hint_col = st.columns([0.42, 0.58], vertical_alignment="center")
+    with action_col:
+        explore_sample = st.button("Explore sample results", type="primary", width="stretch")
+    with hint_col:
+        st.caption("Or open Search setup to run a current search with your own CV.")
+    if explore_sample:
+        try:
+            sample_result = _load_sample_payload()
+            if sample_result is None:
+                st.error("Sample results are unavailable. Run the sample workflow locally to restore them.")
+                st.stop()
+            st.session_state["workflow_result"] = sample_result
+            st.rerun()
+        except Exception as exc:
+            st.error(f"Sample results could not be loaded: {exc}")
     st.stop()
 
 metrics = st.columns(3)
@@ -520,7 +721,14 @@ metrics[0].metric("Roles discovered", result.discovered_count)
 metrics[1].metric("Validated", result.validated_count)
 metrics[2].metric("Recommended", result.recommended_count)
 
-st.caption(f"Search mode: {result.search_mode} · Sources: {', '.join(result.search_sources) or 'none'}")
+source_badges = "".join(
+    f'<span class="jf-source">{escape(source.replace("sample-", "sample · "))}</span>'
+    for source in result.search_sources
+)
+st.html(
+    f'<div class="jf-mode-strip"><strong>{escape(result.search_mode.replace("_", " ").title())} search</strong>'
+    f'<span>Sources</span>{source_badges or "<span>none</span>"}</div>'
+)
 for warning in result.search_warnings:
     st.warning(warning)
 
@@ -536,13 +744,21 @@ st.markdown(
 
 
 def _recommendation_label(value: str) -> str:
-    return value.replace("_", " ")
+    return value.replace("_", " ").title()
+
+
+def _source_label(source: str) -> str:
+    if source.startswith("sample-"):
+        return "Sample data"
+    provider = source.split(":", 1)[0]
+    return provider.replace("-", " ").title()
 
 
 def _job_card_html(application) -> str:
     job = application.job
+    link_label = "Open demo listing" if result.search_mode.startswith("sample") else "Open original listing"
     return f"""
-    <div class="jf-card">
+    <article class="jf-card">
       <div>
         <div class="jf-card-top">
           <div>
@@ -555,14 +771,14 @@ def _job_card_html(application) -> str:
           <span class="jf-chip">{escape(job.location)}</span>
           <span class="jf-chip">{escape(job.employment_type)}</span>
           <span class="jf-chip">{escape(job.experience_required)}</span>
-          <span class="jf-chip">Source: {escape(job.source)}</span>
+          <span class="jf-chip">{escape(_source_label(job.source))}</span>
         </div>
       </div>
       <div class="jf-link-row">
         <span class="jf-recommendation">{escape(_recommendation_label(application.recommendation.value))}</span>
-        <a class="jf-verify" href="{escape(job.application_url)}" target="_blank" rel="noopener noreferrer">Verify job</a>
+        <a class="jf-verify" href="{escape(job.application_url)}" target="_blank" rel="noopener noreferrer" aria-label="{escape(link_label)} for {escape(job.title)}">{escape(link_label)}</a>
       </div>
-    </div>
+    </article>
     """
 
 
@@ -576,9 +792,8 @@ def _list_panel_html(title: str, items: list[str]) -> str:
     """
 
 
-st.markdown(
+st.html(
     '<div class="jf-grid">' + "".join(_job_card_html(application) for application in result.applications) + "</div>",
-    unsafe_allow_html=True,
 )
 
 job_labels = [f"{app.job.title} - {app.job.company}" for app in result.applications]
@@ -588,34 +803,31 @@ if job_labels:
 
     left, right = st.columns([1.1, 0.9])
     with left:
-        st.markdown(
+        detail_link_label = "Open demo listing" if result.search_mode.startswith("sample") else "Open original listing"
+        st.html(
             f"""
             <div class="jf-panel">
               <h3>{escape(application.job.title)}</h3>
               <p class="jf-muted">{escape(application.job.company)} · {escape(application.job.location)}</p>
               <p>{escape(application.job_summary)}</p>
-              <p class="jf-muted">Job source: {escape(application.job.source)} · Application copy: {escape(application.generation_source)}</p>
-              <a class="jf-verify" href="{escape(application.job.application_url)}" target="_blank" rel="noopener noreferrer">Verify listing</a>
+              <p class="jf-muted">Source: {escape(_source_label(application.job.source))} · Drafting: {escape(application.generation_source)}</p>
+              <a class="jf-verify" href="{escape(application.job.application_url)}" target="_blank" rel="noopener noreferrer">{escape(detail_link_label)}</a>
             </div>
             """,
-            unsafe_allow_html=True,
         )
         match_items = [
             f"{match.requirement}: {match.candidate_evidence}"
             for match in application.matching_evidence
         ]
-        st.markdown(_list_panel_html("Why it matches", match_items), unsafe_allow_html=True)
+        st.html(_list_panel_html("Why it matches", match_items))
         gap_items = application.skill_gaps or ["No major listed skill gaps identified."]
-        st.markdown(_list_panel_html("Potential gaps", gap_items), unsafe_allow_html=True)
+        st.html(_list_panel_html("Potential gaps", gap_items))
 
     with right:
-        st.markdown('<div class="jf-panel"><h3>Score breakdown</h3></div>', unsafe_allow_html=True)
+        st.html('<div class="jf-panel"><h3>Score breakdown</h3><p class="jf-muted">How the evidence maps to this role.</p></div>')
         st.metric("Relevance score", f"{application.relevance_score}/100")
         st.bar_chart(application.score_breakdown.components)
-        st.markdown(
-            _list_panel_html("Interview preparation", application.interview_preparation_topics),
-            unsafe_allow_html=True,
-        )
+        st.html(_list_panel_html("Interview preparation", application.interview_preparation_topics))
 
     cv_tab, letter_tab, checks_tab = st.tabs(["Tailored CV", "Cover letter", "Quality checks"])
     cv_tab.markdown(application.tailored_cv)
@@ -632,30 +844,48 @@ if job_labels:
         file_name=f"{application.job_id}_cover_letter.txt",
         mime="text/plain",
     )
-    checks_tab.json(application.quality_checks.model_dump())
+    with checks_tab:
+        quality = application.quality_checks
+        check_items = [
+            ("Evidence grounded", quality.evidence_grounded),
+            ("Company verified", quality.company_name_correct),
+            ("Eligible", quality.job_eligible),
+            ("Score explained", quality.score_explained),
+        ]
+        rendered_checks = "".join(
+            f'<div class="jf-check"><strong>{"Passed" if passed else "Needs review"}</strong>{escape(label)}</div>'
+            for label, passed in check_items
+        )
+        st.html(f'<div class="jf-check-grid">{rendered_checks}</div>')
+        if quality.issues:
+            st.warning(" · ".join(quality.issues))
+        with st.expander("Technical validation data"):
+            st.json(quality.model_dump())
 
-st.subheader("Agent activity")
-timeline = [
-    {
-        "Agent": health.agent,
-        "Status": health.status,
-        "Tool calls": health.tool_calls,
-        "Valid": health.valid_results,
-        "Invalid": health.invalid_results,
-        "Errors": health.execution_errors,
-        "Notes": "; ".join(health.notes) if health.notes else "-",
-    }
-    for health in result.agent_health
-]
-st.dataframe(timeline, use_container_width=True, hide_index=True)
+with st.expander("Workflow diagnostics"):
+    st.caption("Operational details for troubleshooting search, validation, and drafting.")
+    st.subheader("Agent activity")
+    timeline = [
+        {
+            "Agent": health.agent,
+            "Status": health.status,
+            "Tool calls": health.tool_calls,
+            "Valid": health.valid_results,
+            "Invalid": health.invalid_results,
+            "Errors": health.execution_errors,
+            "Notes": "; ".join(health.notes) if health.notes else "-",
+        }
+        for health in result.agent_health
+    ]
+    st.dataframe(timeline, width="stretch", hide_index=True)
 
-st.subheader("Validation checkpoints")
-checks = [
-    {
-        "Part": check.part,
-        "Passed": check.passed,
-        "Issues": "; ".join(check.issues) if check.issues else "-",
-    }
-    for check in result.validation_checks
-]
-st.dataframe(checks, use_container_width=True, hide_index=True)
+    st.subheader("Validation checkpoints")
+    checks = [
+        {
+            "Part": check.part,
+            "Passed": check.passed,
+            "Issues": "; ".join(check.issues) if check.issues else "-",
+        }
+        for check in result.validation_checks
+    ]
+    st.dataframe(checks, width="stretch", hide_index=True)
