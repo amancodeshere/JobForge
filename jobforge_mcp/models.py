@@ -39,4 +39,3 @@ class PrepareApplicationRequest(BaseModel):
 
 class PrepareApplicationResponse(BaseModel):
     application: ApplicationResult
-

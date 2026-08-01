@@ -60,4 +60,3 @@ def _bearer_token(headers: list[tuple[bytes, bytes]]) -> str | None:
 
 
 app = BearerTokenMiddleware(mcp.streamable_http_app())
-

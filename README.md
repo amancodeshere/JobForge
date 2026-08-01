@@ -13,6 +13,7 @@ uv run python main.py doctor
 uv run python main.py export-cv --payload sample_data/expected_outputs/latest_run.json
 uv run pytest
 uv run streamlit run dashboard/streamlit_app.py
+uv run python -m jobforge_mcp.server
 ```
 
 The CLI sample run writes `sample_data/expected_outputs/latest_run.json`. The deployed dashboard keeps user runs in `st.session_state` and temporary files, so uploaded CV output is not written back to the repo path.
@@ -69,6 +70,16 @@ uv run pytest
 ```
 
 The repo also includes a GitHub Actions workflow that installs from `requirements.txt`, runs tests, validates the sample payload, and starts Streamlit long enough to check `/_stcore/health`.
+
+### Optional MCP service
+
+JobForge also provides an allowlisted MCP server with separate `search_jobs` and `prepare_application` tools. Run it locally over stdio with:
+
+```bash
+uv run python -m jobforge_mcp.server
+```
+
+For remote access, deploy a second Railway service from the same repository using `/railway.mcp.toml` and set `JOBFORGE_MCP_API_TOKEN`. The Streamlit service remains configured by `/railway.toml`; do not replace it. See [docs/mcp.md](docs/mcp.md) for client configuration, remote deployment, authentication, and security boundaries.
 
 ## What works
 
@@ -174,6 +185,8 @@ Orchestrator / Quality Controller
 ```
 
 Each stage exchanges Pydantic JSON objects and emits a validation checkpoint.
+
+The Streamlit UI, CLI, and MCP transport share `JobForgeService`; MCP does not replace or bypass the live provider layer.
 
 ## Extension points
 

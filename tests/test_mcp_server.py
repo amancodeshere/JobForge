@@ -9,7 +9,7 @@ from app.schemas.candidate import CandidatePreferences, CandidateProfile
 from app.tools.job_search import load_jobs_from_json
 from jobforge_mcp.http import BearerTokenMiddleware
 from jobforge_mcp.models import SearchJobsRequest
-from jobforge_mcp.server import mcp, search_jobs
+from jobforge_mcp.server import _transport_security, mcp, search_jobs
 
 
 def test_mcp_registers_only_the_approved_tools():
@@ -19,6 +19,18 @@ def test_mcp_registers_only_the_approved_tools():
     search_tool = next(tool for tool in tools if tool.name == "search_jobs")
     assert search_tool.inputSchema["properties"]["request"]["$ref"]
     assert search_tool.outputSchema is not None
+
+
+def test_transport_security_allows_local_and_configured_hosts(monkeypatch):
+    monkeypatch.setenv("RAILWAY_PUBLIC_DOMAIN", "jobforge-mcp.example.com")
+    monkeypatch.setenv("JOBFORGE_MCP_ALLOWED_HOSTS", "mcp.jobforge.example")
+
+    settings = _transport_security()
+
+    assert settings.enable_dns_rebinding_protection is True
+    assert "127.0.0.1:*" in settings.allowed_hosts
+    assert "jobforge-mcp.example.com" in settings.allowed_hosts
+    assert "mcp.jobforge.example" in settings.allowed_hosts
 
 
 def test_search_tool_returns_ranked_matches_without_candidate_evidence(monkeypatch):

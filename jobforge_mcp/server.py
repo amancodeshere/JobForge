@@ -1,6 +1,9 @@
 from __future__ import annotations
 
+import os
+
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from mcp.types import ToolAnnotations
 
 from app.services.jobforge import JobForgeService
@@ -13,6 +16,23 @@ from jobforge_mcp.models import (
 )
 
 
+def _transport_security() -> TransportSecuritySettings:
+    allowed_hosts = ["127.0.0.1:*", "localhost:*"]
+    railway_domain = os.getenv("RAILWAY_PUBLIC_DOMAIN", "").strip()
+    if railway_domain:
+        allowed_hosts.append(railway_domain)
+    allowed_hosts.extend(_csv_env("JOBFORGE_MCP_ALLOWED_HOSTS"))
+    return TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=list(dict.fromkeys(allowed_hosts)),
+        allowed_origins=_csv_env("JOBFORGE_MCP_ALLOWED_ORIGINS"),
+    )
+
+
+def _csv_env(name: str) -> list[str]:
+    return [value.strip() for value in os.getenv(name, "").split(",") if value.strip()]
+
+
 mcp = FastMCP(
     "JobForge",
     instructions=(
@@ -23,6 +43,7 @@ mcp = FastMCP(
     json_response=True,
     stateless_http=True,
     max_request_body_size=512 * 1024,
+    transport_security=_transport_security(),
 )
 service = JobForgeService()
 
@@ -86,4 +107,3 @@ def prepare_application(request: PrepareApplicationRequest) -> PrepareApplicatio
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
-
