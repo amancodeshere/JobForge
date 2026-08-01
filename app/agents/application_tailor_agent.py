@@ -223,7 +223,7 @@ def _cover_letter(
         f"{', '.join(profile.career_themes[:3]) or 'software and AI engineering'} and my graduate-level background. "
         f"{evidence_sentence}{gap_sentence}\n\n"
         f"I would welcome the chance to contribute careful engineering work to {job.company} while continuing to build depth in the technologies used by the team.\n\n"
-        "Kind regards,\nAman Sharma"
+        f"Kind regards,\n{profile.candidate_name}"
     )
 
 

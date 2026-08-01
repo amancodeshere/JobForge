@@ -5,6 +5,7 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 from typing import Iterable, List
+from urllib.parse import urlparse
 
 from app.schemas.candidate import CandidatePreferences, CandidateProfile
 from app.schemas.job import JobResult, JobStatus
@@ -105,8 +106,9 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     today = today or date.today()
     reasons: list[str] = []
     text = f"{job.title} {job.description} {job.experience_required}".lower()
+    level_text = f"{job.title} {job.experience_required}".lower()
 
-    if not has_experience_overlap(text, preferences.selected_experience_levels()):
+    if not has_experience_overlap(level_text, preferences.selected_experience_levels()):
         reasons.append("Role experience level does not match preferences.")
 
     years = [int(value) for value in re.findall(r"(\d+)\+?\s*(?:years|yrs)", text)]
@@ -116,12 +118,19 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     if preferences.employment_types and job.employment_type.lower() not in {item.lower() for item in preferences.employment_types}:
         reasons.append("Employment type does not match preferences.")
 
+    if preferences.locations and not _location_matches(job.location, preferences.locations):
+        reasons.append("Location does not match preferences.")
+
     posted = _parse_date(job.date_posted or job.date_found)
     if posted and (today - posted).days > preferences.posted_within_days:
         reasons.append(f"Posted more than {preferences.posted_within_days} days ago.")
 
     if not job.description.strip():
         reasons.append("Missing job description.")
+
+    parsed_url = urlparse(job.application_url)
+    if parsed_url.scheme not in {"http", "https"} or not parsed_url.netloc:
+        reasons.append("Application URL is not a valid HTTP(S) link.")
 
     eligibility_text = " ".join(job.eligibility_requirements).lower()
     work_rights = (preferences.work_rights or "").lower()
@@ -146,3 +155,26 @@ def _parse_date(value: str | None) -> date | None:
         return datetime.strptime(value, "%Y-%m-%d").date()
     except ValueError:
         return None
+
+
+def _location_matches(job_location: str, preferred_locations: Iterable[str]) -> bool:
+    job = _normalize_location(job_location)
+    if not job or job in {"unspecified", "unknown"}:
+        return True
+    worldwide = {"worldwide", "anywhere", "global", "remote"}
+    if job in worldwide or any(term in job for term in ["worldwide", "anywhere"]):
+        return True
+    for preferred in preferred_locations:
+        target = _normalize_location(preferred)
+        if not target:
+            continue
+        if job in target or target in job:
+            return True
+        if "australia" in target and any(term in job for term in ["australia", "australian", "apac"]):
+            return True
+    return False
+
+
+def _normalize_location(value: str) -> str:
+    cleaned = re.sub(r"[^a-z0-9]+", " ", value.lower())
+    return re.sub(r"\s+", " ", cleaned).strip()

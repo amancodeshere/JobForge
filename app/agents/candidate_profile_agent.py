@@ -38,6 +38,7 @@ class CandidateProfileAgent:
         gaps = _profile_gaps(skills)
 
         return CandidateProfile(
+            candidate_name=_candidate_name(lines),
             target_roles=preferences.target_roles,
             locations=preferences.locations,
             experience_level=preferences.experience_level,
@@ -103,7 +104,10 @@ def _extract_projects(
     for item in evidence:
         line = item.original_text
         lower = line.lower()
-        looks_project = any(marker in lower for marker in PROJECT_MARKERS) or bool(skill_by_id.get(item.evidence_id))
+        looks_project = bool(
+            re.search(r"\b(?:project|portfolio)\b", lower)
+            or re.search(r"\b(?:built|developed|implemented|integrated|created|designed)\b", lower)
+        )
         if not looks_project or len(line) < 20:
             continue
         name = _project_name(line)
@@ -163,7 +167,7 @@ def _guess_section(line: str) -> str:
 
 def _evidence_type_for_skill(skill: str, evidence_ids: List[str], joined_by_id: dict[str, str]) -> EvidenceType:
     text = " ".join(joined_by_id[evidence_id].lower() for evidence_id in evidence_ids)
-    if any(term in text for term in ["learning", "currently studying", "familiar with"]):
+    if re.search(r"\b(?:currently learning|currently studying|familiar with|learning about)\b", text):
         return EvidenceType.LEARNING
     if any(term in text for term in ["project", "built", "developed", "implemented"]):
         return EvidenceType.INFERRED_FROM_PROJECT
@@ -176,3 +180,17 @@ def _project_name(line: str) -> str:
         return cleaned.split(":", 1)[0][:80]
     words = cleaned.split()
     return " ".join(words[:8])
+
+
+def _candidate_name(lines: List[str]) -> str:
+    if not lines:
+        return "Candidate"
+    first = lines[0].strip()
+    if (
+        1 < len(first.split()) <= 5
+        and len(first) <= 80
+        and not re.search(r"[@|:/\\]|\d", first)
+        and not any(term in first.lower() for term in ["curriculum vitae", "resume", "profile", "summary"])
+    ):
+        return first
+    return "Candidate"

@@ -61,6 +61,7 @@ class CandidatePreferences(BaseModel):
 
 class CandidateProfile(BaseModel):
     candidate_id: str = "candidate-001"
+    candidate_name: str = "Candidate"
     target_roles: List[str] = Field(default_factory=list)
     locations: List[str] = Field(default_factory=list)
     experience_level: str = "graduate"
@@ -77,7 +78,7 @@ class CandidateProfile(BaseModel):
         return {
             skill.name.lower()
             for skill in self.skills
-            if skill.evidence_type != EvidenceType.UNSUPPORTED
+            if skill.evidence_type not in {EvidenceType.LEARNING, EvidenceType.UNSUPPORTED}
         }
 
     def evidence_by_id(self) -> dict[str, EvidenceItem]:

@@ -99,3 +99,11 @@ def test_grounding_validator_flags_overclaims(monkeypatch):
     )
     checks = validate_application_grounding(unsafe_application, profile)
     assert checks.unsupported_claims > 0
+
+
+def test_deterministic_cover_letter_uses_extracted_candidate_name():
+    profile, preferences, job = _profile_preferences_job()
+
+    application = ApplicationTailorAgent().run(profile, preferences, job)
+
+    assert application.cover_letter.endswith("Kind regards,\nAman Sharma")
