@@ -545,6 +545,14 @@ def inject_theme() -> None:
     .jf-check:last-child { border-right: 0; }
     .jf-check strong { color: var(--jf-signal-deep); display: block; margin-bottom: 0.2rem; }
     .stAlert { border-radius: var(--jf-radius); }
+    .jf-footer {
+        margin-top: 3rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--jf-line);
+        color: var(--jf-slate-soft);
+        font-size: 0.78rem;
+        line-height: 1.5;
+    }
 
     @media (prefers-reduced-motion: no-preference) {
         .jf-language-copy h1 span {

@@ -84,16 +84,9 @@ with st.sidebar:
         """
     )
 
-    with st.expander("Candidate & search mode", expanded=True):
+    with st.expander("Candidate profile", expanded=True):
         uploaded_cv = st.file_uploader("CV or résumé", type=["pdf", "docx", "txt", "md"])
         use_sample_cv = st.checkbox("Use the sample CV", value=True)
-        use_live_search = st.checkbox("Search current listings", value=True)
-        sample_fallback = st.checkbox("Fall back to sample jobs", value=True)
-        uploaded_jobs = st.file_uploader(
-            "Fallback jobs JSON",
-            type=["json"],
-            help="Optional controlled dataset used only in sample or fallback mode.",
-        )
 
     with st.expander("Opportunity focus", expanded=True):
         interests = st.text_area(
@@ -201,14 +194,13 @@ if run_clicked:
             with TemporaryDirectory(prefix="jobforge-") as temp:
                 temp_dir = Path(temp)
                 cv_path = _path_from_upload(uploaded_cv, temp_dir, DEFAULT_CV)
-                jobs_path = _path_from_upload(uploaded_jobs, temp_dir, DEFAULT_JOBS)
-                result = OrchestratorAgent(sample_jobs_path=jobs_path).run(
+                result = OrchestratorAgent(sample_jobs_path=str(DEFAULT_JOBS)).run(
                     cv_path=cv_path,
                     preferences=_preferences_from_form(),
                     output_path=str(temp_dir / "latest_run.json"),
                     top_n=int(top_n),
-                    use_live_search=use_live_search,
-                    sample_fallback=sample_fallback,
+                    use_live_search=True,
+                    sample_fallback=False,
                 )
             st.session_state["workflow_result"] = result
         except Exception as exc:
@@ -472,7 +464,7 @@ with st.expander("Search provenance & diagnostics"):
 
 st.html(
     """
-    <footer style="margin-top:3rem;padding-top:1rem;border-top:1px solid var(--jf-line);color:#536168;font-size:.78rem;line-height:1.5">
+    <footer class="jf-footer">
       JobForge keeps listing provenance visible and constrains application drafts to evidence from the supplied CV. Uploaded files are processed in temporary session storage.
     </footer>
     """

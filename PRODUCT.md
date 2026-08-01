@@ -25,6 +25,7 @@ Users upload a PDF, DOCX or text CV; set role, location, seniority, employment a
 ## Capabilities and Constraints
 
 - Live search combines SerpApi, Adzuna and configured public ATS boards while reporting the exact search mode and attempted sources.
+- Dashboard searches are live-only and never silently replace a live result with demonstration data; sample results have their own explicit action.
 - Australian indexed discovery is designed to use one SerpApi request per workflow because the free plan is limited to 250 searches per month.
 - Search coverage cannot guarantee every listing on every job board and must not imply private or partner-only API access.
 - Candidate uploads and generated workflow output remain in temporary storage and session state rather than being committed to the repository.
