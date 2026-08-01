@@ -7,17 +7,20 @@ JobForge uses structured, documented job endpoints instead of general-purpose br
 | Capability | Provider | Authentication | Role |
 | --- | --- | --- | --- |
 | Broad Australian search | Adzuna | App ID and key | Searches roles and locations supplied by the candidate |
+| Cross-board discovery | SerpApi Google Jobs | API key | Returns structured Google Jobs results with original publisher and apply links |
 | Targeted company search | Greenhouse Job Board API | None for public GETs | Reads configured company career boards |
 | Targeted company search | Lever Postings API | None for public postings | Reads configured company career sites |
 | Optional remote search | Remotive public API | None | Adds attributed remote listings for low-volume deployments |
 
-Every adapter converts external data into `JobResult`. Provider failures are isolated and exposed in `search_warnings` and agent health. Live results are never silently mixed with samples. If every live source returns no records, the optional fallback is labelled `sample_fallback`.
+Every adapter converts external data into `JobResult`. Independent providers and company boards run concurrently, while output ordering remains deterministic. Provider failures are isolated and exposed in `search_warnings` and agent health. Live results are never silently mixed with samples. If every live source returns no records, the optional fallback is labelled `sample_fallback`.
 
-## Why Agent Reach is not embedded
+## Agent Reach boundary
 
-Agent Reach is useful for interactive agent research across web pages, GitHub, social platforms, video, and feeds. It is not a structured job provider. Its installation invokes external command-line tools and some capabilities require browser cookies, proxies, or Exa credentials. Embedding that runtime in the Railway service would make job retrieval less deterministic and expand the service's credential and execution surface.
+Agent Reach is installed for interactive research across web pages, LinkedIn, GitHub, social platforms, video, and feeds. It is a capability router, not a structured production job provider. Its runtime invokes external command-line tools and some capabilities require browser cookies, proxies, or Exa credentials. Embedding it in the Railway request path would make retrieval less deterministic and expand the service's credential and execution surface.
 
-JobForge therefore gives its search agents narrow native tools with typed outputs. A general web-research skill could still be used outside the deployed request path to discover new company-board tokens, but it should not be trusted as the source of application-ready job records without normalization and validation.
+JobForge therefore gives its deployed search agents narrow native tools with typed outputs. Agent Reach can be used outside the deployed request path to discover new company-board tokens and research sources, but application-ready records still require normalization and validation.
+
+SerpApi's Google Jobs adapter is the breadth layer. It can surface listings published through LinkedIn, Indeed, SEEK, Glassdoor, ZipRecruiter, Workday, direct employer sites, and many other sources indexed by Google Jobs. Coverage depends on what Google Jobs indexes for the query and location, so the UI reports observed publishers instead of claiming universal coverage.
 
 ## Configuration
 
@@ -25,11 +28,16 @@ JobForge therefore gives its search agents narrow native tools with typed output
 ADZUNA_APP_ID=
 ADZUNA_APP_KEY=
 ADZUNA_COUNTRY=au
+SERPAPI_API_KEY=
+SERPAPI_COUNTRY=au
+SERPAPI_LANGUAGE=en
 JOBFORGE_GREENHOUSE_BOARDS=Canonical=canonical,Culture Amp=cultureamp
 JOBFORGE_LEVER_SITES=Deputy=deputy
 JOBFORGE_ENABLE_REMOTIVE=false
 JOBFORGE_SEARCH_TIMEOUT=12
 JOBFORGE_RESULTS_PER_SOURCE=50
+JOBFORGE_MAX_SEARCH_QUERIES=4
+JOBFORGE_SEARCH_WORKERS=6
 ```
 
 Company boards use comma-separated `Company name=token` entries. Setting a board variable to an empty value disables that provider. If `JOBFORGE_GREENHOUSE_BOARDS` is absent, JobForge uses Canonical's public board as a zero-key live source.
@@ -57,6 +65,7 @@ Remotive is disabled by default. Its public API requires attribution and advises
 Provider documentation:
 
 - [Adzuna API](https://developer.adzuna.com/)
+- [SerpApi Google Jobs API](https://serpapi.com/google-jobs-api)
 - [Greenhouse Job Board API](https://developer.greenhouse.io/job-board.html)
 - [Lever Postings API](https://github.com/lever/postings-api)
 - [Remotive public API](https://github.com/remotive-io/remote-jobs-api)

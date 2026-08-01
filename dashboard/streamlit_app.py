@@ -750,6 +750,8 @@ def _recommendation_label(value: str) -> str:
 def _source_label(source: str) -> str:
     if source.startswith("sample-"):
         return "Sample data"
+    if source.startswith("serpapi:"):
+        return source.split(":", 1)[1].replace("-", " ").title()
     provider = source.split(":", 1)[0]
     return provider.replace("-", " ").title()
 

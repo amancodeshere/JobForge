@@ -33,6 +33,9 @@ JOBFORGE_DEMO_DATE=2026-08-01
 ADZUNA_APP_ID=your_adzuna_app_id
 ADZUNA_APP_KEY=your_adzuna_app_key
 ADZUNA_COUNTRY=au
+SERPAPI_API_KEY=your_serpapi_key
+SERPAPI_COUNTRY=au
+SERPAPI_LANGUAGE=en
 JOBFORGE_GREENHOUSE_BOARDS=Canonical=canonical,Culture Amp=cultureamp
 JOBFORGE_LEVER_SITES=Deputy=deputy
 ```
@@ -69,7 +72,7 @@ The repo also includes a GitHub Actions workflow that installs from `requirement
 ## What works
 
 - Candidate Profile Agent extracts CV-backed skills, projects, career themes, and evidence IDs.
-- Broad Opportunity Scout searches Adzuna when credentials are configured and can optionally use Remotive.
+- Broad Opportunity Scout searches Adzuna and, when configured, SerpApi's Google Jobs results. Google Jobs supplies structured listings and original apply links from publishers such as LinkedIn, Indeed, SEEK, Glassdoor, company sites, and other indexed boards.
 - Targeted Job Researcher reads current postings from configured Greenhouse and Lever company boards. Canonical's public Greenhouse board is enabled by default so live mode works without an API key.
 - Experience level is a multi-select, covering internship, graduate, entry-level, junior, associate, mid-level, senior, staff, principal, manager, and director searches.
 - Job validation rejects stale, wrong-employment-type, missing-description, citizenship-gated, and experience-level mismatched roles.
@@ -109,11 +112,14 @@ Live runs report their exact mode and sources. If all live sources fail or retur
 ## Live job sources
 
 - **Adzuna** provides broad geographic and keyword search. Create credentials at the Adzuna developer portal and set `ADZUNA_APP_ID` and `ADZUNA_APP_KEY`.
+- **SerpApi Google Jobs** provides broad cross-board discovery. Set `SERPAPI_API_KEY`; JobForge preserves the actual publisher (for example LinkedIn, Indeed, SEEK, or Glassdoor) and selects a valid original apply link from each result.
 - **Greenhouse** public job-board GET endpoints require no key. Configure comma-separated `Company=board_token` entries in `JOBFORGE_GREENHOUSE_BOARDS`.
 - **Lever** public postings endpoints require no key. Configure comma-separated `Company=site_token` entries in `JOBFORGE_LEVER_SITES`.
 - **Remotive** is opt-in with `JOBFORGE_ENABLE_REMOTIVE=true`. Its public API requires source attribution and has strict rate guidance, so it is disabled by default for multi-user deployments.
 
 JobForge links candidates back to the provider's original listing and shows the source on every result. It does not scrape logged-in job boards or submit applications automatically.
+
+No service can honestly guarantee every listing on every job site. JobForge reports exactly which providers were attempted, isolates provider failures, and combines broad indexed discovery with direct public ATS boards. Direct LinkedIn, Indeed, SEEK, and Glassdoor APIs are not assumed where public job-search access is unavailable or partner-gated.
 
 See [docs/live-search.md](docs/live-search.md) for provider behavior, configuration, safety boundaries, and the Agent Reach evaluation.
 

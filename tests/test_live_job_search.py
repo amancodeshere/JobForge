@@ -31,6 +31,75 @@ def test_adzuna_results_are_normalized():
     assert result.jobs[0].source == "adzuna"
     assert result.jobs[0].employment_type == "Full-time"
     assert result.jobs[0].date_posted == "2026-08-01"
+    assert result.source_counts == {"adzuna": 1}
+
+
+def test_serpapi_google_jobs_preserves_original_board_and_apply_link():
+    def fetch_json(url: str, _timeout: float):
+        assert "engine=google_jobs" in url
+        assert "location=Sydney" in url
+        return {
+            "jobs_results": [
+                {
+                    "job_id": "google-stable-id",
+                    "title": "Graduate Software Engineer",
+                    "company_name": "Example Labs",
+                    "location": "Sydney NSW",
+                    "via": "LinkedIn",
+                    "description": "Build and test software services with Python.",
+                    "detected_extensions": {
+                        "posted_at": "2 days ago",
+                        "schedule_type": "Full-time",
+                    },
+                    "apply_options": [
+                        {"title": "Indeed", "link": "https://au.indeed.com/viewjob?jk=1"},
+                        {"title": "LinkedIn", "link": "https://www.linkedin.com/jobs/view/123"},
+                    ],
+                }
+            ]
+        }
+
+    search = LiveJobSearch(
+        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        fetch_json=fetch_json,
+    )
+    result = search.broad_search(
+        CandidatePreferences(target_roles=["software engineer"], locations=["Sydney"])
+    )
+
+    assert result.sources_attempted == ["serpapi-google-jobs"]
+    assert result.source_counts == {"serpapi-google-jobs": 1}
+    assert result.jobs[0].source == "serpapi:linkedin"
+    assert result.jobs[0].application_url == "https://www.linkedin.com/jobs/view/123"
+    assert result.jobs[0].employment_type == "Full-time"
+    assert result.jobs[0].date_posted is not None
+
+
+def test_serpapi_falls_back_to_first_valid_apply_option():
+    search = LiveJobSearch(
+        LiveSearchConfig(serpapi_api_key="key", max_search_queries=1),
+        fetch_json=lambda *_args: {
+            "jobs_results": [
+                {
+                    "job_id": "seek-job",
+                    "title": "Data Engineer",
+                    "company_name": "Data Co",
+                    "location": "Remote Australia",
+                    "via": "SEEK",
+                    "description": "Build data engineering pipelines.",
+                    "apply_options": [
+                        {"title": "Broken", "link": "javascript:alert(1)"},
+                        {"title": "SEEK", "link": "https://www.seek.com.au/job/123"},
+                    ],
+                }
+            ]
+        },
+    )
+
+    result = search.broad_search(CandidatePreferences(target_roles=["data engineer"]))
+
+    assert result.jobs[0].source == "serpapi:seek"
+    assert result.jobs[0].application_url == "https://www.seek.com.au/job/123"
 
 
 def test_targeted_sources_filter_irrelevant_jobs_and_capture_failures():

@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import os
 import re
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import date, datetime, timezone
 from typing import Any, Callable, Iterable
@@ -37,10 +39,15 @@ class LiveSearchConfig:
     adzuna_app_key: str = ""
     adzuna_country: str = "au"
     enable_remotive: bool = False
+    serpapi_api_key: str = ""
+    serpapi_country: str = "au"
+    serpapi_language: str = "en"
     greenhouse_boards: tuple[CompanyBoard, ...] = ()
     lever_sites: tuple[CompanyBoard, ...] = ()
     request_timeout: float = 12.0
     results_per_source: int = 50
+    max_search_queries: int = 4
+    max_workers: int = 6
 
     @classmethod
     def from_env(cls) -> "LiveSearchConfig":
@@ -49,6 +56,9 @@ class LiveSearchConfig:
             adzuna_app_key=os.getenv("ADZUNA_APP_KEY", "").strip(),
             adzuna_country=os.getenv("ADZUNA_COUNTRY", "au").strip().lower() or "au",
             enable_remotive=_env_flag("JOBFORGE_ENABLE_REMOTIVE", False),
+            serpapi_api_key=os.getenv("SERPAPI_API_KEY", "").strip(),
+            serpapi_country=os.getenv("SERPAPI_COUNTRY", "au").strip().lower() or "au",
+            serpapi_language=os.getenv("SERPAPI_LANGUAGE", "en").strip().lower() or "en",
             greenhouse_boards=tuple(
                 _parse_company_boards(os.environ["JOBFORGE_GREENHOUSE_BOARDS"])
                 if "JOBFORGE_GREENHOUSE_BOARDS" in os.environ
@@ -57,6 +67,8 @@ class LiveSearchConfig:
             lever_sites=tuple(_parse_company_boards(os.getenv("JOBFORGE_LEVER_SITES", ""))),
             request_timeout=_env_float("JOBFORGE_SEARCH_TIMEOUT", 12.0, minimum=1.0, maximum=30.0),
             results_per_source=_env_int("JOBFORGE_RESULTS_PER_SOURCE", 50, minimum=1, maximum=100),
+            max_search_queries=_env_int("JOBFORGE_MAX_SEARCH_QUERIES", 4, minimum=1, maximum=8),
+            max_workers=_env_int("JOBFORGE_SEARCH_WORKERS", 6, minimum=1, maximum=12),
         )
 
 
@@ -65,6 +77,7 @@ class SearchOutcome:
     jobs: list[JobResult] = field(default_factory=list)
     sources_attempted: list[str] = field(default_factory=list)
     source_errors: list[str] = field(default_factory=list)
+    source_counts: dict[str, int] = field(default_factory=dict)
 
 
 JsonFetcher = Callable[[str, float], Any]
@@ -82,35 +95,52 @@ class LiveJobSearch:
         self.fetch_json = fetch_json or _request_json
 
     def broad_search(self, preferences: CandidatePreferences) -> SearchOutcome:
-        outcome = SearchOutcome()
         queries = _preferred_queries(preferences)
+        operations: list[tuple[str, Callable[[], list[JobResult]]]] = []
         if self.config.adzuna_app_id and self.config.adzuna_app_key:
-            outcome.sources_attempted.append("adzuna")
-            self._capture(outcome, "adzuna", lambda: self._search_adzuna(preferences, queries))
+            operations.append(("adzuna", lambda: self._search_adzuna(preferences, queries)))
         if self.config.enable_remotive:
-            outcome.sources_attempted.append("remotive")
-            self._capture(outcome, "remotive", lambda: self._search_remotive(preferences, queries))
-        outcome.jobs = _unique_jobs(outcome.jobs)
-        return outcome
+            operations.append(("remotive", lambda: self._search_remotive(preferences, queries)))
+        if self.config.serpapi_api_key:
+            operations.append(("serpapi-google-jobs", lambda: self._search_serpapi(preferences, queries)))
+        return self._run_sources(operations)
 
     def targeted_search(self, profile: CandidateProfile) -> SearchOutcome:
-        outcome = SearchOutcome()
+        operations: list[tuple[str, Callable[[], list[JobResult]]]] = []
         for board in self.config.greenhouse_boards:
             source = f"greenhouse:{board.token}"
-            outcome.sources_attempted.append(source)
-            self._capture(outcome, source, lambda board=board: self._search_greenhouse(board, profile))
+            operations.append((source, lambda board=board: self._search_greenhouse(board, profile)))
         for board in self.config.lever_sites:
             source = f"lever:{board.token}"
-            outcome.sources_attempted.append(source)
-            self._capture(outcome, source, lambda board=board: self._search_lever(board, profile))
+            operations.append((source, lambda board=board: self._search_lever(board, profile)))
+        return self._run_sources(operations)
+
+    def _run_sources(
+        self,
+        operations: list[tuple[str, Callable[[], list[JobResult]]]],
+    ) -> SearchOutcome:
+        outcome = SearchOutcome(sources_attempted=[source for source, _ in operations])
+        if not operations:
+            return outcome
+        results: dict[str, list[JobResult]] = {}
+        errors: dict[str, str] = {}
+        workers = min(self.config.max_workers, len(operations))
+        with ThreadPoolExecutor(max_workers=workers, thread_name_prefix="job-source") as executor:
+            futures = {executor.submit(operation): source for source, operation in operations}
+            for future in as_completed(futures):
+                source = futures[future]
+                try:
+                    results[source] = future.result()
+                except LiveSearchError as exc:
+                    errors[source] = str(exc)
+        for source, _ in operations:
+            jobs = results.get(source, [])
+            outcome.jobs.extend(jobs)
+            outcome.source_counts[source] = len(jobs)
+            if source in errors:
+                outcome.source_errors.append(f"{source}: {errors[source]}")
         outcome.jobs = _unique_jobs(outcome.jobs)
         return outcome
-
-    def _capture(self, outcome: SearchOutcome, source: str, operation: Callable[[], list[JobResult]]) -> None:
-        try:
-            outcome.jobs.extend(operation())
-        except LiveSearchError as exc:
-            outcome.source_errors.append(f"{source}: {exc}")
 
     def _search_adzuna(
         self,
@@ -119,7 +149,7 @@ class LiveJobSearch:
     ) -> list[JobResult]:
         jobs: list[JobResult] = []
         locations = preferences.locations or [""]
-        for query in queries[:4]:
+        for query in queries[: self.config.max_search_queries]:
             params = {
                 "app_id": self.config.adzuna_app_id,
                 "app_key": self.config.adzuna_app_key,
@@ -138,6 +168,36 @@ class LiveJobSearch:
                 if job and _is_relevant_to_preferences(job, preferences):
                     jobs.append(job)
         return jobs
+
+    def _search_serpapi(
+        self,
+        preferences: CandidatePreferences,
+        queries: list[str],
+    ) -> list[JobResult]:
+        jobs: list[JobResult] = []
+        location = (preferences.locations or [""])[0]
+        for query in queries[: self.config.max_search_queries]:
+            params = {
+                "engine": "google_jobs",
+                "q": query,
+                "location": location,
+                "gl": self.config.serpapi_country,
+                "hl": self.config.serpapi_language,
+                "api_key": self.config.serpapi_api_key,
+            }
+            payload = self.fetch_json(
+                f"https://serpapi.com/search.json?{urlencode(params)}",
+                self.config.request_timeout,
+            )
+            if not isinstance(payload, dict):
+                raise LiveSearchError("unexpected response shape")
+            if payload.get("error"):
+                raise LiveSearchError(_clean(payload["error"]))
+            for item in payload.get("jobs_results", []):
+                job = _serpapi_job(item)
+                if job and _is_relevant_to_preferences(job, preferences):
+                    jobs.append(job)
+        return jobs[: self.config.results_per_source]
 
     def _search_remotive(
         self,
@@ -222,6 +282,30 @@ def _remotive_job(item: Any) -> JobResult | None:
         application_url=item.get("url"),
         date_posted=_date_only(item.get("publication_date")),
         preferred_skills=item.get("tags") if isinstance(item.get("tags"), list) else [],
+    )
+
+
+def _serpapi_job(item: Any) -> JobResult | None:
+    if not isinstance(item, dict):
+        return None
+    publisher = _clean(item.get("via")) or "Google Jobs"
+    application_url = _serpapi_application_url(item, publisher)
+    raw_id = _clean(item.get("job_id")) or "|".join(
+        [_clean(item.get("title")), _clean(item.get("company_name")), _clean(item.get("location"))]
+    )
+    stable_id = hashlib.sha256(raw_id.encode("utf-8")).hexdigest()[:20]
+    extensions = item.get("detected_extensions")
+    detected = extensions if isinstance(extensions, dict) else {}
+    return _build_job(
+        job_id=f"serpapi-{stable_id}",
+        title=item.get("title"),
+        company=item.get("company_name") or "Unknown company",
+        location=item.get("location") or ("Remote" if detected.get("work_from_home") else "Unspecified"),
+        employment_type=_employment_type(detected.get("schedule_type")),
+        description=item.get("description"),
+        source=f"serpapi:{_source_slug(publisher)}",
+        application_url=application_url,
+        date_posted=_relative_date(detected.get("posted_at")),
     )
 
 
@@ -387,6 +471,45 @@ def _milliseconds_date(value: Any) -> str | None:
         return datetime.fromtimestamp(int(value) / 1000, tz=timezone.utc).date().isoformat()
     except (TypeError, ValueError, OSError):
         return None
+
+
+def _relative_date(value: Any) -> str | None:
+    cleaned = _clean(value).lower()
+    if not cleaned:
+        return None
+    if cleaned in {"today", "just posted"}:
+        return date.today().isoformat()
+    match = re.match(r"(\d+)\s+(minute|hour|day|week|month)s?\s+ago", cleaned)
+    if not match:
+        return _date_only(cleaned)
+    amount = int(match.group(1))
+    unit = match.group(2)
+    days = amount if unit == "day" else amount * 7 if unit == "week" else amount * 30 if unit == "month" else 0
+    return date.fromordinal(date.today().toordinal() - days).isoformat()
+
+
+def _serpapi_application_url(item: dict[str, Any], publisher: str) -> str:
+    options = item.get("apply_options")
+    if isinstance(options, list):
+        valid = [option for option in options if isinstance(option, dict) and _is_http_url(option.get("link"))]
+        preferred = next(
+            (option for option in valid if _clean(option.get("title")).lower() == publisher.lower()),
+            None,
+        )
+        if preferred:
+            return _clean(preferred.get("link"))
+        if valid:
+            return _clean(valid[0].get("link"))
+    return _clean(item.get("share_link"))
+
+
+def _is_http_url(value: Any) -> bool:
+    return _clean(value).lower().startswith(("https://", "http://"))
+
+
+def _source_slug(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
+    return slug or "google-jobs"
 
 
 def _unique_text(values: Iterable[str]) -> list[str]:

@@ -125,6 +125,8 @@ def _check_live_search_config() -> ValidationCheck:
     sources = []
     if config.adzuna_app_id and config.adzuna_app_key:
         sources.append("Adzuna")
+    if config.serpapi_api_key:
+        sources.append("SerpApi Google Jobs")
     if config.greenhouse_boards:
         sources.append("Greenhouse")
     if config.lever_sites:
