@@ -3,7 +3,7 @@ name = "jobforge"
 version = "0.1.0"
 description = "Multi-agent employability assistant for discovering, ranking, and preparing grounded job applications."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
     "openai>=1.99,<2",
     "pydantic>=2.7,<3",
@@ -12,6 +12,9 @@ dependencies = [
     "pypdf>=4,<7",
     "python-docx>=1.1,<2",
     "streamlit>=1.36,<2",
+    "mcp>=1,<2",
+    # MCP authentication dependency; 46.x retains a wheel for the supported macOS development runtime.
+    "cryptography>=42,<47",
 ]
 
 [project.optional-dependencies]
