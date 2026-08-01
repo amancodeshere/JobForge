@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import date
 
-from app.schemas.application import ApplicationResult, MatchingEvidence, TailoredStatement
+from app.schemas.application import ApplicationResult, MatchingEvidence, ScoreBreakdown, TailoredStatement
 from app.schemas.candidate import CandidateProfile, CandidatePreferences
 from app.schemas.job import JobResult
 from app.services.latex_resume import build_resume_latex
@@ -26,8 +26,9 @@ class ApplicationTailorAgent:
         preferences: CandidatePreferences,
         job: JobResult,
         today: date | None = None,
+        precomputed_score: ScoreBreakdown | None = None,
     ) -> ApplicationResult:
-        score = calculate_relevance_score(profile, preferences, job, today=today)
+        score = precomputed_score or calculate_relevance_score(profile, preferences, job, today=today)
         matching = _matching_evidence(profile, job)
         gaps = _skill_gaps(profile, job)
         statements = _tailored_statements(profile, matching)

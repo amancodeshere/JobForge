@@ -75,6 +75,7 @@ class AgentHealth(BaseModel):
     valid_results: int = 0
     invalid_results: int = 0
     execution_errors: int = 0
+    duration_ms: int = 0
     notes: List[str] = Field(default_factory=list)
 
 

@@ -14,6 +14,8 @@ JobForge uses structured, documented job endpoints instead of general-purpose br
 
 Every adapter converts external data into `JobResult`. Independent providers and company boards run concurrently, while output ordering remains deterministic. Provider failures are isolated and exposed in `search_warnings` and agent health. Live results are never silently mixed with samples. If every live source returns no records, the optional fallback is labelled `sample_fallback`.
 
+Agent diagnostics include per-source result counts and elapsed time for profiling, broad discovery, targeted discovery, validation, tailoring, and dashboard validation. Candidate profiling overlaps the network-bound broad search, and top-ranked application packages are drafted with a bounded worker pool after scores are computed once.
+
 ## Agent Reach boundary
 
 Agent Reach is installed for interactive research across web pages, LinkedIn, GitHub, social platforms, video, and feeds. It is a capability router, not a structured production job provider. Its runtime invokes external command-line tools and some capabilities require browser cookies, proxies, or Exa credentials. Embedding it in the Railway request path would make retrieval less deterministic and expand the service's credential and execution surface.

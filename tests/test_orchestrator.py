@@ -1,4 +1,5 @@
 import json
+from threading import Event
 
 from app.agents.orchestrator_agent import OrchestratorAgent
 from app.schemas.candidate import CandidatePreferences
@@ -99,3 +100,59 @@ def test_orchestrator_marks_sample_fallback(tmp_path):
     assert result.search_mode == "sample_fallback"
     assert "sample" in result.search_sources
     assert any("bundled sample" in warning for warning in result.search_warnings)
+
+
+def test_orchestrator_overlaps_profile_extraction_with_broad_search(tmp_path, monkeypatch):
+    orchestrator = OrchestratorAgent()
+    broad_started = Event()
+    original_profile_run = orchestrator.profile_agent.run
+    original_broad_run = orchestrator.broad_agent.run
+
+    def profile_run(*args, **kwargs):
+        assert broad_started.wait(timeout=1), "broad search did not start while profiling was active"
+        return original_profile_run(*args, **kwargs)
+
+    def broad_run(*args, **kwargs):
+        broad_started.set()
+        return original_broad_run(*args, **kwargs)
+
+    monkeypatch.setattr(orchestrator.profile_agent, "run", profile_run)
+    monkeypatch.setattr(orchestrator.broad_agent, "run", broad_run)
+
+    result = orchestrator.run(
+        cv_path="sample_data/cvs/aman_sharma_cv.txt",
+        preferences=CandidatePreferences(),
+        output_path=str(tmp_path / "latest_run.json"),
+        top_n=1,
+    )
+
+    assert result.applications
+    assert all(item.duration_ms >= 0 for item in result.agent_health)
+
+
+def test_orchestrator_reuses_precomputed_scores_during_parallel_tailoring(tmp_path, monkeypatch):
+    from app.agents import orchestrator_agent
+
+    original_score = orchestrator_agent.calculate_relevance_score
+    score_calls = 0
+
+    def counted_score(*args, **kwargs):
+        nonlocal score_calls
+        score_calls += 1
+        return original_score(*args, **kwargs)
+
+    monkeypatch.setattr(orchestrator_agent, "calculate_relevance_score", counted_score)
+    monkeypatch.setattr(
+        "app.agents.application_tailor_agent.calculate_relevance_score",
+        lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("score was recalculated")),
+    )
+
+    result = OrchestratorAgent().run(
+        cv_path="sample_data/cvs/aman_sharma_cv.txt",
+        preferences=CandidatePreferences(),
+        output_path=str(tmp_path / "latest_run.json"),
+        top_n=3,
+    )
+
+    assert score_calls == result.validated_count
+    assert result.recommended_count == 3

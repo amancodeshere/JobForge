@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
-from typing import List
+from time import perf_counter
+from typing import Callable, List, TypeVar
 
 from app.agents.application_tailor_agent import ApplicationTailorAgent
 from app.agents.broad_search_agent import BroadSearchAgent
@@ -16,12 +18,12 @@ from app.evaluation.validation import (
     validate_job_pool,
     validate_rankings,
 )
-from app.schemas.application import AgentHealth, WorkflowResult
+from app.schemas.application import AgentHealth, ApplicationResult, ScoreBreakdown, WorkflowResult
 from app.schemas.candidate import CandidatePreferences
 from app.schemas.job import JobResult, JobStatus
 from app.tools.duplicate_detection import deduplicate_jobs
 from app.tools.job_search import validate_job
-from app.tools.live_job_search import LiveJobSearch
+from app.tools.live_job_search import LiveJobSearch, SearchOutcome
 from app.tools.relevance_scoring import calculate_relevance_score
 
 
@@ -53,7 +55,20 @@ class OrchestratorAgent:
         health: List[AgentHealth] = []
         checks = []
 
-        profile = self.profile_agent.run(cv_path, preferences)
+        with ThreadPoolExecutor(max_workers=3, thread_name_prefix="workflow") as executor:
+            profile_future = executor.submit(_timed, lambda: self.profile_agent.run(cv_path, preferences))
+            broad_future = executor.submit(
+                _timed,
+                lambda: self.broad_agent.run(preferences, use_live=use_live_search),
+            )
+            profile, profile_duration = profile_future.result()
+            targeted_future = executor.submit(
+                _timed,
+                lambda: self.targeted_agent.run(profile, use_live=use_live_search),
+            )
+            broad_jobs, broad_duration = broad_future.result()
+            targeted_jobs, targeted_duration = targeted_future.result()
+
         profile_check = validate_candidate_profile(profile)
         checks.append(profile_check)
         health.append(
@@ -62,10 +77,10 @@ class OrchestratorAgent:
                 status="completed" if profile_check.passed else "completed_with_issues",
                 valid_results=len(profile.skills),
                 invalid_results=len(profile_check.issues),
+                duration_ms=profile_duration,
             )
         )
 
-        broad_jobs = self.broad_agent.run(preferences, use_live=use_live_search)
         health.append(
             AgentHealth(
                 agent=self.broad_agent.name,
@@ -73,11 +88,11 @@ class OrchestratorAgent:
                 tool_calls=self.broad_agent.tool_calls,
                 valid_results=len(broad_jobs),
                 execution_errors=len(self.broad_agent.last_outcome.source_errors),
-                notes=self.broad_agent.last_outcome.source_errors[:8],
+                duration_ms=broad_duration,
+                notes=_source_notes(self.broad_agent.last_outcome)[:8],
             )
         )
 
-        targeted_jobs = self.targeted_agent.run(profile, use_live=use_live_search)
         health.append(
             AgentHealth(
                 agent=self.targeted_agent.name,
@@ -85,7 +100,8 @@ class OrchestratorAgent:
                 tool_calls=self.targeted_agent.tool_calls,
                 valid_results=len(targeted_jobs),
                 execution_errors=len(self.targeted_agent.last_outcome.source_errors),
-                notes=self.targeted_agent.last_outcome.source_errors[:8],
+                duration_ms=targeted_duration,
+                notes=_source_notes(self.targeted_agent.last_outcome)[:8],
             )
         )
 
@@ -106,7 +122,9 @@ class OrchestratorAgent:
             search_mode = "sample_fallback"
             search_sources.append("sample")
         validation_date = date.today() if search_mode == "live" else _validation_date(discovered, self.sample_jobs_path)
+        validation_started = perf_counter()
         validated_jobs, rejected_jobs = _validate_jobs(discovered, preferences, validation_date)
+        validation_duration = _elapsed_ms(validation_started)
         job_pool_check = validate_job_pool([*validated_jobs, *rejected_jobs])
         checks.append(job_pool_check)
         health.append(
@@ -115,20 +133,19 @@ class OrchestratorAgent:
                 status="completed" if job_pool_check.passed else "completed_with_issues",
                 valid_results=len(validated_jobs),
                 invalid_results=len(rejected_jobs),
+                duration_ms=validation_duration,
                 notes=_rejection_notes(rejected_jobs),
             )
         )
 
-        ranked_jobs = sorted(
-            validated_jobs,
-            key=lambda job: calculate_relevance_score(profile, preferences, job, today=validation_date).overall_score,
-            reverse=True,
-        )[:top_n]
-        self.tailor_agent = ApplicationTailorAgent()
-        applications = [
-            self.tailor_agent.run(profile, preferences, job, today=validation_date)
-            for job in ranked_jobs
+        scored_jobs = [
+            (job, calculate_relevance_score(profile, preferences, job, today=validation_date))
+            for job in validated_jobs
         ]
+        ranked_jobs = sorted(scored_jobs, key=lambda item: item[1].overall_score, reverse=True)[:top_n]
+        tailoring_started = perf_counter()
+        applications = self._tailor_ranked_jobs(profile, preferences, ranked_jobs, validation_date)
+        tailoring_duration = _elapsed_ms(tailoring_started)
         applications = sorted(applications, key=lambda item: item.relevance_score, reverse=True)
         ranking_check = validate_rankings(applications)
         application_check = validate_applications(applications)
@@ -141,6 +158,7 @@ class OrchestratorAgent:
                 invalid_results=sum(1 for application in applications if application.quality_checks.unsupported_claims),
                 tool_calls=self.tailor_agent.llm_attempts,
                 execution_errors=self.tailor_agent.llm_errors,
+                duration_ms=tailoring_duration,
                 notes=self.tailor_agent.notes[:8],
             )
         )
@@ -158,7 +176,9 @@ class OrchestratorAgent:
             validation_checks=checks,
         )
 
+        dashboard_started = perf_counter()
         dashboard_check = validate_dashboard_payload(result)
+        dashboard_duration = _elapsed_ms(dashboard_started)
         result.validation_checks.append(dashboard_check)
         result.agent_health.append(
             AgentHealth(
@@ -166,10 +186,55 @@ class OrchestratorAgent:
                 status="completed" if dashboard_check.passed else "completed_with_issues",
                 valid_results=1 if dashboard_check.passed else 0,
                 invalid_results=len(dashboard_check.issues),
+                duration_ms=dashboard_duration,
             )
         )
         self.dashboard_agent.write_payload(result, output_path)
         return result
+
+    def _tailor_ranked_jobs(
+        self,
+        profile,
+        preferences: CandidatePreferences,
+        ranked_jobs: list[tuple[JobResult, ScoreBreakdown]],
+        validation_date: date,
+    ) -> list[ApplicationResult]:
+        self.tailor_agent = ApplicationTailorAgent()
+        if not ranked_jobs:
+            return []
+
+        def tailor(job: JobResult, score: ScoreBreakdown):
+            agent = ApplicationTailorAgent()
+            application = agent.run(
+                profile,
+                preferences,
+                job,
+                today=validation_date,
+                precomputed_score=score,
+            )
+            return application, agent
+
+        workers = _bounded_env_int("JOBFORGE_TAILOR_WORKERS", 3, 1, 6)
+        ordered: list[tuple[ApplicationResult, ApplicationTailorAgent] | None] = [None] * len(ranked_jobs)
+        with ThreadPoolExecutor(max_workers=min(workers, len(ranked_jobs)), thread_name_prefix="tailor") as executor:
+            futures = {
+                executor.submit(tailor, job, score): index
+                for index, (job, score) in enumerate(ranked_jobs)
+            }
+            for future in as_completed(futures):
+                ordered[futures[future]] = future.result()
+
+        applications: list[ApplicationResult] = []
+        for item in ordered:
+            if item is None:
+                continue
+            application, agent = item
+            applications.append(application)
+            self.tailor_agent.llm_attempts += agent.llm_attempts
+            self.tailor_agent.llm_successes += agent.llm_successes
+            self.tailor_agent.llm_errors += agent.llm_errors
+            self.tailor_agent.notes.extend(agent.notes)
+        return applications
 
 
 def _validate_jobs(
@@ -224,3 +289,29 @@ def _rejection_notes(jobs: list[JobResult]) -> list[str]:
 
 def _unique_strings(values: list[str]) -> list[str]:
     return list(dict.fromkeys(value for value in values if value))
+
+
+def _source_notes(outcome: SearchOutcome) -> list[str]:
+    counts = [f"{source}: {outcome.source_counts.get(source, 0)} jobs" for source in outcome.sources_attempted]
+    return [*counts, *outcome.source_errors]
+
+
+T = TypeVar("T")
+
+
+def _timed(operation: Callable[[], T]) -> tuple[T, int]:
+    started = perf_counter()
+    result = operation()
+    return result, _elapsed_ms(started)
+
+
+def _elapsed_ms(started: float) -> int:
+    return max(0, round((perf_counter() - started) * 1000))
+
+
+def _bounded_env_int(name: str, default: int, minimum: int, maximum: int) -> int:
+    try:
+        value = int(os.getenv(name, str(default)))
+    except ValueError:
+        value = default
+    return min(maximum, max(minimum, value))

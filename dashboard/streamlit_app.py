@@ -908,6 +908,7 @@ with st.expander("Workflow diagnostics"):
             "Valid": health.valid_results,
             "Invalid": health.invalid_results,
             "Errors": health.execution_errors,
+            "Duration (ms)": health.duration_ms,
             "Notes": "; ".join(health.notes) if health.notes else "-",
         }
         for health in result.agent_health

@@ -150,6 +150,7 @@ uv run python main.py doctor --require-openai
 - Run deterministic filtering and scoring before any LLM drafting.
 - Generate application packages only for the top jobs.
 - The orchestrator scores all validated jobs first and only calls the tailoring agent for `top_n`.
+- Candidate profiling overlaps broad network discovery; independent providers and selected-job drafts use bounded worker pools. Tune drafting concurrency with `JOBFORGE_TAILOR_WORKERS` (default `3`).
 - Keep `JOBFORGE_USE_OPENAI=false` for free demos that do not need generated prose.
 - Use `gpt-5-mini` for the drafting path unless a higher-accuracy model is required.
 
