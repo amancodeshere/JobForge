@@ -60,13 +60,13 @@ st.markdown(
       </div>
       <div class="jf-language-front">
         <div class="jf-language-copy">
-          <h1 aria-label="Build, lead, progress">
-            <span>Build</span><span>Lead</span><span>Progress</span>
+          <h1 aria-label="Forge a career">
+            <span>Forge a</span><span>career</span>
           </h1>
         </div>
         <div class="jf-language-summary">
-          <strong>Turn ambition into a defensible application case.</strong>
-          <p>Search credible sources, validate each opportunity, and prepare tailored materials grounded in your real experience.</p>
+          <strong>Find stronger opportunities. Apply with evidence.</strong>
+          <p>JobForge searches live, credible job sources, ranks each role against your CV and preferences, and prepares tailored application materials without inventing experience.</p>
         </div>
       </div>
     </section>
