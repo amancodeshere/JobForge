@@ -152,9 +152,9 @@ def test_orchestrator_overlaps_profile_extraction_with_broad_search(tmp_path, mo
 
 
 def test_orchestrator_reuses_precomputed_scores_during_parallel_tailoring(tmp_path, monkeypatch):
-    from app.agents import orchestrator_agent
+    from app.tools import relevance_scoring
 
-    original_score = orchestrator_agent.calculate_relevance_score
+    original_score = relevance_scoring.calculate_relevance_score
     score_calls = 0
 
     def counted_score(*args, **kwargs):
@@ -162,7 +162,7 @@ def test_orchestrator_reuses_precomputed_scores_during_parallel_tailoring(tmp_pa
         score_calls += 1
         return original_score(*args, **kwargs)
 
-    monkeypatch.setattr(orchestrator_agent, "calculate_relevance_score", counted_score)
+    monkeypatch.setattr(relevance_scoring, "calculate_relevance_score", counted_score)
     monkeypatch.setattr(
         "app.agents.application_tailor_agent.calculate_relevance_score",
         lambda *_args, **_kwargs: (_ for _ in ()).throw(AssertionError("score was recalculated")),
@@ -175,5 +175,5 @@ def test_orchestrator_reuses_precomputed_scores_during_parallel_tailoring(tmp_pa
         top_n=3,
     )
 
-    assert score_calls == result.validated_count
+    assert result.recommended_count <= score_calls <= result.validated_count
     assert result.recommended_count == 3

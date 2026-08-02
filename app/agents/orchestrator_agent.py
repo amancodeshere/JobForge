@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import os
+import hashlib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime
+from pathlib import Path
 from time import perf_counter
 from typing import Callable, List, TypeVar
 
@@ -22,16 +24,22 @@ from app.schemas.application import (
     AgentHealth,
     ApplicationResult,
     JobSearchResult,
+    ProviderHealth,
     RankedJob,
     ScoreBreakdown,
     WorkflowResult,
 )
-from app.schemas.candidate import CandidatePreferences
+from app.schemas.candidate import CandidatePreferences, CandidateProfile
 from app.schemas.job import JobResult, JobStatus
 from app.tools.duplicate_detection import deduplicate_jobs
+from app.tools.cache import TTLCache
 from app.tools.job_search import validate_job
-from app.tools.live_job_search import LiveJobSearch, SearchOutcome
-from app.tools.relevance_scoring import calculate_relevance_score
+from app.tools.live_job_search import LiveJobSearch, ProgressCallback, SearchOutcome
+from app.tools.relevance_scoring import rank_jobs, rank_jobs_v1
+from app.tools.rollout import RolloutConfig, compare_rankings, rollout_decision
+
+
+_PROFILE_CACHE: TTLCache[CandidateProfile] = TTLCache(max_entries=64)
 
 
 class OrchestratorAgent:
@@ -41,12 +49,20 @@ class OrchestratorAgent:
         self,
         sample_jobs_path: str = "sample_data/jobs/jobs.json",
         live_search: LiveJobSearch | None = None,
+        progress_callback: ProgressCallback | None = None,
+        enable_cache: bool = False,
+        rollout_config: RolloutConfig | None = None,
     ) -> None:
         self.sample_jobs_path = sample_jobs_path
-        self.live_search = live_search or LiveJobSearch()
+        self.enable_cache = enable_cache
+        self.profile_cache_status = "disabled"
+        self.rollout_config = rollout_config or RolloutConfig.from_env()
+        broad_live_search = live_search or LiveJobSearch(progress_callback=progress_callback)
+        targeted_live_search = live_search or LiveJobSearch(progress_callback=progress_callback)
+        self.live_search = broad_live_search
         self.profile_agent = CandidateProfileAgent()
-        self.broad_agent = BroadSearchAgent(sample_jobs_path, self.live_search)
-        self.targeted_agent = TargetedSearchAgent(sample_jobs_path, self.live_search)
+        self.broad_agent = BroadSearchAgent(sample_jobs_path, broad_live_search)
+        self.targeted_agent = TargetedSearchAgent(sample_jobs_path, targeted_live_search)
         self.tailor_agent = ApplicationTailorAgent()
         self.dashboard_agent = DashboardAgent()
 
@@ -138,7 +154,7 @@ class OrchestratorAgent:
         checks = []
 
         with ThreadPoolExecutor(max_workers=3, thread_name_prefix="workflow") as executor:
-            profile_future = executor.submit(_timed, lambda: self.profile_agent.run(cv_path, preferences))
+            profile_future = executor.submit(_timed, lambda: self._profile(cv_path, preferences))
             broad_future = executor.submit(
                 _timed,
                 lambda: self.broad_agent.run(preferences, use_live=use_live_search),
@@ -160,6 +176,7 @@ class OrchestratorAgent:
                 valid_results=len(profile.skills),
                 invalid_results=len(profile_check.issues),
                 duration_ms=profile_duration,
+                notes=[f"profile cache: {self.profile_cache_status}"],
             )
         )
 
@@ -220,13 +237,40 @@ class OrchestratorAgent:
             )
         )
 
-        scored_jobs = [
-            (job, calculate_relevance_score(profile, preferences, job, today=validation_date))
-            for job in validated_jobs
-        ]
-        ranked_jobs = sorted(scored_jobs, key=lambda item: item[1].overall_score, reverse=True)
-        if limit is not None:
-            ranked_jobs = ranked_jobs[: max(0, limit)]
+        rollout = rollout_decision(_rollout_key(profile, preferences), self.rollout_config)
+        v2_ranked_jobs: list[tuple[JobResult, ScoreBreakdown]] = []
+        if rollout.ranker == "v2" or rollout.shadow_enabled:
+            v2_ranked_jobs = rank_jobs(
+                profile,
+                preferences,
+                validated_jobs,
+                today=validation_date,
+                candidate_limit=50,
+                result_limit=max(0, limit) if limit is not None else None,
+            )
+        v1_ranked_jobs: list[tuple[JobResult, ScoreBreakdown]] = []
+        if rollout.ranker == "v1" or rollout.shadow_enabled:
+            v1_ranked_jobs = rank_jobs_v1(
+                profile,
+                preferences,
+                validated_jobs,
+                today=validation_date,
+                result_limit=max(0, limit) if limit is not None else None,
+            )
+        ranked_jobs = v2_ranked_jobs if rollout.ranker == "v2" else v1_ranked_jobs
+        shadow = {}
+        if rollout.shadow_enabled:
+            shadow = compare_rankings(
+                [job.job_id for job, _score in v1_ranked_jobs],
+                [job.job_id for job, _score in v2_ranked_jobs],
+            ).model_dump()
+        outcomes = [self.broad_agent.last_outcome, self.targeted_agent.last_outcome]
+        provider_health = _provider_health(
+            outcomes,
+            rejected_jobs=rejected_jobs,
+            ranked_jobs=[job for job, _score in ranked_jobs[:10]],
+            duplicates_removed=max(0, len(broad_jobs) + len(targeted_jobs) - len(discovered)),
+        )
         return JobSearchResult(
             candidate_profile=profile,
             search_mode=search_mode,
@@ -238,7 +282,31 @@ class OrchestratorAgent:
             ranked_jobs=[RankedJob(job=job, score_breakdown=score) for job, score in ranked_jobs],
             agent_health=health,
             validation_checks=checks,
+            provider_health=provider_health,
+            search_alerts=_provider_alerts(provider_health, outcomes),
+            correlation_ids=[outcome.correlation_id for outcome in outcomes if outcome.correlation_id],
+            ranker_version=rollout.ranker,
+            rollout_bucket=rollout.bucket,
+            shadow_comparison=shadow,
         )
+
+    def _profile(self, cv_path: str, preferences: CandidatePreferences) -> CandidateProfile:
+        if not self.enable_cache:
+            self.profile_cache_status = "disabled"
+            return self.profile_agent.run(cv_path, preferences)
+        content = Path(cv_path).read_bytes()
+        payload = content + b"\0" + preferences.model_dump_json().encode("utf-8")
+        key = hashlib.sha256(payload).hexdigest()
+        cached = _PROFILE_CACHE.get_or_load(
+            key,
+            lambda: self.profile_agent.run(cv_path, preferences),
+            ttl_seconds=86400,
+            stale_seconds=86400,
+        )
+        self.profile_cache_status = cached.status
+        profile = cached.value
+        profile.source_cv = cv_path
+        return profile
 
     def _tailor_ranked_jobs(
         self,
@@ -342,6 +410,65 @@ def _unique_strings(values: list[str]) -> list[str]:
 def _source_notes(outcome: SearchOutcome) -> list[str]:
     counts = [f"{source}: {outcome.source_counts.get(source, 0)} jobs" for source in outcome.sources_attempted]
     return [*counts, *outcome.source_errors]
+
+
+def _provider_health(
+    outcomes: list[SearchOutcome],
+    *,
+    rejected_jobs: list[JobResult],
+    ranked_jobs: list[JobResult],
+    duplicates_removed: int,
+) -> list[ProviderHealth]:
+    rejected = _source_occurrences(rejected_jobs)
+    top_ten = _source_occurrences(ranked_jobs)
+    values: list[ProviderHealth] = []
+    for outcome in outcomes:
+        for source, telemetry in outcome.source_telemetry.items():
+            status = "degraded" if telemetry.error_count or telemetry.circuit_state == "open" else "healthy"
+            values.append(ProviderHealth(
+                source=source,
+                status=status,
+                duration_ms=telemetry.duration_ms,
+                requests=telemetry.request_count,
+                retries=telemetry.retry_count,
+                records_received=telemetry.records_returned,
+                records_rejected=rejected.get(source, 0),
+                duplicates_removed=duplicates_removed if source == next(iter(outcome.source_telemetry), "") else 0,
+                top_ten_contribution=top_ten.get(source, 0),
+                cache_status=telemetry.cache_status,
+                circuit_state=telemetry.circuit_state,
+                estimated_cost_units=telemetry.estimated_cost_units,
+                error_category=telemetry.error_category,
+            ))
+    return values
+
+
+def _source_occurrences(jobs: list[JobResult]) -> dict[str, int]:
+    counts: dict[str, int] = {}
+    for job in jobs:
+        sources = job.source_provenance or [job.source]
+        for source in set(sources):
+            counts[source] = counts.get(source, 0) + 1
+    return counts
+
+
+def _provider_alerts(health: list[ProviderHealth], outcomes: list[SearchOutcome]) -> list[str]:
+    alerts: list[str] = []
+    for item in health:
+        if item.circuit_state == "open":
+            alerts.append(f"{item.source}: circuit open")
+        elif item.error_category:
+            alerts.append(f"{item.source}: {item.error_category} failure")
+        if item.duration_ms >= 10_000:
+            alerts.append(f"{item.source}: latency exceeded 10 seconds")
+    if any(outcome.deadline_exceeded for outcome in outcomes):
+        alerts.append("Search deadline exceeded; partial results were returned.")
+    return _unique_strings(alerts)
+
+
+def _rollout_key(profile: CandidateProfile, preferences: CandidatePreferences) -> str:
+    payload = f"{profile.candidate_id}|{preferences.model_dump_json()}"
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 T = TypeVar("T")

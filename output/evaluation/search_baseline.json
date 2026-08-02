@@ -1,0 +1,387 @@
+{
+  "generated_for": "2026-08-02",
+  "metrics": {
+    "case_count": 30,
+    "precision_at_5": 0.8461,
+    "precision_at_10": 0.8417,
+    "ndcg_at_10": 0.8069,
+    "relevant_recall": 0.7278,
+    "duplicate_rate": 0.0,
+    "invalid_link_rate": 0.0,
+    "rejection_reasons": {
+      "Role experience level does not match preferences.": 130,
+      "Location does not match preferences.": 68,
+      "Employment type does not match preferences.": 50,
+      "Posted more than 30 days ago.": 30,
+      "Requires more than 2 years of experience.": 23,
+      "Requires more than 3 years of experience.": 3,
+      "Requires more than 1 years of experience.": 2
+    },
+    "confidence_floor": 42,
+    "result_floor": 62
+  },
+  "cases": [
+    {
+      "case_id": "ai-grad-sydney",
+      "ranked_job_ids": [
+        "job-001",
+        "job-005",
+        "job-002",
+        "job-003"
+      ],
+      "precision_at_5": 0.5,
+      "precision_at_10": 0.5,
+      "ndcg_at_10": 0.8678,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "ai-junior-remote",
+      "ranked_job_ids": [
+        "job-002"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.7126,
+      "relevant_recall": 0.5,
+      "rejected_count": 10
+    },
+    {
+      "case_id": "ai-platform-sydney",
+      "ranked_job_ids": [
+        "job-005",
+        "job-001",
+        "job-003"
+      ],
+      "precision_at_5": 0.6667,
+      "precision_at_10": 0.6667,
+      "ndcg_at_10": 0.8216,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "applied-ai-intern",
+      "ranked_job_ids": [
+        "job-008",
+        "job-001",
+        "job-005",
+        "job-002"
+      ],
+      "precision_at_5": 0.75,
+      "precision_at_10": 0.75,
+      "ndcg_at_10": 1.0,
+      "relevant_recall": 1.0,
+      "rejected_count": 4
+    },
+    {
+      "case_id": "ai-product-engineer",
+      "ranked_job_ids": [
+        "job-008",
+        "job-005",
+        "job-007"
+      ],
+      "precision_at_5": 0.6667,
+      "precision_at_10": 0.6667,
+      "ndcg_at_10": 0.8553,
+      "relevant_recall": 0.6667,
+      "rejected_count": 4
+    },
+    {
+      "case_id": "ml-grad-sydney",
+      "ranked_job_ids": [
+        "job-001",
+        "job-003",
+        "job-002"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.9285,
+      "relevant_recall": 1.0,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "ml-junior-remote",
+      "ranked_job_ids": [
+        "job-002"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.7453,
+      "relevant_recall": 0.5,
+      "rejected_count": 10
+    },
+    {
+      "case_id": "cv-grad",
+      "ranked_job_ids": [
+        "job-004",
+        "job-007",
+        "job-002"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.9285,
+      "relevant_recall": 1.0,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "mlops-junior",
+      "ranked_job_ids": [
+        "job-002",
+        "job-001"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8216,
+      "relevant_recall": 0.6667,
+      "rejected_count": 8
+    },
+    {
+      "case_id": "ml-senior",
+      "ranked_job_ids": [
+        "job-009"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8609,
+      "relevant_recall": 1.0,
+      "rejected_count": 11
+    },
+    {
+      "case_id": "data-scientist-grad",
+      "ranked_job_ids": [
+        "job-003",
+        "job-006"
+      ],
+      "precision_at_5": 0.5,
+      "precision_at_10": 0.5,
+      "ndcg_at_10": 0.7768,
+      "relevant_recall": 0.5,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "data-engineer-remote",
+      "ranked_job_ids": [
+        "job-006"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.7453,
+      "relevant_recall": 0.5,
+      "rejected_count": 10
+    },
+    {
+      "case_id": "analytics-grad",
+      "ranked_job_ids": [
+        "job-003",
+        "job-006"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.6663,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "research-assistant",
+      "ranked_job_ids": [
+        "job-010"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.9173,
+      "relevant_recall": 1.0,
+      "rejected_count": 11
+    },
+    {
+      "case_id": "data-consultant-canberra",
+      "ranked_job_ids": [
+        "job-011"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8609,
+      "relevant_recall": 1.0,
+      "rejected_count": 9
+    },
+    {
+      "case_id": "software-grad-sydney",
+      "ranked_job_ids": [
+        "job-005",
+        "job-007",
+        "job-003"
+      ],
+      "precision_at_5": 0.6667,
+      "precision_at_10": 0.6667,
+      "ndcg_at_10": 0.6663,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "backend-python-grad",
+      "ranked_job_ids": [
+        "job-005",
+        "job-003",
+        "job-007"
+      ],
+      "precision_at_5": 0.3333,
+      "precision_at_10": 0.3333,
+      "ndcg_at_10": 0.6467,
+      "relevant_recall": 0.3333,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "fullstack-ai-grad",
+      "ranked_job_ids": [
+        "job-008",
+        "job-005"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.958,
+      "relevant_recall": 1.0,
+      "rejected_count": 4
+    },
+    {
+      "case_id": "java-grad",
+      "ranked_job_ids": [],
+      "precision_at_5": 0.0,
+      "precision_at_10": 0.0,
+      "ndcg_at_10": 0.0,
+      "relevant_recall": 0.0,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "platform-grad",
+      "ranked_job_ids": [
+        "job-005",
+        "job-007",
+        "job-006",
+        "job-003"
+      ],
+      "precision_at_5": 0.5,
+      "precision_at_10": 0.5,
+      "ndcg_at_10": 0.7853,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "robotics-grad",
+      "ranked_job_ids": [
+        "job-007",
+        "job-004"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8839,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "autonomy-grad",
+      "ranked_job_ids": [
+        "job-007",
+        "job-004"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8839,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "perception-grad",
+      "ranked_job_ids": [
+        "job-004",
+        "job-007"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8839,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "robotics-remote",
+      "ranked_job_ids": [
+        "job-007"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.7453,
+      "relevant_recall": 0.5,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "embedded-vision",
+      "ranked_job_ids": [
+        "job-004",
+        "job-007"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8557,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "graduate-wide-search",
+      "ranked_job_ids": [
+        "job-003",
+        "job-005",
+        "job-006",
+        "job-001",
+        "job-007",
+        "job-002"
+      ],
+      "precision_at_5": 0.8,
+      "precision_at_10": 0.6667,
+      "ndcg_at_10": 0.8894,
+      "relevant_recall": 0.6667,
+      "rejected_count": 5
+    },
+    {
+      "case_id": "internship-wide-search",
+      "ranked_job_ids": [
+        "job-008"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8609,
+      "relevant_recall": 1.0,
+      "rejected_count": 11
+    },
+    {
+      "case_id": "part-time-entry-search",
+      "ranked_job_ids": [
+        "job-010"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.9173,
+      "relevant_recall": 1.0,
+      "rejected_count": 11
+    },
+    {
+      "case_id": "canberra-junior-search",
+      "ranked_job_ids": [
+        "job-011"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8609,
+      "relevant_recall": 1.0,
+      "rejected_count": 9
+    },
+    {
+      "case_id": "senior-ml-search",
+      "ranked_job_ids": [
+        "job-009"
+      ],
+      "precision_at_5": 1.0,
+      "precision_at_10": 1.0,
+      "ndcg_at_10": 0.8609,
+      "relevant_recall": 1.0,
+      "rejected_count": 11
+    }
+  ]
+}

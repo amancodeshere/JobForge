@@ -10,12 +10,16 @@ JobForge uses structured, documented job endpoints instead of general-purpose br
 | Australian multi-board discovery | SerpApi Google Search | API key | Uses one request to discover direct listings across credible Australian boards and ATS sites |
 | Cross-board discovery outside Australia | SerpApi Google Jobs | API key | Returns structured results where the Google Jobs country is supported |
 | Targeted company search | Greenhouse Job Board API | None for public GETs | Reads configured company career boards |
-| Targeted company search | Lever Postings API | None for public postings | Reads configured company career sites |
+| Targeted company search | Lever Postings API | None for public postings | Reads verified company career sites |
+| Targeted company search | Ashby public job posting API | None for public board GETs | Reads verified company career sites |
+| Targeted indexed search | Workday career sites | SerpApi key | Uses allowlisted public listing URLs; no private Workday API is assumed |
 | Optional remote search | Remotive public API | None | Adds attributed remote listings for low-volume deployments |
 
 Every adapter converts external data into `JobResult`. Independent providers and company boards run concurrently, while output ordering remains deterministic. Provider failures are isolated and exposed in `search_warnings` and agent health. Live results are never silently mixed with samples. If every live source returns no records, the optional fallback is labelled `sample_fallback`.
 
-Agent diagnostics include per-source result counts and elapsed time for profiling, broad discovery, targeted discovery, validation, tailoring, and dashboard validation. Candidate profiling overlaps the network-bound broad search, and top-ranked application packages are drafted with a bounded worker pool after scores are computed once.
+Agent diagnostics include correlation IDs and per-provider latency, request/retry counts, records received and rejected, duplicate removal, top-ten contribution, cache status, circuit state, and estimated request-cost units. Transient network, quota, HTTP 429, and HTTP 5xx failures receive bounded jittered retries. Malformed data and other permanent failures are not retried. A circuit breaker isolates repeatedly failing providers, ATS APIs use shorter request timeouts, and the overall deadline returns partial results rather than making every healthy provider wait for the slowest one.
+
+Candidate profiling overlaps network-bound broad search. Source completions stream progressively to the UI, broad/profile/ATS inventories use bounded stale-while-revalidate caches, and application artifacts are generated only when the user selects a shortlisted role.
 
 ## Agent Reach boundary
 
@@ -23,7 +27,9 @@ Agent Reach is installed for interactive research across web pages, LinkedIn, Gi
 
 JobForge therefore gives its deployed search agents narrow native tools with typed outputs. Agent Reach can be used outside the deployed request path to discover new company-board tokens and research sources, but application-ready records still require normalization and validation.
 
-For `SERPAPI_COUNTRY=au`, JobForge uses SerpApi's regular Google Search engine with `google.com.au`. All selected role phrases, candidate locations, and supported site scopes are combined into one query, limited to results indexed during the last month. One live workflow therefore spends at most one SerpApi search even when several roles and sites are involved.
+For `SERPAPI_COUNTRY=au`, JobForge uses SerpApi's regular Google Search engine with `google.com.au`. A provider-aware query planner expands requested roles into weighted exact, alias, seniority, and skill-led variants. Exact intent and the core Australian boards remain in every request; secondary variants and non-core ATS scopes rotate by a stable time bucket. The query is limited to results indexed during the last month. One live workflow therefore spends at most one SerpApi search even when several roles and sites are involved.
+
+The maintained registry at `config/ats_boards.json` records provider, token or indexed scope, access mode, verification date, verification URL, and expected locations. Greenhouse, Lever, and Ashby entries use their documented public job-board APIs. Workday entries are explicitly `indexed_only`; JobForge does not treat authenticated Workday platform APIs or undocumented career-site internals as a general public job-search API.
 
 The allowlist covers SEEK, Indeed, LinkedIn, Glassdoor, Workforce Australia, APS Jobs, I Work for NSW, Careers Victoria, Queensland Smart Jobs, EthicalJobs, Jora, and direct listings hosted by Greenhouse, Lever, Workday, Ashby, SmartRecruiters, and Workable. Results must match a source-specific direct-listing path. Search pages, unknown hosts, host-suffix spoofing, and malformed URLs are discarded before job validation and ranking.
 
@@ -44,18 +50,37 @@ SERPAPI_COUNTRY=au
 SERPAPI_LANGUAGE=en
 JOBFORGE_GREENHOUSE_BOARDS=Canonical=canonical,Culture Amp=cultureamp
 JOBFORGE_LEVER_SITES=Deputy=deputy
+JOBFORGE_ASHBY_BOARDS=Airtasker=airtasker
 JOBFORGE_ENABLE_REMOTIVE=false
 JOBFORGE_SEARCH_TIMEOUT=12
+JOBFORGE_SEARCH_DEADLINE=11.5
+JOBFORGE_SEARCH_RETRY_ATTEMPTS=3
+JOBFORGE_CIRCUIT_FAILURES=3
+JOBFORGE_CIRCUIT_COOLDOWN=60
 JOBFORGE_RESULTS_PER_SOURCE=50
 JOBFORGE_MAX_SEARCH_QUERIES=4
 JOBFORGE_SEARCH_WORKERS=6
+JOBFORGE_QUERY_ROTATION_MINUTES=60
+JOBFORGE_BROAD_CACHE_TTL=1800
+JOBFORGE_BROAD_CACHE_STALE=3600
+JOBFORGE_ATS_CACHE_TTL=21600
+JOBFORGE_ATS_CACHE_STALE=43200
+JOBFORGE_RANKER_V2=true
+JOBFORGE_RANKER_SHADOW=false
+JOBFORGE_RANKER_ROLLOUT_PERCENT=100
 ```
 
-Company boards use comma-separated `Company name=token` entries. Setting a board variable to an empty value disables that provider. If `JOBFORGE_GREENHOUSE_BOARDS` is absent, JobForge uses Canonical's public board as a zero-key live source.
+Company boards use comma-separated `Company name=token` entries. Setting a board variable to an empty value disables that provider. When an override is absent, JobForge uses the enabled entries in the verified registry. Explicit environment configuration always wins.
 
 For Australian SerpApi searches, `JOBFORGE_MAX_SEARCH_QUERIES` is the maximum number of role phrases placed in the single multi-board query. Increasing it does not increase the number of SerpApi requests per workflow. SerpApi caching remains enabled; its documentation states that identical cached searches within one hour are free and do not count toward the monthly allowance.
 
 Remotive is disabled by default. Its public API requires attribution and advises no more than four requests per day, which is unsuitable for an uncached multi-user deployment. If it is enabled for a low-volume instance, JobForge preserves the Remotive listing URL and displays Remotive as the source.
+
+## Ranking rollout and feedback
+
+`JOBFORGE_RANKER_V2` is the immediate rollback switch. `JOBFORGE_RANKER_ROLLOUT_PERCENT` assigns searches deterministically to the control or candidate ranker, so a candidate remains in the same canary bucket for equivalent preferences. `JOBFORGE_RANKER_SHADOW` computes both rankings while returning only the assigned ranking; diagnostics report top-ten overlap and average movement, and shadow output never changes what the user sees.
+
+The shortlist captures relevant, irrelevant, and hide-company signals with the search correlation ID, rank, job ID, and ranker version in a bounded process-local store. A production database can replace this store without changing the feedback schema. Promotion requires precision@10 of at least 80%, duplicate rate below 2%, invalid-link rate below 5%, p95 below 12 seconds, and provider error rate below 10%; failing any gate blocks promotion and supports an immediate rollback to v1.
 
 ## Safety and quality boundaries
 
@@ -85,5 +110,6 @@ Provider documentation:
 - [SEEK advertising terms](https://www.seek.com.au/content/terms/new-advertising-terms-seek-au.pdf)
 - [Greenhouse Job Board API](https://developer.greenhouse.io/job-board.html)
 - [Lever Postings API](https://github.com/lever/postings-api)
+- [Ashby public job posting API](https://developers.ashbyhq.com/docs/public-job-posting-api)
 - [Remotive public API](https://github.com/remotive-io/remote-jobs-api)
 - [Agent Reach](https://github.com/Panniantong/Agent-Reach)

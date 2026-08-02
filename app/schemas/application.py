@@ -22,6 +22,8 @@ class ScoreBreakdown(BaseModel):
     overall_score: int
     components: dict[str, int]
     weights: dict[str, float]
+    base_score: int | None = None
+    rerank_adjustments: dict[str, int] = Field(default_factory=dict)
 
 
 class MatchingEvidence(BaseModel):
@@ -80,6 +82,22 @@ class AgentHealth(BaseModel):
     notes: List[str] = Field(default_factory=list)
 
 
+class ProviderHealth(BaseModel):
+    source: str
+    status: str = "healthy"
+    duration_ms: int = 0
+    requests: int = 0
+    retries: int = 0
+    records_received: int = 0
+    records_rejected: int = 0
+    duplicates_removed: int = 0
+    top_ten_contribution: int = 0
+    cache_status: str = "miss"
+    circuit_state: str = "closed"
+    estimated_cost_units: float = 0.0
+    error_category: str = ""
+
+
 class ValidationCheck(BaseModel):
     part: str
     passed: bool
@@ -102,6 +120,12 @@ class JobSearchResult(BaseModel):
     ranked_jobs: List[RankedJob] = Field(default_factory=list)
     agent_health: List[AgentHealth] = Field(default_factory=list)
     validation_checks: List[ValidationCheck] = Field(default_factory=list)
+    provider_health: List[ProviderHealth] = Field(default_factory=list)
+    search_alerts: List[str] = Field(default_factory=list)
+    correlation_ids: List[str] = Field(default_factory=list)
+    ranker_version: str = "v2"
+    rollout_bucket: int = 0
+    shadow_comparison: dict = Field(default_factory=dict)
 
 
 class WorkflowResult(BaseModel):

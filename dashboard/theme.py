@@ -319,6 +319,14 @@ def inject_theme() -> None:
     [data-testid="stSidebar"] .st-key-search_action_tray [data-testid="stNumberInput"] {
         margin-bottom: 0.35rem;
     }
+    [data-testid="stSidebar"][aria-expanded="false"] {
+        width: 300px !important;
+        min-width: 300px !important;
+        max-width: 300px !important;
+    }
+    [data-testid="stSidebar"][aria-expanded="false"] .st-key-search_action_tray {
+        width: 300px;
+    }
 
     .jf-direction-contract { display: none; }
     .jf-hero {

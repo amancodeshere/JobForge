@@ -28,7 +28,7 @@ class JobForgeService:
     ) -> None:
         self.sample_jobs_path = sample_jobs_path
         self._orchestrator_factory = orchestrator_factory or (
-            lambda: OrchestratorAgent(sample_jobs_path=self.sample_jobs_path)
+            lambda: OrchestratorAgent(sample_jobs_path=self.sample_jobs_path, enable_cache=True)
         )
 
     def search_jobs(

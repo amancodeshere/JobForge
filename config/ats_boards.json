@@ -1,0 +1,62 @@
+[
+  {
+    "company": "Canonical",
+    "provider": "greenhouse",
+    "token": "canonical",
+    "mode": "public_api",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://boards-api.greenhouse.io/v1/boards/canonical/jobs?content=true",
+    "locations": ["Australia", "Remote"]
+  },
+  {
+    "company": "Deputy",
+    "provider": "lever",
+    "token": "deputy",
+    "mode": "public_api",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://api.lever.co/v0/postings/deputy?mode=json",
+    "locations": ["Australia", "Sydney", "Melbourne"]
+  },
+  {
+    "company": "Airtasker",
+    "provider": "ashby",
+    "token": "airtasker",
+    "mode": "public_api",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://api.ashbyhq.com/posting-api/job-board/airtasker",
+    "locations": ["Australia", "Sydney", "Remote"]
+  },
+  {
+    "company": "HUB24",
+    "provider": "workday",
+    "token": "hub24management.wd105.myworkdayjobs.com/en-US/HUB24_Careers",
+    "mode": "indexed_only",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://hub24management.wd105.myworkdayjobs.com/en-US/HUB24_Careers",
+    "locations": ["Australia", "Sydney"]
+  },
+  {
+    "company": "Nine",
+    "provider": "workday",
+    "token": "nine.wd105.myworkdayjobs.com/en-US/Nine_External_Career_Site",
+    "mode": "indexed_only",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://nine.wd105.myworkdayjobs.com/en-US/Nine_External_Career_Site",
+    "locations": ["Australia", "Sydney", "Melbourne"]
+  },
+  {
+    "company": "ResMed",
+    "provider": "workday",
+    "token": "resmed.wd3.myworkdayjobs.com/en-US/ResMed_External_Careers",
+    "mode": "indexed_only",
+    "enabled_by_default": true,
+    "verified_on": "2026-08-02",
+    "verification_url": "https://resmed.wd3.myworkdayjobs.com/en-US/ResMed_External_Careers",
+    "locations": ["Australia", "Sydney"]
+  }
+]

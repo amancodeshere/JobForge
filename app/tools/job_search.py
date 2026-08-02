@@ -10,34 +10,7 @@ from urllib.parse import urlparse
 from app.schemas.candidate import CandidatePreferences, CandidateProfile
 from app.schemas.job import JobResult, JobStatus
 from app.tools.experience_levels import has_experience_overlap
-
-
-SKILL_TERMS = [
-    "Python",
-    "C++",
-    "SQL",
-    "Java",
-    "Go",
-    "Golang",
-    "Rust",
-    "TypeScript",
-    "PyTorch",
-    "TensorFlow",
-    "Transformers",
-    "YOLO",
-    "OpenCV",
-    "ROS2",
-    "FastAPI",
-    "Next.js",
-    "PostgreSQL",
-    "AWS",
-    "Docker",
-    "Linux",
-    "Kubernetes",
-    "Spark",
-    "Machine Learning",
-    "Computer Vision",
-]
+from app.tools.job_normalization import normalize_job
 
 
 def load_jobs_from_json(path: str) -> List[JobResult]:
@@ -94,24 +67,7 @@ def targeted_queries(profile: CandidateProfile) -> List[str]:
 
 
 def enrich_job_skills(job: JobResult) -> JobResult:
-    text = f"{job.title}\n{job.description}"
-    found = []
-    for skill in SKILL_TERMS:
-        if re.search(rf"(?<![A-Za-z0-9+#.]){re.escape(skill)}(?![A-Za-z0-9+#.])", text, re.IGNORECASE):
-            found.append(skill)
-    if not job.required_skills and not job.preferred_skills:
-        # A provider description rarely distinguishes required from preferred skills
-        # reliably. Treat inferred terms as preferred rather than inventing hard requirements.
-        job.preferred_skills = found[:8]
-    elif not job.preferred_skills:
-        job.preferred_skills = [skill for skill in found if skill not in job.required_skills][:8]
-    if not job.eligibility_requirements:
-        lowered = text.lower()
-        if re.search(r"\b(?:australian citizenship|australian citizen)\b", lowered):
-            job.eligibility_requirements.append("Australian citizenship required")
-        elif re.search(r"\b(?:permanent resident|permanent residency)\b", lowered):
-            job.eligibility_requirements.append("Australian permanent residency or citizenship required")
-    return job
+    return normalize_job(job)
 
 
 def validate_job(job: JobResult, preferences: CandidatePreferences, today: date | None = None) -> JobResult:
@@ -124,8 +80,7 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
     if not has_experience_overlap(level_text, preferences.selected_experience_levels()):
         reasons.append("Role experience level does not match preferences.")
 
-    years = [int(value) for value in re.findall(r"(\d+)\+?\s*(?:years|yrs)", text)]
-    if years and min(years) > preferences.max_years_experience:
+    if job.required_years_min is not None and job.required_years_min > preferences.max_years_experience:
         reasons.append(f"Requires more than {preferences.max_years_experience} years of experience.")
 
     if preferences.employment_types and job.employment_type.lower() not in {item.lower() for item in preferences.employment_types}:
@@ -156,9 +111,9 @@ def validate_job(job: JobResult, preferences: CandidatePreferences, today: date 
 
     eligibility_text = " ".join(job.eligibility_requirements).lower()
     work_rights = (preferences.work_rights or "").lower()
-    if "citizen" in eligibility_text and "citizen" not in work_rights:
+    if work_rights and "citizen" in eligibility_text and "citizen" not in work_rights:
         reasons.append("Requires Australian citizenship.")
-    elif "permanent resident" in eligibility_text and not any(term in work_rights for term in ["permanent resident", "citizen"]):
+    elif work_rights and "permanent resident" in eligibility_text and not any(term in work_rights for term in ["permanent resident", "citizen"]):
         reasons.append("Requires Australian permanent residency or citizenship.")
 
     if reasons:
@@ -186,6 +141,10 @@ def _location_matches(job_location: str, preferred_locations: Iterable[str]) -> 
     worldwide = {"worldwide", "anywhere", "global", "remote"}
     if job in worldwide or any(term in job for term in ["worldwide", "anywhere"]):
         return True
+    australian_places = {
+        "adelaide", "brisbane", "canberra", "darwin", "hobart", "melbourne",
+        "newcastle", "perth", "sydney", "wollongong", "australia",
+    }
     for preferred in preferred_locations:
         target = _normalize_location(preferred)
         if not target:
@@ -193,6 +152,8 @@ def _location_matches(job_location: str, preferred_locations: Iterable[str]) -> 
         if job in target or target in job:
             return True
         if "australia" in target and any(term in job for term in ["australia", "australian", "apac"]):
+            return True
+        if "remote" in job and "australia" in job and any(place in target for place in australian_places):
             return True
     return False
 

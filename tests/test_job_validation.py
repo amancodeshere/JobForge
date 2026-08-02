@@ -57,6 +57,35 @@ def test_executive_titles_are_supported():
     assert "executive" in levels
 
 
+def test_zero_to_two_year_range_matches_early_career_bands_and_uses_minimum_requirement():
+    levels = infer_job_experience_levels("Engineering role requiring 0-2 years experience")
+    preferences = CandidatePreferences(experience_levels=["internship", "graduate"], max_years_experience=1)
+    job = load_jobs_from_json("sample_data/jobs/jobs.json")[0]
+
+    checked = validate_job(job, preferences, today=__import__("datetime").date(2026, 8, 1))
+
+    assert {"graduate", "entry-level", "junior"} <= set(levels)
+    assert "Requires more than 1 years of experience." not in checked.rejection_reasons
+
+
+def test_remote_australia_role_matches_candidate_in_an_australian_city():
+    preferences = CandidatePreferences(experience_levels=["graduate", "junior"], locations=["Sydney"])
+    remote_job = load_jobs_from_json("sample_data/jobs/jobs.json")[1]
+
+    checked = validate_job(remote_job, preferences, today=__import__("datetime").date(2026, 8, 1))
+
+    assert "Location does not match preferences." not in checked.rejection_reasons
+
+
+def test_unknown_work_rights_are_flagged_in_scoring_but_not_hard_rejected():
+    preferences = CandidatePreferences(experience_levels=["junior"], locations=["Canberra"], work_rights=None)
+    citizen_job = load_jobs_from_json("sample_data/jobs/jobs.json")[10]
+
+    checked = validate_job(citizen_job, preferences, today=__import__("datetime").date(2026, 8, 1))
+
+    assert "Requires Australian citizenship." not in checked.rejection_reasons
+
+
 def test_job_validation_ignores_senior_colleague_mentions():
     preferences = CandidatePreferences(
         experience_levels=["graduate", "junior"],

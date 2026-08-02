@@ -79,6 +79,11 @@ def infer_job_experience_levels(text: str) -> List[str]:
     for level, pattern in patterns:
         if re.search(pattern, lowered):
             inferred.append(level)
+    ranges = re.findall(r"(\d+)\s*(?:-|–|—|to)\s*(\d+)\s*(?:years|yrs)", lowered)
+    if any(int(low) <= 1 and int(high) <= 2 for low, high in ranges):
+        for early_level in ("graduate", "entry-level", "junior"):
+            if early_level not in inferred:
+                inferred.append(early_level)
     return inferred
 
 

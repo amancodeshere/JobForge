@@ -50,6 +50,10 @@ class CandidatePreferences(BaseModel):
     constraints: List[str] = Field(default_factory=list)
     excluded_companies: List[str] = Field(default_factory=list)
     excluded_keywords: List[str] = Field(default_factory=list)
+    work_arrangements: List[str] = Field(default_factory=list)
+    salary_min: Optional[int] = None
+    preferred_companies: List[str] = Field(default_factory=list)
+    preferred_industries: List[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def normalize_levels(self) -> "CandidatePreferences":

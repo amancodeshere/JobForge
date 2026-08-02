@@ -1,7 +1,7 @@
 from app.agents.candidate_profile_agent import CandidateProfileAgent
 from app.schemas.candidate import CandidatePreferences
 from app.tools.job_search import load_jobs_from_json
-from app.tools.relevance_scoring import calculate_relevance_score
+from app.tools.relevance_scoring import WEIGHTS, calculate_relevance_score
 
 
 def test_relevance_scoring_is_deterministic_and_weighted():
@@ -23,15 +23,9 @@ def test_relevance_scoring_is_deterministic_and_weighted():
     score = calculate_relevance_score(profile, preferences, job)
 
     assert score.overall_score >= 80
-    assert set(score.components) == {
-        "required_skills",
-        "preferred_skills",
-        "experience_level",
-        "career_interest",
-        "project_similarity",
-        "eligibility",
-        "freshness",
-    }
+    assert set(score.components) == set(WEIGHTS)
+    assert sum(score.weights.values()) == 1.0
+    assert score.base_score == score.overall_score
 
 
 def test_unmatched_live_stack_does_not_receive_fixture_level_score():

@@ -9,6 +9,7 @@ uv sync --extra dev
 uv run python main.py run
 uv run python main.py run --live
 uv run python main.py validate
+uv run python main.py benchmark-search
 uv run python main.py doctor
 uv run python main.py export-cv --payload sample_data/expected_outputs/latest_run.json
 uv run pytest
@@ -40,6 +41,7 @@ SERPAPI_COUNTRY=au
 SERPAPI_LANGUAGE=en
 JOBFORGE_GREENHOUSE_BOARDS=Canonical=canonical,Culture Amp=cultureamp
 JOBFORGE_LEVER_SITES=Deputy=deputy
+JOBFORGE_ASHBY_BOARDS=Airtasker=airtasker
 ```
 
 Optional cost-saving mode:
@@ -85,21 +87,17 @@ For remote access, deploy a second Railway service from the same repository usin
 
 - Candidate Profile Agent extracts CV-backed skills, projects, career themes, and evidence IDs.
 - Broad Opportunity Scout searches Adzuna and, when configured for Australia, uses one SerpApi request to search selected roles and locations across SEEK, Indeed, LinkedIn, Glassdoor, Australian government portals, specialist boards, and established ATS-hosted company careers pages. Only recognized direct-listing URLs are accepted. Other configured countries continue to use SerpApi Google Jobs where that engine is supported.
-- Targeted Job Researcher reads current postings from configured Greenhouse and Lever company boards. Canonical's public Greenhouse board is enabled by default so live mode works without an API key.
+- Targeted Job Researcher reads current postings from a maintained registry of verified Greenhouse, Lever, and Ashby boards. Workday career sites remain indexed-only because JobForge does not assume an unrestricted public cross-company Workday API.
 - Experience level is a multi-select, covering internship, graduate, entry-level, junior, associate, mid-level, senior, staff, principal, manager, and director searches.
 - Job validation rejects stale, wrong-employment-type, missing-description, citizenship-gated, and experience-level mismatched roles.
 - Candidate exclusions support exact company names and title/description keywords; JSON constraints can also use `Exclude company: ...` or `Exclude keyword: ...`.
-- Relevance scoring is deterministic:
-  - 30% required skill match
-  - 15% preferred skill match
-  - 15% experience-level compatibility
-  - 15% career-interest alignment
-  - 10% project-domain similarity
-  - 10% eligibility compatibility
-  - 5% freshness
-- Application Tailor produces a tailored CV draft, trusted escaped LaTeX source, verified PDF, and cover letter using evidence mappings. PDF compilation uses Tectonic and is cached per selected application in the dashboard.
+- Relevance scoring remains deterministic and transparent. A fast first stage bounds full scoring to 50 candidates; the second stage combines role compatibility, weighted required and preferred skills, transferable skills, experience, interests, project evidence, eligibility, location, working arrangement, compensation, company/industry preference, source quality, and freshness. The shortlist applies an evidence-calibrated confidence floor and visible company/role diversity adjustments.
+- Search results stream as independent providers finish. Profile, broad-search, and direct ATS inventories use bounded stale-while-revalidate caches over pooled HTTP connections; repeated profiles reuse the same ATS inventory before candidate filtering.
+- Application Tailor runs only when a shortlisted role is selected. It produces a tailored CV draft, trusted escaped LaTeX source, verified PDF, and cover letter using evidence mappings. PDF compilation uses Tectonic and is cached per selected application in the dashboard.
 - Quality checks reject unsupported claims, company-name mismatches, invalid rankings, malformed dashboard payloads, and unsafe LLM drafts.
-- Streamlit dashboard shows recommended roles, job details, score breakdowns, application packages, agent activity, and validation checkpoints.
+- Streamlit dashboard shows the progressive shortlist, job details, score breakdowns, on-demand application packages, provider health, feedback controls, agent activity, and validation checkpoints.
+- Provider resilience includes transient-only jittered retries, provider-specific timeouts, circuit breakers, an 11.5-second overall deadline, correlation IDs, and partial-result isolation.
+- Ranking rollout supports deterministic canaries, shadow comparisons, an immediate v1 rollback switch, and promotion gates for precision, duplicates, invalid links, p95 latency, and provider errors.
 - Optional OpenAI drafting uses `OPENAI_MODEL`, defaulting to `gpt-5-mini`, while deterministic validation still checks the output. If OpenAI fails or returns unsafe copy, the app visibly falls back to deterministic generation.
 
 ## CLI
@@ -128,6 +126,7 @@ Live runs report their exact mode and sources. If all live sources fail or retur
 - **SerpApi Google Jobs** remains available when `SERPAPI_COUNTRY` is set to a country supported by that engine. JobForge preserves the observed publisher and a valid original application link.
 - **Greenhouse** public job-board GET endpoints require no key. Configure comma-separated `Company=board_token` entries in `JOBFORGE_GREENHOUSE_BOARDS`.
 - **Lever** public postings endpoints require no key. Configure comma-separated `Company=site_token` entries in `JOBFORGE_LEVER_SITES`.
+- **Ashby** public job-board endpoints require no key. Configure comma-separated `Company=board_name` entries in `JOBFORGE_ASHBY_BOARDS`.
 - **Remotive** is opt-in with `JOBFORGE_ENABLE_REMOTIVE=true`. Its public API requires source attribution and has strict rate guidance, so it is disabled by default for multi-user deployments.
 
 JobForge links candidates back to the provider's original listing and shows the source on every result. The indexed search consumes only SerpApi's structured Google result fields; it does not fetch or scrape the listed job-board pages, access logged-in pages, or submit applications automatically.
@@ -159,11 +158,12 @@ uv run python main.py doctor --require-openai
 ## Cost controls
 
 - Australian indexed discovery uses exactly one SerpApi request per live workflow, regardless of how many selected roles or supported sites are included. `JOBFORGE_MAX_SEARCH_QUERIES` controls how many role phrases are combined into that request; it no longer multiplies Australian SerpApi calls.
+- Role queries are expanded through a weighted taxonomy into exact, alias, seniority, and skill-led variants. Secondary variants and non-core indexed sites rotate once per configured cache window while exact intent and the core Australian boards remain present.
 - Exact repeated SerpApi searches retain the provider's default cache behavior, so identical requests may be served from SerpApi's free one-hour cache.
 - Keep search on approved APIs or the sample fallback dataset during demos.
 - Run deterministic filtering and scoring before any LLM drafting.
-- Generate application packages only for the top jobs.
-- The orchestrator scores all validated jobs first and only calls the tailoring agent for `top_n`.
+- Generate application packages only when a user selects a shortlisted role.
+- The orchestrator normalizes and scores validated jobs once; search never calls the tailoring agent.
 - Candidate profiling overlaps broad network discovery; independent providers and selected-job drafts use bounded worker pools. Tune drafting concurrency with `JOBFORGE_TAILOR_WORKERS` (default `3`).
 - Keep `JOBFORGE_USE_OPENAI=false` for free demos that do not need generated prose.
 - Use `gpt-5-mini` for the drafting path unless a higher-accuracy model is required.
@@ -180,7 +180,7 @@ Orchestrator / Quality Controller
       +--> Broad Opportunity Scout
       +--> Targeted Job Researcher
       +--> Job validation + scoring
-      +--> Application Tailor
+      +--> On-demand Application Tailor
       +--> Dashboard Agent
 ```
 

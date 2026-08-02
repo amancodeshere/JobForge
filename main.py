@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 from typing import Optional
 
@@ -10,9 +11,11 @@ from rich.table import Table
 
 from app.agents.orchestrator_agent import OrchestratorAgent
 from app.evaluation.deployment_readiness import deployment_readiness_checks
+from app.evaluation.search_quality import evaluate_benchmark, load_benchmark
 from app.schemas.application import WorkflowResult
 from app.schemas.candidate import CandidatePreferences
 from app.services.latex_resume import LatexCompileError, compile_resume_pdf
+from app.tools.job_search import load_jobs_from_json
 
 
 app = typer.Typer(help="JobForge: grounded multi-agent job application assistant.")
@@ -50,6 +53,76 @@ def validate(
     _print_checks(result)
     if failed:
         raise typer.Exit(code=1)
+
+
+@app.command("benchmark-search")
+def benchmark_search(
+    benchmark: str = typer.Option(
+        "tests/fixtures/search_benchmark.json",
+        "--benchmark",
+        help="Labelled search benchmark JSON.",
+    ),
+    jobs: str = typer.Option(
+        "sample_data/jobs/jobs.json",
+        "--jobs",
+        help="Normalized job corpus to rank.",
+    ),
+    output: str = typer.Option(
+        "output/evaluation/search_baseline.json",
+        "--output",
+        help="Where to write the metrics and per-case rankings.",
+    ),
+    evaluation_date: str = typer.Option(
+        "2026-08-02",
+        "--date",
+        help="Stable YYYY-MM-DD date used for freshness and validation.",
+    ),
+    confidence_floor: int = typer.Option(
+        42,
+        "--confidence-floor",
+        min=0,
+        max=100,
+        help="First-stage score required to enter the full reranker.",
+    ),
+    result_floor: int = typer.Option(
+        62,
+        "--result-floor",
+        min=0,
+        max=100,
+        help="Full relevance score required to enter the shortlist.",
+    ),
+) -> None:
+    try:
+        measured_on = date.fromisoformat(evaluation_date)
+    except ValueError as exc:
+        raise typer.BadParameter("Date must use YYYY-MM-DD format.") from exc
+    report = evaluate_benchmark(
+        load_benchmark(benchmark),
+        load_jobs_from_json(jobs),
+        today=measured_on,
+        confidence_floor=confidence_floor,
+        result_floor=result_floor,
+    )
+    output_path = Path(output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(report.model_dump_json(indent=2), encoding="utf-8")
+
+    metrics = report.metrics
+    table = Table(title="Search Quality Baseline")
+    table.add_column("Metric")
+    table.add_column("Value", justify="right")
+    for label, value in (
+        ("Cases", metrics.case_count),
+        ("Precision@5", f"{metrics.precision_at_5:.1%}"),
+        ("Precision@10", f"{metrics.precision_at_10:.1%}"),
+        ("NDCG@10", f"{metrics.ndcg_at_10:.1%}"),
+        ("Relevant recall", f"{metrics.relevant_recall:.1%}"),
+        ("Duplicate rate", f"{metrics.duplicate_rate:.1%}"),
+        ("Invalid link rate", f"{metrics.invalid_link_rate:.1%}"),
+    ):
+        table.add_row(label, str(value))
+    console.print(table)
+    console.print(f"Baseline written to [bold]{output_path}[/bold]")
 
 
 @app.command("export-cv")
