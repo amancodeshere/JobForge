@@ -223,8 +223,11 @@ client_secret = "YOUR_OIDC_CLIENT_SECRET"
 server_metadata_url = "YOUR_PROVIDER_HTTPS_OPENID_CONFIGURATION_URL"
 ```
 
-Register that exact callback URL with the provider. For Railway, provision the
-same server-side secrets file and use
+Register that exact callback URL with the provider. For Railway, set the server-only `JOBFORGE_AUTH_CONFIG` variable to a JSON
+object containing the same `[auth]` settings. The startup command runs
+`python -m dashboard.configure_auth` before Streamlit, atomically creates the
+ignored secrets file with owner-only permissions, and preserves unrelated
+Streamlit secrets. Use
 `https://YOUR_APP_DOMAIN/oauth2callback` in both places. Generate the cookie
 secret with `python -c 'import secrets; print(secrets.token_urlsafe(48))'`.
 Streamlit handles the authorization redirect, state/nonce validation and identity
@@ -238,3 +241,15 @@ preferences, shortlists and drafts currently remain in the Streamlit session;
 closing/reloading a session can discard them. The persistence foundation is not
 connected to the workspace yet. This is a desktop-focused browser application,
 not a packaged native desktop executable.
+
+For Auth0, create a **Regular Web Application**, enable its email/password
+connection, and register the exact production and localhost callback URLs. Its
+default client authentication method is **Client Secret (Post)**; use:
+
+```toml
+client_kwargs = { prompt = "login", token_endpoint_auth_method = "client_secret_post" }
+```
+
+`server_metadata_url` is `https://YOUR_AUTH0_DOMAIN/.well-known/openid-configuration`.
+Do not enable the default Google development-key connection for production;
+configure your own Google credentials before adding that sign-in option.

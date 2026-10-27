@@ -15,6 +15,7 @@ dependencies = [
     "mcp>=1,<2",
     # MCP authentication dependency; 46.x retains a wheel for the supported macOS development runtime.
     "cryptography>=42,<47",
+    "toml>=0.10.2,<1",
 ]
 
 [project.optional-dependencies]

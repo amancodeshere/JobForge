@@ -27,8 +27,12 @@ cross-browser certification. No real applications are submitted by the checks.
 
 The production Railway service is `JobForge` in project `Job Forge`, environment
 `production`, and deploys the repository's `main` branch. Its public domain is
-`jobforge-prod.up.railway.app`. At release preparation, no OIDC settings were
-configured in the service or local Streamlit secrets. The user requested that
-an existing provider be connected. Provider selection/configuration and the
-registered callback URL are required before promoting the login-gated workspace;
-never enable local personal mode on the hosted service to work around this.
+`jobforge-prod.up.railway.app`. Auth0 is configured using a Regular Web Application with the default
+email/password connection. The generated secret stays in ignored local settings
+and Railway's server-only `JOBFORGE_AUTH_CONFIG` variable. Native Streamlit
+OIDC uses the provider's Client Secret (Post) method; the deployment startup
+materializes the configuration before Streamlit starts. Exact production and
+localhost callback URLs are allowlisted. Google sign-in stays disabled until
+its own production credentials are configured. Never enable local personal mode
+on the hosted service to work around login. Verify an interactive login and
+logout after deploying; account history remains session-only.

@@ -670,6 +670,7 @@ dependencies = [
     { name = "python-docx" },
     { name = "rich" },
     { name = "streamlit", extra = ["auth"] },
+    { name = "toml" },
     { name = "typer" },
 ]
 
@@ -689,6 +690,7 @@ requires-dist = [
     { name = "python-docx", specifier = ">=1.1,<2" },
     { name = "rich", specifier = ">=13,<15" },
     { name = "streamlit", extras = ["auth"], specifier = ">=1.60,<2" },
+    { name = "toml", specifier = ">=0.10.2,<1" },
     { name = "typer", specifier = ">=0.12,<1" },
 ]
 provides-extras = ["dev"]

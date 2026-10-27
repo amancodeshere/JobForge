@@ -54,7 +54,10 @@ def page_app(name, monkeypatch, *, local=False):
     source = (ROOT / "dashboard/streamlit_app.py").read_text()
     source = source.replace('ROOT = Path(__file__).resolve().parents[1]', f'ROOT = Path({str(ROOT)!r})')
     source = source.replace('st.navigation(pages, position="top").run()', f'st.navigation(pages, position="top")\n{name}()')
-    return AppTest.from_string(source, default_timeout=20).run()
+    app = AppTest.from_string(source, default_timeout=20)
+    # Tests must not consume a developer's real identity-provider configuration.
+    app.secrets["auth"] = {}
+    return app.run()
 
 
 def test_private_workspace_is_gated_without_authentication(monkeypatch):
@@ -120,3 +123,15 @@ def test_continue_and_successful_search_reach_results_without_losing_cv(monkeypa
     assert app.session_state["cv_document"]["name"] == "cv.txt"
     app.segmented_control[0].set_value("Preferences").run()
     assert app.text_area[0].value == "Data analyst"
+
+
+def test_configured_provider_offers_login_and_keeps_workspace_private(monkeypatch):
+    app = page_app("workspace", monkeypatch)
+    app.secrets["auth"] = dict(redirect_uri="http://localhost:8501/oauth2callback",
+                               cookie_secret="test-cookie-secret-for-isolated-ui-tests",
+                               client_id="test-client", client_secret="test-secret",
+                               server_metadata_url="https://tenant.example/.well-known/openid-configuration")
+    app.run()
+    assert not app.exception
+    assert any(button.label == "Continue to secure sign-in" for button in app.button)
+    assert not app.get("file_uploader")
