@@ -72,11 +72,11 @@ def inject_theme() -> None:
     [data-testid="stAppDeployButton"] { display: none; }
     #MainMenu { visibility: hidden; }
 
-    h1, h2, h3, h4, h5, h6, p, label, span, div {
-        color: var(--jf-carbon);
-    }
+    /* Let native controls inherit their own foreground; a global descendant
+       color reset overrides white text inside filled buttons and tags. */
     h1, h2, h3 { letter-spacing: -0.025em; }
     p { line-height: 1.58; }
+    [data-testid="stCaptionContainer"] { opacity: 1; }
     [data-testid="stCaptionContainer"],
     [data-testid="stCaptionContainer"] * { color: #536168 !important; }
 
@@ -160,14 +160,16 @@ def inject_theme() -> None:
         border-color: #75b6aa;
         box-shadow: 0 0 0 3px rgba(117, 182, 170, 0.24);
     }
-    [data-testid="stSidebar"] div[data-baseweb="tag"] {
-        background: #dcebe6;
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] {
+        background: var(--jf-signal) !important;
+        color: #fff !important;
         border: 0;
     }
-    [data-testid="stSidebar"] div[data-baseweb="tag"] span,
-    [data-testid="stSidebar"] div[data-baseweb="tag"] svg {
-        color: #163e39 !important;
-        fill: #163e39 !important;
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] * {
+        color: inherit !important;
+    }
+    [data-testid="stMultiSelect"] [data-baseweb="tag"] svg {
+        fill: currentColor;
     }
     [data-testid="stSidebar"] div[data-baseweb="select"] input,
     [data-testid="stSidebar"] div[data-baseweb="select"] svg {
@@ -274,17 +276,17 @@ def inject_theme() -> None:
         border-color: var(--jf-signal);
         color: #fff;
     }
-    button[data-testid="stBaseButton-primary"],
-    button[data-testid="stBaseButton-primary"]:hover {
+    button:is([kind="primary"], [kind="primaryFormSubmit"]) {
         background: var(--jf-signal) !important;
         border-color: var(--jf-signal) !important;
         color: #fff !important;
     }
-    button[data-testid="stBaseButton-primary"] * { color: #fff !important; }
-    div.stButton > button[kind="primary"]:hover,
-    div.stDownloadButton > button[kind="primary"]:hover {
-        background: var(--jf-signal-deep);
-        border-color: var(--jf-signal-deep);
+    button:is([kind="primary"], [kind="primaryFormSubmit"]) * {
+        color: inherit !important;
+    }
+    button:is([kind="primary"], [kind="primaryFormSubmit"]):hover:not(:disabled) {
+        background: var(--jf-signal-deep) !important;
+        border-color: var(--jf-signal-deep) !important;
     }
     [data-testid="stSidebar"] div.stButton > button {
         border-color: #6b818a;
@@ -634,6 +636,9 @@ def inject_theme() -> None:
     .jf-check:last-child { border-right: 0; }
     .jf-check strong { color: var(--jf-signal-deep); display: block; margin-bottom: 0.2rem; }
     .stAlert { border-radius: var(--jf-radius); }
+    [data-testid="stAlertContentSuccess"] { color: var(--jf-signal-deep) !important; }
+    [data-testid="stAlertContentWarning"] { color: var(--jf-warning) !important; }
+    [data-testid="stAlertContentError"] { color: var(--jf-danger) !important; }
     .jf-footer {
         margin-top: 3rem;
         padding-top: 1rem;
@@ -731,7 +736,14 @@ def inject_theme() -> None:
     a:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-visible {
         outline: 3px solid var(--jf-focus-light); outline-offset: 3px;
     }
-    button:disabled { opacity: .55; cursor: not-allowed; }
+    button:disabled {
+        opacity: 1;
+        color: var(--jf-slate-soft) !important;
+        background: var(--jf-paper-deep) !important;
+        border-color: var(--jf-line) !important;
+        cursor: not-allowed;
+    }
+    button:disabled * { color: inherit !important; }
     /* Names and provider titles must reflow within the available workspace. */
     .jf-masthead > *, .jf-card > *, .jf-card-top > div:first-child { min-width: 0; }
     .jf-wordmark { flex-shrink: 0; }
