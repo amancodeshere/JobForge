@@ -693,6 +693,60 @@ def inject_theme() -> None:
         .jf-check-grid { grid-template-columns: 1fr; }
         .jf-check, .jf-check:nth-child(2) { border-right: 0; border-bottom: 1px solid var(--jf-line); }
     }
+    /* The workspace extends the Opportunity Front into a quieter, task-first shell. */
+    .block-container { max-width: 1240px; padding-top: 3.5rem; }
+    .jf-masthead { margin-bottom: 2rem; }
+    .jf-wordmark-dot { color: var(--jf-signal); }
+    .jf-landing .jf-language-front { min-height: 300px; padding-bottom: 1rem; }
+    .jf-landing .jf-language-copy h1 { max-width: 12ch; font-size: clamp(4rem, 7vw, 6rem); line-height: .95; }
+    .jf-login-copy { padding: 2rem 0; }
+    .jf-login-copy h1 { font-family: var(--jf-display); font-size: 4rem; line-height: 1; text-transform: uppercase; }
+    .jf-login-copy p { max-width: 40ch; color: var(--jf-slate-soft); }
+    [data-testid="stSidebar"] { width: 280px !important; min-width: 280px !important; max-width: 280px !important; }
+    [data-testid="stSidebar"] > div:first-child { padding-bottom: 2rem; }
+    [data-testid="stSidebar"] div.stButton > button:hover { color: white; }
+    [data-testid="stFileUploaderDropzone"] {
+        min-height: 185px; background: var(--jf-white);
+        border: 1px dashed var(--jf-signal); border-radius: 3px;
+        transition: background 180ms ease-out, border-color 180ms ease-out;
+    }
+    [data-testid="stFileUploaderDropzone"] { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .65rem; padding: 1.5rem; }
+    [data-testid="stFileUploaderDropzone"]::before { content: "Drop your CV here, or choose a file"; font-weight: 700; color: var(--jf-slate); }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color: #d3dedf; }
+    [data-testid="stFileUploaderDropzone"]:hover,
+    [data-testid="stFileUploaderDropzone"]:focus-within { background: var(--jf-signal-soft); border-style: solid; }
+    [data-testid="stFileUploaderDropzone"] button { min-height: 46px; }
+    [data-testid="stTextInput"] input, [data-testid="stTextArea"] textarea {
+        background: var(--jf-white); color: var(--jf-carbon); font-size: 1rem;
+    }
+    [data-testid="stTextInput"] input::placeholder,
+    [data-testid="stTextArea"] textarea::placeholder { color: #536168; opacity: 1; }
+    [data-testid="stSegmentedControl"] { margin-bottom: 1.5rem; }
+    [data-testid="stSegmentedControl"] button { min-height: 44px; }
+    [data-testid="stPageLink"] a {
+        min-height: 46px; border: 1px solid var(--jf-slate); border-radius: 3px;
+        padding: .7rem 1rem; font-weight: 700;
+    }
+    [data-testid="stPageLink"] a:hover { background: var(--jf-signal-soft); }
+    a:focus-visible, input:focus-visible, textarea:focus-visible, button:focus-visible {
+        outline: 3px solid var(--jf-focus-light); outline-offset: 3px;
+    }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    /* Names and provider titles must reflow within the available workspace. */
+    .jf-masthead > *, .jf-card > *, .jf-card-top > div:first-child { min-width: 0; }
+    .jf-wordmark { flex-shrink: 0; }
+    .jf-live-mark { max-width: 70%; overflow-wrap: anywhere; }
+    .jf-live-mark::before { flex: 0 0 .5rem; }
+    .jf-job-title, .jf-company, .jf-chip, .jf-recommendation, .jf-panel {
+        overflow-wrap: anywhere;
+    }
+    @media (max-width: 640px) {
+        .block-container { padding-top: 2.5rem; }
+        .jf-masthead { margin-bottom: 1.5rem; }
+        .jf-landing .jf-language-copy h1 { font-size: 3.75rem; }
+        .jf-login-copy h1 { font-size: 3rem; }
+        [data-testid="stFileUploaderDropzone"] { min-height: 170px; flex-wrap: wrap; }
+    }
     </style>
     """.replace("__DISPLAY_FONT__", _display_font_uri())
     st.markdown(css, unsafe_allow_html=True)

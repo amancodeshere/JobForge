@@ -1,3 +1,4 @@
+from datetime import date
 import json
 from threading import Event
 
@@ -79,7 +80,7 @@ def test_orchestrator_uses_live_jobs_without_mixing_sample_data(tmp_path):
     class FakeLiveSearch:
         def broad_search(self, _preferences):
             job = load_jobs_from_json("sample_data/jobs/jobs.json")[0].model_copy(
-                update={"job_id": "live-001", "source": "test-live"}
+                update={"job_id": "live-001", "source": "test-live", "date_posted": date.today().isoformat()}
             )
             return SearchOutcome(jobs=[job], sources_attempted=["test-live"])
 

@@ -191,3 +191,65 @@ The Streamlit UI, CLI, and MCP transport share `JobForgeService`; MCP does not r
 ## Extension points
 
 Add providers behind `app/tools/live_job_search.py` and normalize their output to `JobResult` objects so deduplication, validation, scoring, and dashboard rendering continue to work.
+
+## Desktop workspace and sign-in
+
+The web app now has separate Home (`/`), demo (`/demo`), sign-in (`/login`),
+and workspace (`/workspace`) pages. The workspace guides you through CV upload,
+search preferences and current results. The demo uses only the fixed sample
+payload and never populates a personal shortlist. PDFs compile on request.
+
+For personal use on this computer without an identity provider, explicitly run:
+
+```bash
+JOBFORGE_LOCAL_MODE=true uv run streamlit run dashboard/streamlit_app.py --server.address 127.0.0.1
+```
+
+Keep this mode bound to loopback. It is a single-user local workspace, not an
+account login. The app rejects local mode when Railway environment markers or
+`PORT` are set. Ordinary startup requires OIDC to access the workspace.
+
+For real accounts, register an OpenID Connect application with your provider
+(e.g. Google, Microsoft or Auth0). Enable account registration at the provider
+if desired. Add the following **server-only** `.streamlit/secrets.toml` file;
+this file is ignored by Git:
+
+```toml
+[auth]
+redirect_uri = "http://localhost:8501/oauth2callback"
+cookie_secret = "REPLACE_WITH_A_STRONG_RANDOM_SECRET"
+client_id = "YOUR_OIDC_CLIENT_ID"
+client_secret = "YOUR_OIDC_CLIENT_SECRET"
+server_metadata_url = "YOUR_PROVIDER_HTTPS_OPENID_CONFIGURATION_URL"
+```
+
+Register that exact callback URL with the provider. For Railway, set the server-only `JOBFORGE_AUTH_CONFIG` variable to a JSON
+object containing the same `[auth]` settings. The startup command runs
+`python -m dashboard.configure_auth` before Streamlit, atomically creates the
+ignored secrets file with owner-only permissions, and preserves unrelated
+Streamlit secrets. Use
+`https://YOUR_APP_DOMAIN/oauth2callback` in both places. Generate the cookie
+secret with `python -c 'import secrets; print(secrets.token_urlsafe(48))'`.
+Streamlit handles the authorization redirect, state/nonce validation and identity
+cookie; JobForge checks the logged-in issuer/subject and token expiry before
+rendering the private workspace. Sign-out and identity changes clear private
+session state. A missing provider configuration shows a setup message and demo
+link, never a pretend login form.
+
+CVs are limited to 10 MB and checked for readable text before search. Documents,
+preferences, shortlists and drafts currently remain in the Streamlit session;
+closing/reloading a session can discard them. The persistence foundation is not
+connected to the workspace yet. This is a desktop-focused browser application,
+not a packaged native desktop executable.
+
+For Auth0, create a **Regular Web Application**, enable its email/password
+connection, and register the exact production and localhost callback URLs. Its
+default client authentication method is **Client Secret (Post)**; use:
+
+```toml
+client_kwargs = { prompt = "login", token_endpoint_auth_method = "client_secret_post" }
+```
+
+`server_metadata_url` is `https://YOUR_AUTH0_DOMAIN/.well-known/openid-configuration`.
+Do not enable the default Google development-key connection for production;
+configure your own Google credentials before adding that sign-in option.
