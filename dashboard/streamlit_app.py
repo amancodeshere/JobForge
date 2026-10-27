@@ -24,7 +24,7 @@ from dashboard.documents import inspect_cv
 from dashboard.results import render_results, _source_label
 from dashboard.theme import inject_theme
 
-st.set_page_config(page_title="JobForge · Your next opportunity", layout="wide", initial_sidebar_state="expanded")
+st.set_page_config(page_title="JobForge · Your next opportunity", layout="wide", initial_sidebar_state="auto")
 inject_theme()
 
 LOCAL_MODE = local_access_enabled(os.environ)

@@ -732,6 +732,14 @@ def inject_theme() -> None:
         outline: 3px solid var(--jf-focus-light); outline-offset: 3px;
     }
     button:disabled { opacity: .55; cursor: not-allowed; }
+    /* Names and provider titles must reflow within the available workspace. */
+    .jf-masthead > *, .jf-card > *, .jf-card-top > div:first-child { min-width: 0; }
+    .jf-wordmark { flex-shrink: 0; }
+    .jf-live-mark { max-width: 70%; overflow-wrap: anywhere; }
+    .jf-live-mark::before { flex: 0 0 .5rem; }
+    .jf-job-title, .jf-company, .jf-chip, .jf-recommendation, .jf-panel {
+        overflow-wrap: anywhere;
+    }
     @media (max-width: 640px) {
         .block-container { padding-top: 2.5rem; }
         .jf-masthead { margin-bottom: 1.5rem; }
