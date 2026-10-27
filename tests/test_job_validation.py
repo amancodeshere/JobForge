@@ -1,3 +1,5 @@
+from datetime import date
+
 from app.schemas.candidate import CandidatePreferences
 from app.schemas.job import JobResult
 from app.tools.experience_levels import infer_job_experience_levels
@@ -32,7 +34,7 @@ def test_job_validation_allows_selected_senior_level():
     )
     senior = load_jobs_from_json("sample_data/jobs/jobs.json")[8]
 
-    checked = validate_job(senior, preferences)
+    checked = validate_job(senior, preferences, today=date(2026, 8, 1))
 
     assert checked.status == "validated"
 

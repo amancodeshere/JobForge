@@ -32,8 +32,11 @@ state. The server must verify ownership before creating a short-lived download.
   bytes, production secret, or external service call.
 - Supabase applies the versioned migration at
   `supabase/migrations/202608020001_public_beta_foundation.sql`.
-- Authentication integration is the next phase. Until then no unauthenticated
-  dashboard code may call the persistent repository.
+- The dashboard now gates its workspace with native Streamlit OIDC (or an
+  explicit local personal mode). Its documents, preferences, searches and drafts
+  remain session-only; it does not call the persistent repository. Connecting
+  verified identities to durable account storage remains a separate phase.
+- No unauthenticated dashboard code may call the persistent repository.
 
 ## Security invariants
 

@@ -1,31 +1,28 @@
-## Scope and mode
+## Scope and modes
 
-Dashboard application surface in Operate mode.
+Home is Persuade. Demo, sign-in and the personal workspace are Operate.
 
-## Audience, task and proof
+## Audience and task
 
-Australian job seekers from graduate to executive level configure a credible live search, assess ranked opportunities and prepare evidence-grounded application materials. The surface must keep provider provenance, deterministic scoring, validation state and original-listing access visible.
+Australian job seekers upload a readable CV, set their own role and eligibility
+preferences, search current sources and inspect a ranked shortlist. Provider
+provenance, original listings and grounded drafts remain visible. Demonstration
+data belongs exclusively to `/demo`.
 
-## Chosen direction
+## Direction
 
-The Opportunity Front, refined toward formal editorial discipline. Broad career language appears at monumental scale, aligns to strict rules and visibly resolves into a precise opportunity and evidence ledger. The memorable moment is the transition from role language to ranked, source-backed recommendations.
+Extend the existing Opportunity Front identity: mineral paper, deep slate,
+eucalyptus actions, Barlow Condensed display and ruled evidence ledgers. Home
+owns the monumental language front. The workspace replaces its marketing hero
+and wide search rail with compact headings, a 280px account rail and a guided
+CV → Preferences → Results journey. The upload is the first primary task;
+results take precedence after a successful search. Filtering and sorting help
+users find a specific result without changing the underlying ranking evidence.
 
-Approved composition: `.impeccable/mocks/opportunity-front-a.webp`.
+## Constraints and remaining integration
 
-## Implementation fidelity
-
-| Ingredient | Commitment | Medium |
-| --- | --- | --- |
-| Search brief rail | Approximately 31% of the desktop viewport; deep slate, fixed visual anchor, clearly grouped controls | Streamlit sidebar + CSS |
-| Role-language front | Large Barlow Condensed uppercase role terms, strict baselines, subtle settling motion | Semantic HTML + CSS |
-| Evidence ledger | Full-width ranked rows with score, source, metadata and original-listing action | Semantic HTML + CSS |
-| Provenance register | Compact source/status ribbon immediately adjacent to result summary | Semantic HTML + CSS |
-| Selected role dossier | Editorial two-column summary, evidence, gaps and score breakdown | Streamlit columns + CSS |
-| Primary action | Full-width eucalyptus control fixed to the bottom of the rail with strong focus treatment | Native Streamlit button + CSS |
-| Type system | Self-hosted Barlow Condensed display face with a workhorse system sans for UI and documents | CSS font stacks |
-| Motion | One entrance sequence in which role terms settle along rules; no scattered motion | CSS, disabled for reduced motion |
-| Mobile adaptation | Sidebar becomes Streamlit's collapsible drawer; language front stacks into compact lines; ledgers become single-column rows | Responsive CSS |
-
-## Constraints
-
-Keep all existing live-search, sample, upload, CV compilation and diagnostics behaviour intact. Do not fabricate company proof, usage claims or provider coverage. Target WCAG 2.2 AA and preserve keyboard-visible focus, reduced-motion support and 44px touch targets.
+Keep the existing search, application drafting, evidence and download behavior.
+Use native Streamlit OIDC, with explicit local personal mode for loopback use.
+Do not imply durable account storage: the persistence layer remains separate.
+Real provider credentials and the deployment callback must be configured before
+hosted login works. Preserve responsive layouts, visible focus and reduced motion.

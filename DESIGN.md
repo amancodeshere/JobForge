@@ -260,3 +260,18 @@ The signature display presents broad intent as three rule-underlined uppercase l
 - **Don't** use eucalyptus as decoration or as a broad background wash; it is an evidence and action signal.
 - **Don't** hide provenance, eligibility, score rationale or original-listing access behind secondary navigation.
 - **Don't** invent proof, provider coverage, candidate experience or celebratory gamification.
+
+## Workspace flow extension
+
+The existing Opportunity Front identity now spans distinct surfaces. Home keeps
+its condensed career language and explanatory ledger; `/demo` owns all fixed
+sample content. `/login` explains the provider handoff without collecting
+passwords. `/workspace` uses compact task headings, a 280px account rail, and a
+CV → Preferences → Results control. The upload drop target lives in the primary
+workspace with readable-text preview, removal, validation and a disabled next
+action until a valid CV exists. Search preferences use a two-column desktop form
+with secondary eligibility fields progressively disclosed. Results retain the
+source strip and evidence ledger, adding text filtering and ordering. The large
+marketing introduction and fixed search tray are confined to the former design;
+the primary search action now follows the preference form. Existing color,
+font, focus and reduced-motion tokens continue to apply.
